@@ -1,0 +1,108 @@
+Codex x TwitchCon Hackathon
+Build for streamers and their community on Twitch with OpenAI Codex. $25,000 in prizes, and the top 5 are shown on the Codex Booth stage at TwitchCon.
+Start project
+Find teammates
+Import from portfolio
+Who can participate
+Above legal age of majority in country of residence
+Companies/professional organizations excluded from participation
+All countries/territories, excluding standard exceptions 
+View full rules
+6 more days to deadline
+View schedule
+
+Deadline
+
+Nov 3, 2026 @ 3:30am GMT+5:30 
+Online
+Public
+$25,000 in cash	1303 participants
+Twitch
+Devpost icon rgb30px
+Managed by Devpost
+Communication Gaming Machine Learning/AI
+Twitch is the home of shared live experiences, and developers shape how streamers and their communities experience them.
+
+OpenAI and Twitch are teaming up to see what developers can build for the Twitch community with AI. In the Codex x TwitchCon Hackathon, you'll use OpenAI Codex to build useful and creative experiences for Twitch streamers and their community. Give chat a way to play along, help streamers create together, or add something new to enhance the content they stream. You’ll leave with a working project and hands-on experience building with Codex.
+
+The top 5 projects will be showcased on the Codex Booth stage at TwitchCon San Diego on November 15, where winners will be announced live.
+
+Why join?
+$25,000 in prizes, and a spot on the TwitchCon stage for the top 5
+Build with Codex: tell Codex what you're building and let it help you get set up with the Twitch API, EventSub and chat
+Connect streamers and their community: build something streamers and viewers can use live on stream
+
+Get started
+Sign in to Codex and start a new thread for your project. You’ll need its session ID when you submit.
+Find everything you need to build at dev.twitch.tv. Not sure where to start? Get a chatbot running in minutes with the Example Chatbot guide 
+Join the TwitchDev Discord and ask questions in the channel that fits what you're building. Say hi in #codex-twitchcon-hackathon channel for general questions and updates.
+Requirements
+What to build
+Build for streamers and their community on Twitch with OpenAI Codex.
+
+Not sure where to start? No problem. Here are a few directions to explore:
+
+Streamer collaboration: help streamers talk, play or create together on stream
+Audience participation: let chat join in via a Twitch Plays game, live polls or even streamer distractions
+Content enhancements: build around what's being streamed, like a dice roller for tabletop streams, a live sports overlay or a tool for IRL and science streams
+These are starting points, not templates. Judges are looking for original ideas, so don’t just rebuild the examples above. Go big, or build something small and scrappy over a weekend. It all counts as long as it ​​connects to Twitch (e.g. Twitch API, EventSub, chat, Extensions, overlays) and was built with OpenAI Codex.
+
+ 
+
+
+What to submit
+Provide a URL to your code repository for judging and testing on GitHub, GitLab or Bitbucket.
+It must contain all source code, assets, and instructions needed for the project to run.
+The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.
+A demo video. Include a video (max 3 minutes) that shows your project working on Twitch and how you used Codex. Videos must be uploaded to YouTube and made publicly visible.
+A project description. Include a text description that explains the project's features and functionality and how you used Codex.
+Codex Session ID. Provide the Codex session ID for the thread where you built most of your project (type /status in Codex to see it). If you used multiple threads, include the one where most of the build happened.
+
+Prizes
+$25,000 in prizes
+1st Place
+$10,000 in cash
+1 winner
+$10,000 USD and stage time at TwitchCon
+
+2nd Place
+$6,000 in cash
+1 winner
+$6,000 USD and stage time at TwitchCon
+
+3rd Place
+$4,000 in cash
+1 winner
+$4,000 USD and stage time at TwitchCon
+
+Runner Ups
+$2,500 in cash
+2 winners
+$2,500 USD and stage time at TwitchCon
+
+Devpost Achievements
+Submitting to this hackathon could earn you:
+
+
+First online hackathon
+
+X Hackathons
+ level 1
+
+Hackathon Winner
+ level 1
+
+Generalist
+Judges
+A panel of qualified judges
+A panel of qualified judges
+
+Judging Criteria
+Innovation/Idea
+How creative and novel is the concept and does the project differ from existing concepts?
+Potential Impact
+How useful or entertaining is it for streamers and their communities?
+Technological implementation
+How well is it built, and how well does it use Codex?
+Design
+Is it easy to use and fun to watch?

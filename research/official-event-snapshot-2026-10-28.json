@@ -1,0 +1,354 @@
+{
+  "captured_local_date": "2026-10-28",
+  "event_url": "https://twitchcon-codex.devpost.com",
+  "source": "Devpost Hackathons connector, live read-only calls in this research session",
+  "overview": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "title": "Codex x TwitchCon Hackathon",
+      "status": "submissions_open",
+      "public_url": "https://twitchcon-codex.devpost.com",
+      "description_text": "Twitch is the home of shared live experiences, and developers shape how streamers and their communities experience them.\nOpenAI and Twitch are teaming up to see what developers can build for the Twitch community with AI. In the Codex x TwitchCon Hackathon, you'll use OpenAI Codex to build useful and creative experiences for Twitch streamers and their community. Give chat a way to play along, help streamers create together, or add something new to enhance the content they stream. You’ll leave with a working project and hands-on experience building with Codex.\nThe top 5 projects will be showcased on the Codex Booth stage at TwitchCon San Diego on November 15, where winners will be announced live.\nWhy join?\n\n\n$25,000 in prizes, and a spot on the TwitchCon stage for the top 5\n\nBuild with Codex: tell Codex what you're building and let it help you get set up with the Twitch API, EventSub and chat\n\nConnect streamers and their community: build something streamers and viewers can use live on stream\n\n\nGet started\n\n\nSign in to Codex and start a new thread for your project. You’ll need its session ID when you submit.\nFind everything you need to build at dev.twitch.tv. Not sure where to start? Get a chatbot running in minutes with the Example Chatbot guide \nJoin the TwitchDev Discord and ask questions in the channel that fits what you're building. Say hi in #codex-twitchcon-hackathon channel for general questions and updates.",
+      "resources_text": "Twitch developer docs: https://dev.twitch.tv/docs/\nTopical docs\n\nChat &amp; Chatbots https://dev.twitch.tv/docs/chat/\n\nEventSub https://dev.twitch.tv/docs/eventsub/\n\nTwitch API https://dev.twitch.tv/docs/api/\n\nExtensions https://dev.twitch.tv/docs/extensions/\n\nShowcase for inspiration https://dev.twitch.tv/showcase/\n\n\n \nFAQs\nGeneral and TwitchCon\nWhat is the Codex x TwitchCon Hackathon? An online hackathon where you use OpenAI Codex to build an interactive experience for streamers and their community on Twitch. Give chat a way to play along, help streamers create together, or add something new to the content they stream. The top 5 projects are showcased on the Codex Booth stage at TwitchCon San Diego on November 15, where winners are announced live.\nWhat should I build? Build for streamers and their community on Twitch with OpenAI Codex. A few directions to explore:\n\nStreamer collaboration: help streamers talk, play or create together on stream\nAudience participation: let chat join in with a Twitch Plays game, live polls or streamer distractions\nContent enhancements: build around what's being streamed, like a dice roller for tabletop streams, a live sports overlay or a tool for IRL and science streams\n\nThese are starting points, not templates. Judges are looking for original ideas, so don’t just rebuild the examples above. Go big, or build something small and scrappy over a weekend. It all counts as long as it connects to Twitch and was built with Codex.\nDo I need to be a developer? No. Streamers and newer builders are welcome. Codex can help you set up the Twitch API, EventSub and chat. Your project still needs to run and work as shown in your video.\nWhat are the key dates?\n \n\n   \n\n\n\nMilestone\n\n\nDate\n\n\n\n\nSubmissions open\n\n\nOctober 23, 2026, 10:00 AM PT\n\n\n\n\nSubmission deadline\n\n\nNovember 2, 2026, 2:00 PM PT\n\n\n\n\nJudging Period\n\n\nNovember 5, 2026 (9:00 AM PT) – November 15, 2026 (5:00 PM PT)\n\n\n\n\nWinners announced\n\n\nOn or around November 15, 2026 at TwitchCon San Diego\n\n\n\n\n \nDo I have to attend TwitchCon to enter? No. The hackathon is fully online. Attending TwitchCon is not a requirement. The top 5 projects will be showcased on the Codex Booth stage at TwitchCon San Diego.\nIs there a cost to enter? No. From the Official Rules: \"NO PURCHASE OR PAYMENT NECESSARY TO ENTER OR WIN.\"\nEligibility\nWho can enter? The Hackathon IS open to:\n\nIndividuals who are at least eighteen (18) years old or the age of majority where they reside as of the time of entry, whichever is older (\"Eligible Individuals\"); and\nTeams of Eligible Individuals (\"Teams\").\n\nI'm under 18. Can I enter? No. The Hackathon is open to \"Individuals who are at least eighteen (18) years old or the age of majority where they reside as of the time of entry, whichever is older (\"Eligible Individuals\").\" There is no waiver for participants under 18.\nWhich countries are excluded? The Hackathon IS NOT open to: \"Individuals who are residents of a country, state, province or territory where the laws of the United States or local law prohibits participating or receiving a prize in the Hackathon (including, but not limited to, Brazil, Quebec, Russia, Crimea, Cuba, Iran, and North Korea and any other country which is comprehensively sanctioned by the U.S. Treasury’s Office of Foreign Assets Control, and any applicable denied-party lists)\"\nIs eligibility based on citizenship or where I live? Where you legally reside. The rules refer to \"residents of a country, state, province or territory,\" not citizenship.\nCan my company, startup or student club enter? No. The Hackathon IS NOT open to: \"Organizations, including corporations, not-for-profit corporations and other nonprofit organizations, limited liability companies, partnerships, and other legal entities\". You can enter as an individual or as a team of eligible individuals.\nCan I join more than one team, or enter solo and on a team? Yes. \"An Eligible Individual may join more than one Team and an Eligible Individual who is part of a Team may also enter the Hackathon on an individual basis.\"\nHow do teams submit? One person, the team Representative, clicks Start Project on the hackathon page, then adds teammates in the Manage Team section of the project. Each teammate must accept the invite to appear on the submission. The Representative enters the submission for the whole team. From the Official Rules: \"If a Team is entering the Hackathon, they must appoint and authorize one individual (the \"Representative\") to represent, act, and enter a Submission, on their behalf.\" Prizes are paid to the Representative, who splits them with the team.\nIs there a maximum team size? The Official Rules do not set a maximum team size. Every team member must be an Eligible Individual.\nI work at Twitch, Amazon, OpenAI or Devpost. Can I enter? No. The Hackathon IS NOT open to \"Organizations involved with the design, production, paid promotion, execution, or distribution of the Hackathon, including the Sponsor, OpenAI and Administrator (\"Promotion Entities\")\", \"Employees, representatives and agents of such Promotion Entities, and all members of their immediate family or household\", or \"Any parent company, subsidiary, or other affiliate of any organization described above\". See Section 3 of the Official Rules for the full list.\nSubmission requirements\nWhat do I need to submit?\n\nProvide a URL to your code repository for judging and testing on GitHub, GitLab or Bitbucket. It must contain all source code, assets, and instructions needed for the project to run. The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.\nInclude a text description that explains the Project's features and functionality and how you used Codex.\nProvide the Codex session ID for the Codex thread where the Project was built.\nA demonstration video under three minutes that shows your project working on Twitch and how it was built with Codex.\n\nDoes my project have to connect to Twitch? Yes. \"The Project must be an interactive experience that connects to Twitch, for example through chat, a stream overlay, the Twitch API, EventSub or an Extension.\"\nCan I use a project I started before the hackathon? No. \"Projects must be newly created during the Submission Period. Participants may use standard development tools, including frameworks, libraries, starter templates, and AI coding assistants. The work described and submitted must have been built during the Submission Period.\"\nCan I start from Twitch's Example Chatbot guide? Yes. Starter templates are allowed. Judges focus on what you built on top of it.\nCan my repo be private? Yes. \"The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.\"\nWhat are the video rules? The video portion of the Submission:\n\nshould be less than three (3) minutes. Judges are not required to watch beyond three minutes\nshould include footage that shows the Project functioning on Twitch\nShould include footage that shows how the project was built with Codex\nmust be uploaded to and made publicly visible on YouTube and a link to the video must be provided on the submission form on the Hackathon Website; and\nmust not include third party trademarks, or copyrighted music or other material unless the Entrant has permission to use such material.\n\nCan my YouTube video be unlisted? Yes, unlisted is fine. Private videos can't be viewed by judges. \nCan I show other streamers, games or music in my video? Only with permission. The video must not include third party trademarks, or copyrighted music or other material unless the Entrant has permission to use such material.\nCan I submit more than one project? Yes. \"An Entrant may submit more than one Submission, however, each Submission must be unique and substantially different from each of the Entrant's other Submissions, as determined by the Sponsor and Devpost in their sole discretion.\"\nDoes my submission have to be in English? \"All Submission materials must be in English or, if not in English, the Entrant must provide an English translation of the demonstration video, text description, and testing instructions as well as all other materials submitted.\"\nDo judges have to test my project? No. \"Judges are not required to test the Project and may choose to judge based solely on the text description, images, and video provided in the Submission.\" Make your video count.\nTechnical and Codex\nHow do I get started with OpenAI Codex? Sign in to Codex and tell it what you're building. Codex can help you get set up with the Twitch API, EventSub and chat. \nDo I need a paid Codex plan? No. Use the free version of Codex. Free usage has limits, so keep an eye on your usage as you build and leave some headroom for final fixes before the deadline.\nWhat's the fastest way to connect a project to Twitch? Start with Twitch's Example Chatbot guide. It gets a chatbot running in minutes, and you can build from there. Everything else you need is in the Twitch developer docs.\nWhich Twitch docs are most useful?\n\n\nChat &amp; Chatbots: read and respond to chat\n\nEventSub: react to follows, subs, raids and other live events\n\nTwitch API: channel, stream and user data\n\nShowcase: see what other developers have built\n\nShould I build an Extension? You can, but please note that it can take 5–14 days for it to be reviewed and judges can't install an unreviewed Extension. Chat, overlays, the Twitch API and EventSub are faster paths.\nWhere do I find my Codex session ID? Type /status in the Codex thread where you built most of your project. Paste that ID into the submission form.\nI used several Codex threads. Which session ID do I submit? The one for the thread where you built most of your project.\nCan I use other AI tools too? Yes. The rules allow \"standard development tools, including frameworks, libraries, starter templates, and AI coding assistants.\" Your project must be built with Codex, and Codex use is part of the Technological Implementation criterion.\nHow much can Codex build for me? As much as helps. The Submission must \"be the original work of the Entrant\" and be \"the result of the Entrant's ideas and creativity.\" You direct the idea and the decisions. Be ready to explain how your project works.\nMy project uses API keys. What do judges need? Never commit keys to your repo. Use environment variables and list them in your setup instructions. Your repo must contain \"all source code, assets, and instructions needed for the project to run.\"\nCan I use third-party APIs, games or assets? Yes, if you're allowed to. \"If a Project integrates any third-party SDK, APIs and/or data, Entrant must be authorized to use them in accordance with any terms and conditions or licensing requirements of the tool.\"\nDeadline, judging and prizes\nWhen exactly is the deadline? November 2, 2026, 2:00 PM Pacific Time. That's 5:00 PM ET, 10:00 PM in London and 9:00 PM UTC. Check the countdown on the hackathon page for your local time.\nI saved my project. Is it submitted? Not until you click Submit. A saved draft is not entered. To check, open the My projects tab on the hackathon page. Your project should show as Submitted before the deadline.\nCan I submit late? No. Submissions must be entered \"during the Submission Period.\" Submit early and keep editing until the deadline.\nCan I edit my project after the deadline? No. \"Once the Submission Period has ended, you may not make any changes or alterations to your Submission, but you may continue to update the Project in your Devpost portfolio.\" Don't change your repo, video or linked materials until winners are announced. To keep building, copy your repo and work in the copy.\nHow is judging done? In two stages. Stage One checks \"via pass/fail whether the ideas meet a baseline level of viability, in that the Project reasonably fits the theme and reasonably applies the required developer tools featured in the Hackathon.\" In Stage Two, judges score submissions on four equally weighted criteria, and the five highest scoring Submissions will become finalists.\nWhat are the judging criteria?\n\nInnovation/Idea: How creative and novel is the concept and does the project differ from existing concepts?\nPotential Impact: How useful or entertaining is it for streamers and their communities?\nTechnological implementation: How well is it built, and how well does it use Codex?\nDesign: Is it easy to use and fun to watch?\n\nIs AI used in judging? The rules say judging \"may utilize expert panels, peer review, automated AI-driven analysis, or any combination thereof to ensure efficient, fair, and objective evaluation.\"\nWhat are the prizes? $25,000 USD in total.\n \n\n   \n\n\n\nPrize\n\n\nAward\n\n\n\n\n1st Place\n\n\n$10,000 USD and stage time at TwitchCon\n\n\n\n\n2nd Place\n\n\n$6,000 USD and stage time at TwitchCon\n\n\n\n\n3rd Place\n\n\n$4,000 USD and stage time at TwitchCon\n\n\n\n\nRunner Ups (2)\n\n\n$2,500 USD each and stage time at TwitchCon\n\n\n\n\n \nWhen and how are prizes paid? After winners complete the required forms. \"The deadline for returning the Required Forms to the Administrator is ten (10) business days after the Required Forms are sent.\" \"Prizes will be delivered within 60 days of the Sponsor or Devpost's receipt of the completed Required Forms.\"\nWho pays taxes on prizes? \"Winners (and in the case of a Team, all participating members) are responsible for reporting and paying all applicable taxes in their jurisdiction of residence.\" US residents may need a W-9; others may need a W-8BEN.\nDo I keep ownership of my project? Yes. \"All Submissions remain the intellectual property of the individuals that developed them.\"\nSupport\nWhere do I ask technical questions? In the TwitchDev Discord. Ask in the help channel that fits what you're building, where the developer community answers.\nWill Twitch or OpenAI staff answer questions? The community answers most technical questions in the TwitchDev Discord. Staff aren't guaranteed to be online, and Devpost checks in regularly to route questions.\nHow do I find teammates? Use the Participants tab on the hackathon page to find people looking for a team, or post in the #codex-twitchcon-hackathon channel in the TwitchDev Discord.\nWho do I contact about eligibility, submissions or prizes? If your question isn't answered in this FAQ post your question in the #codex-twitchcon-hackathon channel in the TwitchDev Discord. Responses might take a business day or two."
+    },
+    "fetched_at": "2026-10-27T19:12:00Z"
+  },
+  "rules": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "terms_and_conditions_text": "Codex x TwitchCon Hackathon (the \"Hackathon\") Official Rules\nNO PURCHASE OR PAYMENT NECESSARY TO ENTER OR WIN. A PURCHASE OR PAYMENT WILL NOT INCREASE YOUR CHANCES OF WINNING.\nSUBMISSION OF ANY ENTRY CONSTITUTES AGREEMENT TO THESE OFFICIAL RULES AS A CONTRACT BETWEEN ENTRANT (AND EACH INDIVIDUAL MEMBER OF ENTRANT), THE HACKATHON SPONSOR, AND DEVPOST.\n \n1. Dates and Timing\nSubmission Period: October 23, 2026 (10:00 am Pacific Time) – November 2, 2026 (2:00 pm Pacific Time) (\"Submission Period\").\nJudging Period: November 5, 2026 (9:00 am Pacific Time) – November 15, 2026 (5:00 pm Pacific Time) (\"Judging Period\" and together with the Submission Period, the “Hackathon Period”).\nWinners Announced: On or around November 15, 2026 at TwitchCon San Diego 2026 (“TwitchCon”).\n \n2. Sponsor and Administrator\nSponsor: Amazon Advertising LLC, 410 Terry Avenue North, Seattle, WA 98109\nAdministrator: Devpost, Inc. (\"Devpost\"), 250 Broadway, Floor 24, New York, NY 10007\n \n3. Eligibility\nThe Hackathon IS open to:\n\nIndividuals who are at least eighteen (18) years old or the age of majority where they reside as of the time of entry, whichever is older (\"Eligible Individuals\"); and\nTeams of Eligible Individuals (\"Teams\").\n\n(the above are collectively, \"Entrants\")\nAn Eligible Individual may join more than one Team and an Eligible Individual who is part of a Team may also enter the Hackathon on an individual basis. If a Team is entering the Hackathon, they must appoint and authorize one individual (the \"Representative\") to represent, act, and enter a Submission, on their behalf. By entering a Submission on behalf of a Team you represent and warrant that you are the Representative authorized to act on behalf of your Team.\nThe Hackathon IS NOT open to:\n\nOrganizations, including corporations, not-for-profit corporations and other nonprofit organizations, limited liability companies, partnerships, and other legal entities\nIndividuals who are residents of a country, state, province or territory where the laws of the United States or local law prohibits participating or receiving a prize in the Hackathon (including, but not limited to, Brazil, Quebec, Russia, Crimea, Cuba, Iran, and North Korea and any other country which is comprehensively sanctioned by the U.S. Treasury’s Office of Foreign Assets Control, and any applicable denied-party lists) as of the time of entry and at time of Prize payment) \nOrganizations involved with the design, production, paid promotion, execution, or distribution of the Hackathon, including the Sponsor, OpenAI and Administrator (\"Promotion Entities\")\nEmployees, representatives and agents** of such Promotion Entities, and all members of their immediate family or household*\nAny other individual involved with the design, production, promotion, execution, or distribution of the Hackathon, and each member of their immediate family or household*\nAny Judge (defined below), or company or individual that employs a Judge\nAny parent company, subsidiary, or other affiliate*** of any organization described above\nAny other individual or organization whose participation in the Hackathon would create, in the sole discretion of the Sponsor and/or Administrator, a real or apparent conflict of interest\n\n*The members of an individual's immediate family include the individual's spouse, children and stepchildren, parents and stepparents, and siblings and stepsiblings. The members of an individual's household include any other person that shares the same residence as the individual for at least three (3) months out of the year.\n**Agents include individuals or organizations that in creating a Submission to the Hackathon, are acting on behalf of, and at the direction of, a Promotion Entity through a contractual or similar relationship.\n***An affiliate is: (a) an organization that is under common control, sharing a common majority or controlling owner, or common management; or (b) an organization that has a substantial ownership in, or is substantially owned by the other organization.\n \n4. How To Enter\nEntrants may enter by visiting twitchcon-codex.devpost.com (\"Hackathon Website\") and following the below steps:\n\nRegister for the Hackathon on the Hackathon Website by clicking the \"Join Hackathon\" button. To complete registration, sign up to create a free Devpost account, or log in with an existing Devpost account. This will enable you to receive important updates and to create your Submission.\nEntrants will obtain access to the required developer tools and complete a Project described below in Project Requirements. Use of the developer tools will be subject to the license agreement related thereto. Entry in the Hackathon constitutes consent for the Sponsor and Devpost to collect and maintain an entrant's personal information for the purpose of operating and publicizing the Hackathon.\nComplete and enter all of the required fields on the \"Enter a Submission\" page of the Hackathon Website (each a \"Submission\") during the Submission Period and follow the requirements below.\n\nProject Requirements\n\n\nWhat to Create: Entrants must build for streamers and their community on www.twitch.tv (“Twitch”) with OpenAI Codex (each a \"Project\"). The Project must be an interactive experience that connects to Twitch, for example through chat, a stream overlay, the Twitch API, EventSub or an Extension.\n\nFunctionality: The Project must be capable of being successfully installed and running consistently on the platform for which it is intended and must function as depicted in the video and/or expressed in the text description.\n\nPlatforms: A submitted Project must run on the platform for which it is intended and which is specified in the Submission Requirements.\n\nNew: Projects must be newly created during the Submission Period. Participants may use standard development tools, including frameworks, libraries, starter templates, and AI coding assistants. The work described and submitted must have been built during the Submission Period.\n\nThird Party Integrations: If a Project integrates any third-party SDK, APIs and/or data, Entrant must be authorized to use them in accordance with any terms and conditions or licensing requirements of the tool.\n\nSubmission Requirements\nSubmissions to the Hackathon must meet the following requirements:\n\nInclude a Project built with the required developer tools and meets the above Project Requirements.\nProvide a URL to your code repository for judging and testing on GitHub, GitLab or Bitbucket. It must contain all source code, assets, and instructions needed for the project to run. The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.\nInclude a text description that explains the Project's features and functionality and how you used Codex.\nProvide the Codex session ID for the Codex thread where the Project was built.\nInclude a demonstration video of your Project. The video portion of the Submission:\n\nshould be less than three (3) minutes. Judges are not required to watch beyond three minutes\nshould include footage that shows the Project functioning on Twitch\nShould include footage that shows how the project was built with Codex\nmust be uploaded to and made publicly visible on YouTube and a link to the video must be provided on the submission form on the Hackathon Website; and\nmust not include third party trademarks, or copyrighted music or other material unless the Entrant has permission to use such material.\n\n\n\nMultiple Submissions\nAn Entrant may submit more than one Submission, however, each Submission must be unique and substantially different from each of the Entrant's other Submissions, as determined by the Sponsor and Devpost in their sole discretion.\nSubmission ownership\nBe the original work of the Entrant, be solely owned by the Entrant, and not violate the IP rights of any other person or entity.\nTesting\nAccess must be provided to an Entrant's working Project for judging and testing by providing a link to an accessible code repository as stated above in the Submission Requirements. The Entrant must make the Project available free of charge and without any restriction, for testing, evaluation and use by the Sponsor, Administrator and Judges until the Judging Period ends. Judges are not required to test the Project and may choose to judge based solely on the text description, images, and video provided in the Submission.\nLanguage Requirements\nAll Submission materials must be in English or, if not in English, the Entrant must provide an English translation of the demonstration video, text description, and testing instructions as well as all other materials submitted.\nTeam Representation\nIf a team is entering the Hackathon, they must appoint and authorize one individual (the \"Representative\") to represent, act, and enter a Submission, on their behalf. The Representative must meet the eligibility requirements above. By entering a Submission on the Hackathon Website on behalf of a team you represent and warrant that you are the Representative authorized to act on behalf of your team.\nIntellectual Property\nYour Submission must: (a) be your (or your Team's) original work product; (b) be solely owned by you or your Team with no other person or entity having any right or interest in it; and (c) not violate the intellectual property rights or other rights including but not limited to copyright, trademark, patent, contract, and/or privacy rights, of any other person or entity. An Entrant may contract with a third party for technical assistance to create the Submission provided the Submission components are solely the Entrant's work product and the result of the Entrant's ideas and creativity, and the Entrant owns all rights to them. An Entrant may submit a Submission that includes the use of open source software or hardware, provided the Entrant complies with applicable open source licenses and, as part of the Submission, creates software that enhances and builds upon the features and functionality included in the underlying open source product. By entering the Hackathon, you represent, warrant, and agree that your Submission meets these requirements.\nFinancial or Preferential Support\nA Project must not have been developed, or derived from a Project developed, with financial or preferential support from the Sponsor or Administrator. Such Projects include, but are not limited to, those that received funding or investment for their development, were developed under contract, or received a commercial license, from the Sponsor or Administrator any time prior to the end of the Submission Period. The Sponsor, at their sole discretion, may disqualify a Project, if awarding a prize to the Project would create a real or apparent conflict of interest.\n \n5. Submission Modifications\nDraft Submissions\nPrior to the end of the Submission Period, you may save draft versions of your submission on Devpost to your portfolio before submitting the Submission materials to the Hackathon for evaluation. Once the Submission Period has ended, you may not make any changes or alterations to your Submission, but you may continue to update the Project in your Devpost portfolio.\nModifications After the Submission Period\nThe Sponsor and Devpost may permit you to modify part of your Submission after the Submission Period for the purpose of adding, removing or replacing material that potentially infringes a third party mark or right, discloses personally identifiable information, or is otherwise inappropriate. The modified Submission must remain substantively the same as the original Submission with the only modification being what the Sponsor and Devpost permits.\n \n6. Judges &amp; Criteria\nSponsor and Administrator reserve the sole right to determine the eligibility and judging methodologies for all submissions. This process may utilize expert panels, peer review, automated AI-driven analysis, or any combination thereof to ensure efficient, fair, and objective evaluation. Eligible submissions will be evaluated by a panel of judges selected by the Sponsor (the \"Judges\"). Judges may be employees of the Sponsor or third parties, may or may not be listed individually on the Hackathon Website, and may change before or during the Judging Period. Judging may take place in one or more rounds with one or more panels of Judges, at the discretion of the Sponsor.\nStage One: The first stage will determine via pass/fail whether the ideas meet a baseline level of viability, in that the Project reasonably fits the theme and reasonably applies the required developer tools featured in the Hackathon.\nStage Two: All Submissions that pass Stage One will be evaluated in Stage Two based on the following equally weighted criteria (the \"Judging Criteria\"). The five highest scoring Submissions will become finalists.\n\n\nInnovation/Idea: How creative and novel is the concept and does the project differ from existing concepts?\n\nPotential Impact: How useful or entertaining is it for streamers and their communities? \n\nTechnological implementation: How well is it built, and how well does it use Codex?\n\nDesign: Is it easy to use and fun to watch?\n\nThe scores from the Judges will determine the potential winners of the applicable prizes. The Entrant(s) that are eligible for a Prize, and whose Submissions earn the highest overall scores based on the applicable Judging Criteria, will become potential winners of that Prize.\nTie Breaking\nFor each Prize listed below, if two or more Submissions are tied, the tied Submission with the highest score in the first applicable criterion listed above will be considered the higher scoring Submission. In the event any ties remain, this process will be repeated, as needed, by comparing the tied Submissions' scores on the next applicable criterion. If two or more Submissions are tied on all applicable criteria, the panel of Judges will vote on the tied Submissions.\n \n7. Intellectual Property Rights\nAll Submissions remain the intellectual property of the individuals that developed them. By submitting an entry, entrants agree that the Sponsor will have a non-exclusive license to use such entry for judging the entry. Entrants agree that the Sponsor and Devpost shall have the right to promote the Submission and use the name, likeness, voice and image of all individuals contributing to a Submission, in any materials promoting or publicizing the Hackathon and its results, during the Hackathon Period and for three years thereafter. Some Submission components may be displayed to the public. Other Submission materials may be viewed by the Sponsor, Devpost, and judges for screening and evaluation. By submitting an entry or accepting any prize, entrants represent and warrant that (a) submitted content is not copyrighted, protected by trade secret or otherwise subject to third party intellectual property rights or other proprietary rights, including privacy and publicity rights, unless entrant is the owner of such rights or has permission from their rightful owner to post the content; and (b) the content submitted does not contain any viruses, Trojan horses, worms, spyware or other disabling devices or harmful or malicious code.\n \n8. Prizes\n \n\n   \n\n\n\nPrize\n\n\nAward\n\n\n\n\n1st Place\n\n\n$10,000 USD and stage time at TwitchCon\n\n\n\n\n2nd Place\n\n\n$6,000 USD and  stage time at TwitchCon\n\n\n\n\n3rd Place\n\n\n$4,000 USD and stage time at TwitchCon\n\n\n\n\nRunner Ups (2)\n\n\n$2,500 USD each and stage time at TwitchCon\n\n\n\n\n \n\n\nSubstitutions &amp; Changes: Prizes are non-transferable by the winner. Sponsor in its sole discretion has the right to make a prize substitution of equivalent or greater value. Sponsor will not award a prize if there are no eligible Submissions entered in the Hackathon, or if there are no eligible Entrants or Submissions for a specific prize.\n\n\nVerification Requirement: THE AWARD OF A PRIZE TO A POTENTIAL WINNER IS SUBJECT TO VERIFICATION OF THE IDENTITY, QUALIFICATIONS AND ROLE OF THE POTENTIAL WINNER IN THE CREATION OF THE SUBMISSION. No Submission or Entrant shall be deemed a winning Submission or winner until their post-competition prize affidavits have been completed and verified, even if prospective winners have been announced verbally or on the competition website. The final decision to designate a winner shall be made by the Sponsor and/or Administrator.\n\n\nPrize Delivery: Prizes will be payable to the Entrant, if an individual, or to the Entrant's Representative, if a Team. It will be the responsibility of the winning Entrant's Representative to allocate the Prize among their Team's participating members, as the Representative deems appropriate. Travel, lodging, and related expenses to attend TwitchCon are the responsibility of the winners. Declining or failing to appear in-person at TwitchCon will not cause a winner to forfeit the monetary portion of the Prize. A monetary Prize will be mailed to the winning Entrant's address (if an individual) or the Representative's address (if a Team), or sent electronically to the Entrant or Entrant's Representative's bank account, only after receipt of the completed winner affidavit and other required forms (collectively the \"Required Forms\"), if applicable. The deadline for returning the Required Forms to the Administrator is ten (10) business days after the Required Forms are sent. Failure to provide correct information on the Required Forms, or other correct information required for the delivery of a Prize, may result in delayed Prize delivery, disqualification of the Entrant, or forfeiture of a Prize. Prizes will be delivered within 60 days of the Sponsor or Devpost's receipt of the completed Required Forms.\n\n\nFees &amp; Taxes: Winners (and in the case of a Team, all participating members) are responsible for any fees associated with receiving or using a prize, including but not limited to, wiring fees or currency exchange fees. Winners (and in the case of a Team, all participating members) are responsible for reporting and paying all applicable taxes in their jurisdiction of residence (federal, state/provincial/territorial and local). Winners may be required to provide certain information to facilitate receipt of the award, including completing and submitting any tax or other forms necessary for compliance with applicable withholding and reporting requirements. United States residents may be required to provide a completed form W-9 and residents of other countries may be required to provide a completed W-8BEN form. Winners are also responsible for complying with foreign exchange and banking regulations in their respective jurisdictions and reporting the receipt of the Prize to relevant government departments/agencies, if necessary. The Sponsor, Devpost, and/or Prize provider reserves the right to withhold a portion of the prize amount to comply with the tax laws of the United States or other Sponsor jurisdiction, or those of a winner's jurisdiction.\n\n\n \n9. Entry Conditions and Release\nBy entering the Hackathon, you (and, if you are entering on behalf of a Team, each participating member) agree(s) to the following:\n\nThe relationship between you, the Entrant, and the Sponsor and Administrator, is not a confidential, fiduciary, or other special relationship.\nYou will be bound by and comply with these Official Rules and the decisions of the Sponsor, Administrator, and/or the Hackathon Judges which are binding and final in all matters relating to the Hackathon.\nYou release, indemnify, defend and hold harmless the Promotion Entities, and their respective parent, subsidiary, and affiliated companies, the Prize suppliers and any other organizations responsible for sponsoring, fulfilling, administering, advertising or promoting the Hackathon, and all of their respective past and present officers, directors, employees, agents and representatives (hereafter the \"Released Parties\") from and against any and all claims, expenses, and liabilities (including reasonable attorneys' fees), including but not limited to negligence and damages of any kind to persons and property, defamation, slander, libel, violation of right of publicity, infringement of trademark, copyright or other intellectual property rights, property damage, or death or personal injury arising out of or relating to a Entrant's entry, creation of Submission or entry of a Submission, participation in the Hackathon, acceptance or use or misuse of the Prize (including any travel or activity related thereto) and/or the broadcast, transmission, performance, exploitation or use of the Submission as authorized or licensed by these Official Rules.\n\nWithout limiting the foregoing, the Released Parties shall have no liability in connection with: (a) Any incorrect or inaccurate information, whether caused by the Sponsor or Administrator's electronic or printing error, or by any of the equipment or programming associated with or utilized in the Hackathon; (b) Technical failures of any kind, including, but not limited to malfunctions, interruptions, or disconnections in phone lines, internet connectivity or electronic transmission errors, or network hardware or software or failure of the Hackathon Website; (c) Unauthorized human intervention in any part of the entry process or the Hackathon; (d) Technical or human error which may occur in the administration of the Hackathon or the processing of Submissions; or (e) Any injury or damage to persons or property which may be caused, directly or indirectly, in whole or in part, from the Entrant's participation in the Hackathon or receipt or use or misuse of any Prize.\nThe Released Parties are not responsible for incomplete, late, misdirected, damaged, lost, illegible, or incomprehensible Submissions or for address or email address changes of the Entrants. Proof of sending or submitting the aforementioned will not be deemed to be proof of receipt by the Sponsor or Administrator. If for any reason any Entrant's Submission is determined to have not been received or been erroneously deleted, lost, or otherwise destroyed or corrupted, the Entrant's sole remedy is to request the opportunity to resubmit its Submission. Such a request must be made promptly after the Entrant knows or should have known there was a problem and will be determined at the sole discretion of the Sponsor.\n \n10. Publicity\nBy participating in the Hackathon, Entrant consents to the promotion and display of the Entrant's Submission, and to the use of personal information about themselves for promotional purposes, by the Sponsor, Administrator, and third parties acting on their behalf. Such personal information includes, but is not limited to, your name, likeness, photograph, voice, opinions, comments and hometown and country of residence. It may be used in any existing or newly created media, worldwide without further payment or consideration or right of review, unless prohibited by law. Authorized use includes but is not limited to advertising and promotional purposes.\n \n11. General Conditions\n\nSponsor and Administrator reserve the right, in their sole discretion, to cancel, suspend and/or modify the Hackathon, or any part of it, in the event of a technical failure, fraud, or any other factor or event that was not anticipated or is not within their control.\nSponsor and Administrator reserve the right in their sole discretion to disqualify any individual or Entrant if it finds to be actually or presenting the appearance of tampering with the entry process or the operation of the Hackathon or to be acting in violation of these Official Rules or in a manner that is inappropriate, unsportsmanlike, not in the best interests of this Hackathon, or a violation of any applicable law or regulation.\nAny attempt by any person to undermine the proper conduct of the Hackathon may be a violation of criminal and civil law. Should the Sponsor or Administrator suspect that such an attempt has been made or is threatened, they reserve the right to take appropriate action including but not limited to requiring an Entrant to cooperate with an investigation and referral to criminal and civil law enforcement authorities.\nIf there is any discrepancy or inconsistency between the terms and conditions of the Official Rules and disclosures or other statements contained in any Hackathon materials, including but not limited to the Hackathon Submission form, Hackathon Website, or advertising, the terms and conditions of the Official Rules shall prevail.\nThe terms and conditions of the Official Rules are subject to change at any time, including the rights or obligations of the Entrant, the Sponsor and Administrator. The Sponsor and Administrator will post the terms and conditions of the amended Official Rules on the Hackathon Website. To the fullest extent permitted by law, any amendment will become effective at the time specified in the posting of the amended Official Rules or, if no time is specified, the time of posting.\nIf at any time prior to the deadline, an Entrant or prospective Entrant believes that any term in the Official Rules is or may be ambiguous, they must submit a written request for clarification.\nThe Sponsor or Administrator's failure to enforce any term of these Official Rules shall not constitute a waiver of that provision. Should any provision of these Official Rules be or become illegal or unenforceable in any jurisdiction whose laws or regulations may apply to an Entrant, such illegality or unenforceability shall leave the remainder of these Official Rules, including the Rule affected, to the fullest extent permitted by law, unaffected and valid. The illegal or unenforceable provision shall be replaced by a valid and enforceable provision that comes closest and best reflects the Sponsor's intention in a legal and enforceable manner with respect to the invalid or unenforceable provision.\nExcluding Submissions, all intellectual property related to this Hackathon, including but not limited to copyrighted material, trademarks, trade-names, logos, designs, promotional materials, web pages, source codes, drawings, illustrations, slogans and representations are owned or used under license by the Sponsor and/or Administrator. All rights are reserved. Unauthorized copying or use of any copyrighted material or intellectual property without the express written consent of its owners is strictly prohibited. Any use in a Submission of Sponsor or Administrator's intellectual property shall be solely to the extent provided for in these Official Rules.\n\n \n12. Limitations of Liability\nBy entering, all Entrants (including, in the case of a Team, all participating members) agree to release the Released Parties from any and all liability in connection with the Prizes or Entrant's participation in the Hackathon. Provided, however, that any liability limitation regarding gross negligence or intentional acts, or events of death or body injury shall not be applicable in jurisdictions where such limitation is not legal.\n \n13. Disputes\n\n\nExcept where prohibited by law, as a condition of participating in this Hackathon, Entrant agrees that: (a) Any and all disputes and causes of action arising out of or connected with this Hackathon, or any Prizes awarded, shall be resolved individually, without resort to any form of class action lawsuit, and exclusively by final and binding arbitration under the rules of the American Arbitration Association and held at the AAA regional office nearest the contestant; (b) The Federal Arbitration Act shall govern the interpretation, enforcement and all proceedings at such arbitration; and (c) Judgment upon such arbitration award may be entered in any court having jurisdiction.\n\n\nUnder no circumstances will Entrant be permitted to obtain awards for, and Entrant hereby waives all rights to claim, punitive, incidental or consequential damages, or any other damages, including attorneys' fees, other than contestant's actual out-of-pocket expenses (i.e., costs associated with entering this Hackathon), and Entrant further waives all rights to have damages multiplied or increased.\n\n\nAll issues and questions concerning the construction, validity, interpretation and enforceability of these Official Rules, or the rights and obligations of the Entrant and Sponsor in connection with this Hackathon, shall be governed by, and construed in accordance with, the substantive laws of the State of New York, USA without regard to New York choice of law rules.\n\n\nSOME JURISDICTIONS DO NOT ALLOW THE LIMITATIONS OR EXCLUSION OF LIABILITY FOR INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS OF LIABILITY MAY NOT APPLY TO YOU.\n \n14. Additional Terms\nPlease review the Devpost Terms of Service at https://info.devpost.com/terms for additional rules that apply to your participation in the Hackathon and more generally your use of the Hackathon Website. Such Terms of Service are incorporated by reference into these Official Rules, including that the term \"Poster\" in the Terms of Service shall mean the same as \"Sponsor\" in these Official Rules. If there is a conflict between the Terms of Service and these Official Rules, these Official Rules shall control with respect to this Hackathon only.\n \n15. Entrant's Personal Information\nInformation collected from Entrants is subject to Devpost's Privacy Policy, which is available at https://info.devpost.com/privacy.\n \nFor questions, send an email to support@devpost.com.\n ",
+      "eligibility": {
+        "description_html": null,
+        "description_text": null,
+        "summary_lines": [
+          "Above legal age of majority in country of residence",
+          "Companies/professional organizations excluded from participation",
+          "All countries/territories, excluding standard exceptions: Brazil, Crimea, Cuba, Iran, North Korea, Quebec, Russia"
+        ],
+        "age_requirement": "Above legal age of majority in country of residence",
+        "minimum_age": null,
+        "maximum_age": null,
+        "geographic_eligibility": "All countries/territories",
+        "geographic_excluded_source": "standard",
+        "geographic_excluded_countries": [
+          "Brazil",
+          "Crimea",
+          "Cuba",
+          "Iran",
+          "North Korea",
+          "Quebec",
+          "Russia"
+        ],
+        "geographic_included_countries": [],
+        "allowed_occupation": "All occupations",
+        "allowed_student_type": null,
+        "team_required": false,
+        "team_requirement": null,
+        "minimum_team_size": null,
+        "maximum_team_size": null,
+        "company_requirement": "Companies excluded from participation"
+      }
+    },
+    "fetched_at": "2026-10-27T19:12:32Z"
+  },
+  "criteria": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "criteria": [
+        {
+          "name": "Innovation/Idea",
+          "description": "How creative and novel is the concept and does the project differ from existing concepts?",
+          "position": 1
+        },
+        {
+          "name": "Potential Impact",
+          "description": "How useful or entertaining is it for streamers and their communities?",
+          "position": 2
+        },
+        {
+          "name": "Technological implementation",
+          "description": "How well is it built, and how well does it use Codex?",
+          "position": 3
+        },
+        {
+          "name": "Design",
+          "description": "Is it easy to use and fun to watch?",
+          "position": 4
+        }
+      ],
+      "count": 4,
+      "judging_scale": 5,
+      "tracks": []
+    },
+    "data_completeness": "complete",
+    "fetched_at": "2026-10-27T19:12:31Z"
+  },
+  "dates": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "time_zone": "Pacific Time (US & Canada)",
+      "dates": {
+        "submissions_start_at": "2026-10-23T17:00:00Z",
+        "submissions_end_at": "2026-11-02T22:00:00Z",
+        "judging_starts_at": "2026-11-03T17:00:00Z",
+        "judging_ends_at": "2026-11-07T01:00:00Z",
+        "public_voting_starts_at": null,
+        "public_voting_ends_at": null,
+        "winners_announced_at": "2026-11-15T17:00:00Z",
+        "published_at": "2026-10-23T16:29:59Z"
+      },
+      "current_phase": "submissions_open"
+    },
+    "data_completeness": "complete",
+    "fetched_at": "2026-10-27T19:12:32Z"
+  },
+  "prizes": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "prizes": [
+        {
+          "name": "1st Place",
+          "type": "cash",
+          "type_raw": "cash_other",
+          "amount": {
+            "value": 10000,
+            "currency": "$",
+            "display": "$10,000"
+          },
+          "winners": 1,
+          "position": 1,
+          "participation": false,
+          "description": "$10,000 USD and stage time at TwitchCon"
+        },
+        {
+          "name": "2nd Place",
+          "type": "cash",
+          "type_raw": "cash_other",
+          "amount": {
+            "value": 6000,
+            "currency": "$",
+            "display": "$6,000"
+          },
+          "winners": 1,
+          "position": 2,
+          "participation": false,
+          "description": "$6,000 USD and stage time at TwitchCon"
+        },
+        {
+          "name": "3rd Place",
+          "type": "cash",
+          "type_raw": "cash_other",
+          "amount": {
+            "value": 4000,
+            "currency": "$",
+            "display": "$4,000"
+          },
+          "winners": 1,
+          "position": 3,
+          "participation": false,
+          "description": "$4,000 USD and stage time at TwitchCon"
+        },
+        {
+          "name": "Runner Ups",
+          "type": "cash",
+          "type_raw": "cash_other",
+          "amount": {
+            "value": 2500,
+            "currency": "$",
+            "display": "$2,500"
+          },
+          "winners": 2,
+          "position": 4,
+          "participation": false,
+          "description": "$2,500 USD and stage time at TwitchCon"
+        }
+      ],
+      "total_value": {
+        "value": 25000,
+        "currency": "$",
+        "display": "$25,000"
+      }
+    },
+    "data_completeness": "complete",
+    "fetched_at": "2026-10-27T19:12:33Z"
+  },
+  "requirements": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "description_text": "What to build\nBuild for streamers and their community on Twitch with OpenAI Codex.\nNot sure where to start? No problem. Here are a few directions to explore:\n\nStreamer collaboration: help streamers talk, play or create together on stream\nAudience participation: let chat join in via a Twitch Plays game, live polls or even streamer distractions\nContent enhancements: build around what's being streamed, like a dice roller for tabletop streams, a live sports overlay or a tool for IRL and science streams\n\nThese are starting points, not templates. Judges are looking for original ideas, so don’t just rebuild the examples above. Go big, or build something small and scrappy over a weekend. It all counts as long as it ​​connects to Twitch (e.g. Twitch API, EventSub, chat, Extensions, overlays) and was built with OpenAI Codex.\n \n\nWhat to submit\n\nProvide a URL to your code repository for judging and testing on GitHub, GitLab or Bitbucket.\n\nIt must contain all source code, assets, and instructions needed for the project to run.\nThe repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.\n\n\nA demo video. Include a video (max 3 minutes) that shows your project working on Twitch and how you used Codex. Videos must be uploaded to YouTube and made publicly visible.\nA project description. Include a text description that explains the project's features and functionality and how you used Codex.\nCodex Session ID. Provide the Codex session ID for the thread where you built most of your project (type /status in Codex to see it). If you used multiple threads, include the one where most of the build happened.",
+      "deliverables": {
+        "submission_object": "submission",
+        "video_required": true,
+        "website_required": false,
+        "zip_file_required": false
+      },
+      "fields": [
+        {
+          "id": 29286,
+          "label": "Submitter Type",
+          "type": "dropdown",
+          "type_raw": "SubmissionFieldAdvancedDropdown",
+          "required": true,
+          "description": "",
+          "position": 0,
+          "options": [
+            "Individual",
+            "Team of Individuals"
+          ],
+          "multiple": false
+        },
+        {
+          "id": 29287,
+          "label": "Submitter Country of Residence",
+          "type": "dropdown",
+          "type_raw": "SubmissionFieldCountryDropdown",
+          "required": true,
+          "description": "",
+          "position": 1,
+          "options": "[omitted lengthy country dropdown]",
+          "multiple": true
+        },
+        {
+          "id": 29288,
+          "label": "Provide a URL to your code repository on GitHub, GitLab or Bitbucket.",
+          "type": "text",
+          "type_raw": "SubmissionFieldUrl",
+          "required": true,
+          "description": "If your repository is private, it must be on GitHub or GitLab. Share it with testing@devpost.com so the judges can open it.",
+          "position": 2
+        },
+        {
+          "id": 29289,
+          "label": "Provide the Codex session ID for the thread where you built most of your project.",
+          "type": "text",
+          "type_raw": "SubmissionFieldText",
+          "required": true,
+          "description": "Type /status in that Codex thread to see your session ID. If you used multiple threads, include the one where most of the build happened.",
+          "position": 3
+        },
+        {
+          "id": 29290,
+          "label": "Explain how your project meets the main technology requirement.",
+          "type": "textarea",
+          "type_raw": "SubmissionFieldTextArea",
+          "required": true,
+          "description": "Explain how you used Codex to build your project and how your project connects to Twitch. Name each product you used and what it does in your project.",
+          "position": 4
+        },
+        {
+          "id": 29291,
+          "label": "Explain how streamers and their community on Twitch use your project.",
+          "type": "textarea",
+          "type_raw": "SubmissionFieldTextArea",
+          "required": true,
+          "description": "",
+          "position": 5
+        },
+        {
+          "id": 29292,
+          "label": "How much did this hackathon help you develop new skills or knowledge?",
+          "type": "dropdown",
+          "type_raw": "SubmissionFieldAdvancedDropdown",
+          "required": true,
+          "description": "",
+          "position": 6,
+          "options": [
+            "Not at all",
+            "A little",
+            "Somewhat",
+            "A lot",
+            "Significantly"
+          ],
+          "multiple": false
+        },
+        {
+          "id": 29293,
+          "label": "How likely are you to use OpenAI Codex again, at work or in your personal projects?",
+          "type": "dropdown",
+          "type_raw": "SubmissionFieldAdvancedDropdown",
+          "required": true,
+          "description": "",
+          "position": 7,
+          "options": [
+            "Very unlikely",
+            "Unlikely",
+            "Not sure",
+            "Likely",
+            "Very likely"
+          ],
+          "multiple": false
+        },
+        {
+          "id": 29294,
+          "label": "Age of majority",
+          "type": "checkbox",
+          "type_raw": "SubmissionFieldCheckBox",
+          "required": true,
+          "description": "I, and, if applicable, all of my teammates, are at at least 18 or the age of majority where I reside, whichever is older.",
+          "position": 8
+        },
+        {
+          "id": 29295,
+          "label": "Eligible jurisdiction",
+          "type": "checkbox",
+          "type_raw": "SubmissionFieldCheckBox",
+          "required": true,
+          "description": "I, and, if applicable, all of my teammates, are from an eligible jurisdiction to compete.",
+          "position": 9
+        },
+        {
+          "id": 29296,
+          "label": "Not employee of the sponsors",
+          "type": "checkbox",
+          "type_raw": "SubmissionFieldCheckBox",
+          "required": true,
+          "description": "I, and, if applicable, all of my teammates, are not employees, representatives nor agents of the Promotion Entities of this hackathon.",
+          "position": 10
+        }
+      ]
+    },
+    "fetched_at": "2026-10-27T19:12:31Z"
+  },
+  "announcements": {
+    "hackathon": {
+      "id": 31742,
+      "slug": "twitchcon-codex",
+      "title": "Codex x TwitchCon Hackathon"
+    },
+    "data": {
+      "announcements": [
+        {
+          "id": 47297,
+          "title": "Start building with Twitch: a quick guide to the developer tools",
+          "body_text": "New to building on Twitch? Get to know the developer tools before you lock in an idea. A short hands-on guide and the Twitch docs show you what's possible, so you can pick the tools that fit what you want to build.\nLearn the basics\n\nTry the Example Chatbot guide. It's a quick, hands-on way to get a chatbot running in minutes. Ask OpenAI Codex to walk through it with you and explain each step.\nBrowse the Twitch developer docs to see what else you can work with.\nSee what others have built in the Showcase.\n\nPick the tools that fit your idea\n\nChat &amp; Chatbots\nEventSub\nTwitch API\nExtensions\n\nYour project doesn't need to use all of these, or start from the guide. Judges score what you build for streamers and viewers. Start from the experience you want to create, then ask Codex to help you connect the right tools.\nKeep your Codex thread. You'll submit the Codex session ID for the thread where you built most of your project. Type /status in that thread to find it. Try to keep your main build in one thread. The free version of Codex has usage limits, so check where you stand as you build and save some headroom for fixes in the final days.\nStuck? Ask in the TwitchDev Discord. For technical questions, find the help channel that fits what you're building. For rules or other questions about the hackathon find the #codex-twitchcon-hackathon.\nSubmissions are due November 2, 2026 at 2:00 PM PT.\n\nStart your submission here.\nHappy Hacking!\nMichelle from Devpost",
+          "sent_at": "2026-10-26T20:01:42Z"
+        }
+      ]
+    },
+    "fetched_at": "2026-10-27T19:12:32Z"
+  }
+}

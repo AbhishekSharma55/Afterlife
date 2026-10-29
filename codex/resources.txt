@@ -1,0 +1,186 @@
+Twitch developer docs: https://dev.twitch.tv/docs/
+
+Topical docs
+Chat & Chatbots https://dev.twitch.tv/docs/chat/
+EventSub https://dev.twitch.tv/docs/eventsub/
+Twitch API https://dev.twitch.tv/docs/api/
+Extensions https://dev.twitch.tv/docs/extensions/
+Showcase for inspiration https://dev.twitch.tv/showcase/
+ 
+
+FAQs
+General and TwitchCon
+What is the Codex x TwitchCon Hackathon? An online hackathon where you use OpenAI Codex to build an interactive experience for streamers and their community on Twitch. Give chat a way to play along, help streamers create together, or add something new to the content they stream. The top 5 projects are showcased on the Codex Booth stage at TwitchCon San Diego on November 15, where winners are announced live.
+
+What should I build? Build for streamers and their community on Twitch with OpenAI Codex. A few directions to explore:
+
+Streamer collaboration: help streamers talk, play or create together on stream
+Audience participation: let chat join in with a Twitch Plays game, live polls or streamer distractions
+Content enhancements: build around what's being streamed, like a dice roller for tabletop streams, a live sports overlay or a tool for IRL and science streams
+These are starting points, not templates. Judges are looking for original ideas, so don’t just rebuild the examples above. Go big, or build something small and scrappy over a weekend. It all counts as long as it connects to Twitch and was built with Codex.
+
+Do I need to be a developer? No. Streamers and newer builders are welcome. Codex can help you set up the Twitch API, EventSub and chat. Your project still needs to run and work as shown in your video.
+
+What are the key dates?
+
+Milestone
+
+Date
+
+Submissions open
+
+October 23, 2026, 10:00 AM PT
+
+Submission deadline
+
+November 2, 2026, 2:00 PM PT
+
+Judging Period
+
+November 5, 2026 (9:00 AM PT) – November 15, 2026 (5:00 PM PT)
+
+Winners announced
+
+On or around November 15, 2026 at TwitchCon San Diego
+
+Do I have to attend TwitchCon to enter? No. The hackathon is fully online. Attending TwitchCon is not a requirement. The top 5 projects will be showcased on the Codex Booth stage at TwitchCon San Diego.
+
+Is there a cost to enter? No. From the Official Rules: "NO PURCHASE OR PAYMENT NECESSARY TO ENTER OR WIN."
+
+Eligibility
+Who can enter? The Hackathon IS open to:
+
+Individuals who are at least eighteen (18) years old or the age of majority where they reside as of the time of entry, whichever is older ("Eligible Individuals"); and
+Teams of Eligible Individuals ("Teams").
+I'm under 18. Can I enter? No. The Hackathon is open to "Individuals who are at least eighteen (18) years old or the age of majority where they reside as of the time of entry, whichever is older ("Eligible Individuals")." There is no waiver for participants under 18.
+
+Which countries are excluded? The Hackathon IS NOT open to: "Individuals who are residents of a country, state, province or territory where the laws of the United States or local law prohibits participating or receiving a prize in the Hackathon (including, but not limited to, Brazil, Quebec, Russia, Crimea, Cuba, Iran, and North Korea and any other country which is comprehensively sanctioned by the U.S. Treasury’s Office of Foreign Assets Control, and any applicable denied-party lists)"
+
+Is eligibility based on citizenship or where I live? Where you legally reside. The rules refer to "residents of a country, state, province or territory," not citizenship.
+
+Can my company, startup or student club enter? No. The Hackathon IS NOT open to: "Organizations, including corporations, not-for-profit corporations and other nonprofit organizations, limited liability companies, partnerships, and other legal entities". You can enter as an individual or as a team of eligible individuals.
+
+Can I join more than one team, or enter solo and on a team? Yes. "An Eligible Individual may join more than one Team and an Eligible Individual who is part of a Team may also enter the Hackathon on an individual basis."
+
+How do teams submit? One person, the team Representative, clicks Start Project on the hackathon page, then adds teammates in the Manage Team section of the project. Each teammate must accept the invite to appear on the submission. The Representative enters the submission for the whole team. From the Official Rules: "If a Team is entering the Hackathon, they must appoint and authorize one individual (the "Representative") to represent, act, and enter a Submission, on their behalf." Prizes are paid to the Representative, who splits them with the team.
+
+Is there a maximum team size? The Official Rules do not set a maximum team size. Every team member must be an Eligible Individual.
+
+I work at Twitch, Amazon, OpenAI or Devpost. Can I enter? No. The Hackathon IS NOT open to "Organizations involved with the design, production, paid promotion, execution, or distribution of the Hackathon, including the Sponsor, OpenAI and Administrator ("Promotion Entities")", "Employees, representatives and agents of such Promotion Entities, and all members of their immediate family or household", or "Any parent company, subsidiary, or other affiliate of any organization described above". See Section 3 of the Official Rules for the full list.
+
+Submission requirements
+What do I need to submit?
+
+Provide a URL to your code repository for judging and testing on GitHub, GitLab or Bitbucket. It must contain all source code, assets, and instructions needed for the project to run. The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com.
+Include a text description that explains the Project's features and functionality and how you used Codex.
+Provide the Codex session ID for the Codex thread where the Project was built.
+A demonstration video under three minutes that shows your project working on Twitch and how it was built with Codex.
+Does my project have to connect to Twitch? Yes. "The Project must be an interactive experience that connects to Twitch, for example through chat, a stream overlay, the Twitch API, EventSub or an Extension."
+
+Can I use a project I started before the hackathon? No. "Projects must be newly created during the Submission Period. Participants may use standard development tools, including frameworks, libraries, starter templates, and AI coding assistants. The work described and submitted must have been built during the Submission Period."
+
+Can I start from Twitch's Example Chatbot guide? Yes. Starter templates are allowed. Judges focus on what you built on top of it.
+
+Can my repo be private? Yes. "The repository may be public or private. If private, it must be on GitHub or GitLab and shared with testing@devpost.com."
+
+What are the video rules? The video portion of the Submission:
+
+should be less than three (3) minutes. Judges are not required to watch beyond three minutes
+should include footage that shows the Project functioning on Twitch
+Should include footage that shows how the project was built with Codex
+must be uploaded to and made publicly visible on YouTube and a link to the video must be provided on the submission form on the Hackathon Website; and
+must not include third party trademarks, or copyrighted music or other material unless the Entrant has permission to use such material.
+Can my YouTube video be unlisted? Yes, unlisted is fine. Private videos can't be viewed by judges. 
+
+Can I show other streamers, games or music in my video? Only with permission. The video must not include third party trademarks, or copyrighted music or other material unless the Entrant has permission to use such material.
+
+Can I submit more than one project? Yes. "An Entrant may submit more than one Submission, however, each Submission must be unique and substantially different from each of the Entrant's other Submissions, as determined by the Sponsor and Devpost in their sole discretion."
+
+Does my submission have to be in English? "All Submission materials must be in English or, if not in English, the Entrant must provide an English translation of the demonstration video, text description, and testing instructions as well as all other materials submitted."
+
+Do judges have to test my project? No. "Judges are not required to test the Project and may choose to judge based solely on the text description, images, and video provided in the Submission." Make your video count.
+
+Technical and Codex
+How do I get started with OpenAI Codex? Sign in to Codex and tell it what you're building. Codex can help you get set up with the Twitch API, EventSub and chat. 
+
+Do I need a paid Codex plan? No. Use the free version of Codex. Free usage has limits, so keep an eye on your usage as you build and leave some headroom for final fixes before the deadline.
+
+What's the fastest way to connect a project to Twitch? Start with Twitch's Example Chatbot guide. It gets a chatbot running in minutes, and you can build from there. Everything else you need is in the Twitch developer docs.
+
+Which Twitch docs are most useful?
+
+Chat & Chatbots: read and respond to chat
+EventSub: react to follows, subs, raids and other live events
+Twitch API: channel, stream and user data
+Showcase: see what other developers have built
+Should I build an Extension? You can, but please note that it can take 5–14 days for it to be reviewed and judges can't install an unreviewed Extension. Chat, overlays, the Twitch API and EventSub are faster paths.
+
+Where do I find my Codex session ID? Type /status in the Codex thread where you built most of your project. Paste that ID into the submission form.
+
+I used several Codex threads. Which session ID do I submit? The one for the thread where you built most of your project.
+
+Can I use other AI tools too? Yes. The rules allow "standard development tools, including frameworks, libraries, starter templates, and AI coding assistants." Your project must be built with Codex, and Codex use is part of the Technological Implementation criterion.
+
+How much can Codex build for me? As much as helps. The Submission must "be the original work of the Entrant" and be "the result of the Entrant's ideas and creativity." You direct the idea and the decisions. Be ready to explain how your project works.
+
+My project uses API keys. What do judges need? Never commit keys to your repo. Use environment variables and list them in your setup instructions. Your repo must contain "all source code, assets, and instructions needed for the project to run."
+
+Can I use third-party APIs, games or assets? Yes, if you're allowed to. "If a Project integrates any third-party SDK, APIs and/or data, Entrant must be authorized to use them in accordance with any terms and conditions or licensing requirements of the tool."
+
+Deadline, judging and prizes
+When exactly is the deadline? November 2, 2026, 2:00 PM Pacific Time. That's 5:00 PM ET, 10:00 PM in London and 9:00 PM UTC. Check the countdown on the hackathon page for your local time.
+
+I saved my project. Is it submitted? Not until you click Submit. A saved draft is not entered. To check, open the My projects tab on the hackathon page. Your project should show as Submitted before the deadline.
+
+Can I submit late? No. Submissions must be entered "during the Submission Period." Submit early and keep editing until the deadline.
+
+Can I edit my project after the deadline? No. "Once the Submission Period has ended, you may not make any changes or alterations to your Submission, but you may continue to update the Project in your Devpost portfolio." Don't change your repo, video or linked materials until winners are announced. To keep building, copy your repo and work in the copy.
+
+How is judging done? In two stages. Stage One checks "via pass/fail whether the ideas meet a baseline level of viability, in that the Project reasonably fits the theme and reasonably applies the required developer tools featured in the Hackathon." In Stage Two, judges score submissions on four equally weighted criteria, and the five highest scoring Submissions will become finalists.
+
+What are the judging criteria?
+
+Innovation/Idea: How creative and novel is the concept and does the project differ from existing concepts?
+Potential Impact: How useful or entertaining is it for streamers and their communities?
+Technological implementation: How well is it built, and how well does it use Codex?
+Design: Is it easy to use and fun to watch?
+Is AI used in judging? The rules say judging "may utilize expert panels, peer review, automated AI-driven analysis, or any combination thereof to ensure efficient, fair, and objective evaluation."
+
+What are the prizes? $25,000 USD in total.
+
+Prize
+
+Award
+
+1st Place
+
+$10,000 USD and stage time at TwitchCon
+
+2nd Place
+
+$6,000 USD and stage time at TwitchCon
+
+3rd Place
+
+$4,000 USD and stage time at TwitchCon
+
+Runner Ups (2)
+
+$2,500 USD each and stage time at TwitchCon
+
+When and how are prizes paid? After winners complete the required forms. "The deadline for returning the Required Forms to the Administrator is ten (10) business days after the Required Forms are sent." "Prizes will be delivered within 60 days of the Sponsor or Devpost's receipt of the completed Required Forms."
+
+Who pays taxes on prizes? "Winners (and in the case of a Team, all participating members) are responsible for reporting and paying all applicable taxes in their jurisdiction of residence." US residents may need a W-9; others may need a W-8BEN.
+
+Do I keep ownership of my project? Yes. "All Submissions remain the intellectual property of the individuals that developed them."
+
+Support
+Where do I ask technical questions? In the TwitchDev Discord. Ask in the help channel that fits what you're building, where the developer community answers.
+
+Will Twitch or OpenAI staff answer questions? The community answers most technical questions in the TwitchDev Discord. Staff aren't guaranteed to be online, and Devpost checks in regularly to route questions.
+
+How do I find teammates? Use the Participants tab on the hackathon page to find people looking for a team, or post in the #codex-twitchcon-hackathon channel in the TwitchDev Discord.
+
+Who do I contact about eligibility, submissions or prizes? If your question isn't answered in this FAQ post your question in the #codex-twitchcon-hackathon channel in the TwitchDev Discord. Responses might take a business day or two.
+
+https://twitchcon-codex.devpost.com/
