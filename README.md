@@ -11,7 +11,7 @@ AFTERLIFE is a persistent kingdom story for Twitch. Viewers join factions and vo
 | Role | Owner | Responsibilities |
 | --- | --- | --- |
 | Person A — frontend | Frontend teammate | World interface, creator console, map, voting display, recaps, OBS scene, visual QA, and demo presentation |
-| Person B — backend | Project owner working with Codex | Database, world engine, Twitch integration, persistent history, AI narration, offline updates, shared schemas, and deployment |
+| Person B — backend | Backend teammate | Database, world engine, Twitch integration, persistent history, AI narration, offline updates, shared schemas, and deployment |
 
 The approximate technical-responsibility split is 40% frontend/presentation and 60% backend/AI/integration.
 
