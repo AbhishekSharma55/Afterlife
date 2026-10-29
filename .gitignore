@@ -17,3 +17,7 @@ coverage/
 *.sqlite3
 *.sqlite3-*
 .DS_Store
+
+# Local usage credentials and autonomous-run state
+/check_usage.js
+/.afterlife/

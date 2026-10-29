@@ -8,7 +8,7 @@ Build a persistent kingdom story for one Twitch channel, where two factions reme
 
 Two people, each available for approximately 7–8 focused hours daily on Oct 30–Nov 2, is the scheduling assumption. Allocate about 26–28 planned hours per person plus 4 hours of contingency.
 
-Ownership is confirmed: **the frontend teammate takes Person A; takes Person B and the backend**. The approximate technical-responsibility split is 40% frontend/presentation and 60% backend/AI/integration. These percentages describe responsibility and complexity; the scheduled hours remain estimates.
+Ownership is confirmed: **the frontend teammate takes Person A; the backend teammate takes Person B**. The approximate technical-responsibility split is 40% frontend/presentation and 60% backend/AI/integration. These percentages describe responsibility and complexity; the scheduled hours remain estimates.
 
 The live Devpost deadline was checked on Oct 30 IST: **November 3, 2026, 03:30 IST**, equivalent to November 2, 22:00 UTC / 14:00 PST. Target a complete submission by **November 2, 15:00 IST**, with feature freeze on November 1 evening. [Official event](https://twitchcon-codex.devpost.com/)
 
