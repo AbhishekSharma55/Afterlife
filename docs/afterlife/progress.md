@@ -1,6 +1,6 @@
 **Backend checkpoint — 30 October 2026**
 
-Branch: `feat/backend-foundation`. User's two main-branch commits through `f44a021` are included. Frontend files have not been created or changed.
+Branch: `feat/backend-foundation`. PR: https://github.com/AbhishekSharma55/Afterlife/pull/1 (open; not merged). User's two main-branch commits through `f44a021` are included. Frontend files have not been created or changed.
 
 Implemented: npm/TypeScript workspace; deterministic world engine; memberships and votes; history and grievances; transactional idempotency; episodes; bounded resting ticks and catch-up; automatic deadlines; pause/resume; PostgreSQL repository; Fastify owner-authenticated routes and public snapshots/SSE; rehearsal isolation; Twitch OAuth/EventSub adapters and refresh timer; structured narrator and factual fallback; runtime wiring and CI.
 
