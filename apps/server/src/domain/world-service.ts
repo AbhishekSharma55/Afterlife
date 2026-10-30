@@ -7,6 +7,7 @@ import {
   type WorldRepository,
   type WorldSnapshot,
   type WorldEvent,
+  type ContributionCredit,
 } from "./types.js";
 export { DomainError } from "./types.js";
 const fail = (code: string, message: string, status = 409): never => {
@@ -81,6 +82,42 @@ export class WorldService {
     w.events.push(event);
     w.snapshot.revision++;
     return event;
+  }
+  private actionEligible(w: StoredWorld, action: string) {
+    const red = w.snapshot.factions.find((f) => f.id === "red")!;
+    const blue = w.snapshot.factions.find((f) => f.id === "blue")!;
+    switch (action) {
+      case "share_surplus":
+        return (
+          Math.abs(red.supplies - blue.supplies) >= 10 &&
+          Math.max(red.supplies, blue.supplies) >= 10 &&
+          Math.min(red.supplies, blue.supplies) <= 90
+        );
+      case "forage_forest":
+        return red.supplies < 100 || blue.supplies < 100;
+      case "honor_treaty":
+        return red.supplies >= 5 && blue.supplies <= 95;
+      case "break_treaty":
+        return blue.supplies >= 10 && red.supplies <= 90;
+      case "pay_reparations":
+        return (
+          Boolean(w.snapshot.relationship.grievance) &&
+          red.supplies >= 8 &&
+          blue.supplies <= 92
+        );
+      case "open_talks":
+        return (
+          Boolean(w.snapshot.relationship.grievance) &&
+          red.supplies >= 3 &&
+          blue.supplies <= 97
+        );
+      case "fortify_bridge":
+        return Boolean(w.snapshot.relationship.grievance) && red.supplies >= 5;
+      case "hold_position":
+        return true;
+      default:
+        return false;
+    }
   }
   private owner(w: StoredWorld, ownerId: string) {
     if (w.ownerId !== ownerId)
@@ -216,9 +253,13 @@ export class WorldService {
         source ? [source] : [],
         w.resting.since + w.resting.ticks * this.interval,
       );
-      if (!source)
+      if (!source) {
+        const before = w.snapshot.factions.map((f) => f.supplies);
         for (const f of w.snapshot.factions)
           f.supplies = bounded(f.supplies - 2);
+        if (w.snapshot.factions.some((f, i) => f.supplies !== before[i]))
+          w.lastResourceEventId = e.id;
+      }
       w.snapshot.recap.whileAway = e.summary;
       w.snapshot.recap.causeEventIds = [
         ...new Set([...w.snapshot.recap.causeEventIds, e.id]),
@@ -254,8 +295,18 @@ export class WorldService {
         number: (w.snapshot.episode?.number ?? 0) + 1,
         status: "active",
       };
+      delete w.snapshot.recap.generationStatus;
+      w.snapshot.recap.contributionCredits = [];
       if (deferred) {
+        deferred.choices = deferred.choices
+          .filter((c) => this.actionEligible(w, c.id))
+          .map((c, i) => ({ ...c, number: i + 1 }));
+        if (!deferred.choices.length)
+          deferred.choices = [
+            { id: "hold_position", number: 1, label: "Hold position" },
+          ];
         deferred.id = randomUUID();
+        delete deferred.leaderReactions;
         deferred.round = {
           ...deferred.round,
           id: randomUUID(),
@@ -297,6 +348,7 @@ export class WorldService {
       );
       w.snapshot.mode = "resting";
       w.resting = { id: randomUUID(), since: this.now(), ticks: 0 };
+      w.snapshot.recap.whileAway = "";
     });
   }
   async prepareScene(id: string, ownerId: string, requestId: string) {
@@ -305,42 +357,61 @@ export class WorldService {
         fail("EPISODE_REQUIRED", "Start an episode first.");
       if (w.snapshot.scene && w.snapshot.scene.round.status !== "resolved")
         fail("ROUND_PENDING", "Finish the current decision first.");
-      const retaliation = Boolean(w.snapshot.relationship.grievance);
-      const candidates = retaliation
-        ? [
-            ["pay_reparations", "Offer reparations"],
-            ["fortify_bridge", "Fortify the bridge"],
-            ["open_talks", "Open peace talks"],
-          ]
-        : [
-            ["honor_treaty", "Honor the treaty"],
-            ["break_treaty", "Break the treaty"],
-            ["hold_position", "Hold position"],
-          ];
       const red = w.snapshot.factions.find((f) => f.id === "red")!;
       const blue = w.snapshot.factions.find((f) => f.id === "blue")!;
-      const choices = candidates.filter(([action]) => {
-        if (action === "honor_treaty")
-          return red.supplies >= 5 && blue.supplies <= 95;
-        if (action === "break_treaty")
-          return blue.supplies >= 10 && red.supplies <= 90;
-        if (action === "pay_reparations")
-          return red.supplies >= 8 && blue.supplies <= 92;
-        if (action === "open_talks")
-          return red.supplies >= 3 && blue.supplies <= 97;
-        if (action === "fortify_bridge") return red.supplies >= 5;
-        return true;
-      });
+      const crisis = Math.min(red.supplies, blue.supplies) <= 20;
+      const retaliation = Boolean(w.snapshot.relationship.grievance);
+      const encounterId = crisis
+        ? "resource_crisis"
+        : retaliation
+          ? "retaliation"
+          : "treaty";
+      const candidates = crisis
+        ? [
+            ["share_surplus", "Share surplus supplies"],
+            ["forage_forest", "Forage in Whispering Wood"],
+            ["hold_position", "Hold position"],
+          ]
+        : retaliation
+          ? [
+              ["pay_reparations", "Offer reparations"],
+              ["fortify_bridge", "Fortify the bridge"],
+              ["open_talks", "Open peace talks"],
+            ]
+          : [
+              ["honor_treaty", "Honor the treaty"],
+              ["break_treaty", "Break the treaty"],
+              ["hold_position", "Hold position"],
+            ];
+      const choices = candidates.filter(([action]) =>
+        this.actionEligible(w, action),
+      );
       if (!choices.length) choices.push(["hold_position", "Hold position"]);
       w.snapshot.scene = {
         id: randomUUID(),
-        title: retaliation ? "Blue demands an answer" : "The Westbridge treaty",
-        narration: retaliation
-          ? "Blue returns to the bridge where the community broke its treaty."
-          : "Supplies are scarce. Will the community honor the treaty with Blue?",
-        causeEventIds: w.snapshot.relationship.causeEventId
-          ? [w.snapshot.relationship.causeEventId]
-          : [],
+        encounterId,
+        title: crisis
+          ? "The stores are running low"
+          : retaliation
+            ? "Blue demands an answer"
+            : "The Westbridge treaty",
+        narration: crisis
+          ? "Supplies are running low. Will the kingdoms share their stores, search the forest, or wait?"
+          : retaliation
+            ? "Blue returns to the bridge where the community broke its treaty."
+            : "A fragile treaty joins Red and Blue. Will the community honor it?",
+        causeEventIds: crisis
+          ? [
+              ...new Set(
+                [
+                  w.lastResourceEventId,
+                  w.snapshot.relationship.causeEventId,
+                ].filter((id): id is string => Boolean(id)),
+              ),
+            ]
+          : w.snapshot.relationship.causeEventId
+            ? [w.snapshot.relationship.causeEventId]
+            : [],
         choices: choices.map(([id, label], i) => ({
           id,
           number: i + 1,
@@ -491,6 +562,32 @@ export class WorldService {
           : "tied";
       const red = w.snapshot.factions.find((f) => f.id === "red")!;
       const blue = w.snapshot.factions.find((f) => f.id === "blue")!;
+      const beforeSupplies = [red.supplies, blue.supplies];
+      const knownActions = [
+        "break_treaty",
+        "honor_treaty",
+        "pay_reparations",
+        "open_talks",
+        "fortify_bridge",
+        "share_surplus",
+        "forage_forest",
+        "hold_position",
+      ];
+      if (
+        action &&
+        (!knownActions.includes(action) ||
+          !scene!.choices.some((c) => c.id === action))
+      )
+        fail(
+          "INVALID_ACTION",
+          "The selected action is not valid for this scene.",
+          422,
+        );
+      if (action && !this.actionEligible(w, action))
+        fail(
+          "ACTION_UNAVAILABLE",
+          "The selected action no longer satisfies its world preconditions.",
+        );
       const transfer = (amount: number) => {
         if (red.supplies < amount || blue.supplies + amount > 100)
           fail("INSUFFICIENT_SUPPLIES", "The transfer is no longer possible.");
@@ -499,7 +596,40 @@ export class WorldService {
       };
       const causes = scene!.causeEventIds;
       let summary = "The council holds its position.";
-      if (action === "break_treaty") {
+      if (action === "share_surplus") {
+        const donor = red.supplies > blue.supplies ? red : blue;
+        const receiver = donor === red ? blue : red;
+        if (
+          donor.supplies - receiver.supplies < 10 ||
+          donor.supplies < 10 ||
+          receiver.supplies > 90
+        )
+          fail(
+            "INSUFFICIENT_SUPPLIES",
+            "There is no eligible surplus to share.",
+          );
+        donor.supplies -= 10;
+        receiver.supplies += 10;
+        donor.morale = bounded(donor.morale - 2);
+        receiver.morale = bounded(receiver.morale + 5);
+        w.snapshot.relationship.trust = bounded(
+          w.snapshot.relationship.trust + 8,
+          -100,
+          100,
+        );
+        summary = `${donor.name} shares ten supplies with ${receiver.name}.`;
+      } else if (action === "forage_forest") {
+        if (red.supplies === 100 && blue.supplies === 100)
+          fail("RESOURCE_CAPACITY", "The kingdoms already have full stores.");
+        for (const faction of [red, blue]) {
+          faction.supplies = bounded(faction.supplies + 8);
+          faction.morale = bounded(faction.morale - 3);
+        }
+        w.snapshot.locations.find((l) => l.id === "forest")!.status =
+          "foraging";
+        summary =
+          "The kingdoms forage in Whispering Wood, replenishing supplies at a cost to morale.";
+      } else if (action === "break_treaty") {
         if (blue.supplies < 10 || red.supplies > 90)
           fail(
             "INSUFFICIENT_SUPPLIES",
@@ -557,6 +687,13 @@ export class WorldService {
         summary = "Red fortifies Westbridge while Blue remembers the betrayal.";
       }
       const e = this.record(w, "decision_resolved", summary, causes);
+      w.contributionHistory ??= {};
+      w.contributionHistory[e.id] = clone(w.votes[r!.id] ?? []);
+      if (
+        red.supplies !== beforeSupplies[0] ||
+        blue.supplies !== beforeSupplies[1]
+      )
+        w.lastResourceEventId = e.id;
       if (action === "break_treaty") {
         w.snapshot.relationship.grievance = "The Westbridge treaty was broken.";
         w.snapshot.relationship.causeEventId = e.id;
@@ -593,6 +730,7 @@ export class WorldService {
         );
         w.snapshot.mode = "resting";
         w.resting = { id: randomUUID(), since: now, ticks: 0 };
+        w.snapshot.recap.whileAway = "";
       }
       w.snapshot.revision++;
       return this.snapshot(w);
@@ -659,12 +797,18 @@ export class WorldService {
       sceneTitle?: string;
       choiceLabels?: { actionId: string; label: string }[];
       referencedEventIds?: string[];
+      leaderReactions?: { factionId: FactionId; text: string }[];
     },
     fallback = false,
   ) {
     const s = await this.repository.transact(id, (w) => {
       const scene = w.snapshot.scene;
-      if (!scene || scene.id !== sceneId || scene.round.status !== "prepared")
+      if (
+        !scene ||
+        scene.id !== sceneId ||
+        scene.round.status !== "prepared" ||
+        scene.leaderReactions !== undefined
+      )
         return this.snapshot(w);
       if (
         typeof result.narration !== "string" ||
@@ -690,6 +834,27 @@ export class WorldService {
           fail("INVALID_CHOICE", "Narration changed a canonical choice.", 422);
         choice!.label = label.label;
       }
+      if (result.leaderReactions) {
+        if (
+          result.leaderReactions.length > 2 ||
+          new Set(result.leaderReactions.map((r) => r.factionId)).size !==
+            result.leaderReactions.length ||
+          result.leaderReactions.some(
+            (r) =>
+              !["red", "blue"].includes(r.factionId) ||
+              typeof r.text !== "string" ||
+              !r.text.trim() ||
+              r.text.length > 300,
+          )
+        )
+          fail(
+            "INVALID_LEADER_REACTION",
+            "Leader reactions must reference known factions once each.",
+            422,
+          );
+        scene.leaderReactions = clone(result.leaderReactions);
+      }
+      scene.leaderReactions ??= [];
       scene.narration = result.narration;
       const title = result.sceneTitle ?? result.title;
       if (title) {
@@ -698,6 +863,157 @@ export class WorldService {
         scene.title = title;
       }
       w.snapshot.narratorStatus = fallback ? "fallback" : "idle";
+      w.snapshot.revision++;
+      return this.snapshot(w);
+    });
+    this.publish(s);
+    return s;
+  }
+  private recordedContributions(w: StoredWorld): ContributionCredit[] {
+    return w.events.flatMap((event) =>
+      (w.contributionHistory?.[event.id] ?? []).map((vote) => ({
+        displayName: vote.displayName,
+        factionId: vote.faction,
+        choiceId: vote.choiceId,
+        sourceEventId: event.id,
+        summary: `${vote.displayName} voted for ${vote.choiceId.replaceAll("_", " ")} in episode ${event.episodeNumber}. ${event.summary}`,
+      })),
+    );
+  }
+  async getNarratorMemory(id: string) {
+    const w = await this.repository.get(id);
+    if (!w) fail("WORLD_NOT_FOUND", "World not found.", 404);
+    const world = w!;
+    const number = world.snapshot.episode?.number ?? 0;
+    const previousEpisodeEvents = world.events
+      .filter((e) => e.episodeNumber === number - 1)
+      .slice(-20);
+    const previousEnd = world.events.findLast(
+      (e) =>
+        e.kind === "episode_ended" &&
+        e.episodeNumber !== null &&
+        e.episodeNumber < number,
+    );
+    const currentStart = world.events.findLast(
+      (e) => e.kind === "episode_started" && e.episodeNumber === number,
+    );
+    const offlineEvents = world.events.filter(
+      (e) =>
+        e.kind === "offline_development" &&
+        e.sequence > (previousEnd?.sequence ?? 0) &&
+        (!currentStart || e.sequence < currentStart.sequence),
+    );
+    const causeIds = new Set(
+      [
+        world.snapshot.relationship.causeEventId,
+        ...(world.snapshot.scene?.causeEventIds ?? []),
+      ].filter(Boolean),
+    );
+    const relevant = [
+      ...new Map(
+        [
+          ...world.events.slice(-5),
+          ...world.events.filter((e) => causeIds.has(e.id)),
+          ...previousEpisodeEvents,
+          ...offlineEvents,
+        ].map((e) => [e.id, e]),
+      ).values(),
+    ].sort((a, b) => a.sequence - b.sequence);
+    const contributions = this.recordedContributions(world)
+      .filter((c) => relevant.some((e) => e.id === c.sourceEventId))
+      .slice(-3);
+    return {
+      events: clone(relevant),
+      contributions,
+      previousEpisodeEvents: clone(previousEpisodeEvents),
+      offlineEvents: clone(offlineEvents),
+      episodeId: world.snapshot.episode?.id ?? null,
+      revision: world.snapshot.revision,
+      facts: this.snapshot(world),
+      fallbackPreviously:
+        previousEpisodeEvents.findLast((e) => e.kind === "decision_resolved")
+          ?.summary ??
+        world.events[0]?.summary ??
+        "",
+      fallbackWhileAway: offlineEvents.at(-1)?.summary ?? "",
+    };
+  }
+  async applyRecap(
+    id: string,
+    episodeId: string,
+    result: {
+      previously: string;
+      whileAway: string;
+      referencedEventIds: string[];
+      contributionCredits: ContributionCredit[];
+    },
+    fallback = false,
+  ) {
+    const s = await this.repository.transact(id, (w) => {
+      if (
+        w.snapshot.mode !== "active" ||
+        w.snapshot.episode?.id !== episodeId ||
+        w.snapshot.recap.generationStatus !== undefined
+      )
+        return this.snapshot(w);
+      if (
+        typeof result.previously !== "string" ||
+        typeof result.whileAway !== "string" ||
+        result.previously.length > 1200 ||
+        result.whileAway.length > 800
+      )
+        fail("INVALID_RECAP", "Recaps must be concise.", 422);
+      const refs = new Set(result.referencedEventIds);
+      if (
+        result.referencedEventIds.some(
+          (ref) => !w.events.some((e) => e.id === ref),
+        )
+      )
+        fail(
+          "INVALID_REFERENCE",
+          "Recap references an unknown historical event.",
+          422,
+        );
+      const canonical = this.recordedContributions(w);
+      if (
+        result.contributionCredits.length > 3 ||
+        result.contributionCredits.some(
+          (c) =>
+            !refs.has(c.sourceEventId) ||
+            !canonical.some(
+              (real) =>
+                real.displayName === c.displayName &&
+                real.factionId === c.factionId &&
+                real.choiceId === c.choiceId &&
+                real.sourceEventId === c.sourceEventId &&
+                real.summary === c.summary,
+            ),
+        )
+      )
+        fail(
+          "INVALID_CONTRIBUTION",
+          "Recap credits must match recorded votes.",
+          422,
+        );
+      const seen = new Set<string>();
+      const credits = result.contributionCredits.filter((c) => {
+        const key = JSON.stringify([
+          c.displayName,
+          c.factionId,
+          c.choiceId,
+          c.sourceEventId,
+        ]);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      w.snapshot.recap = {
+        previously: result.previously,
+        whileAway: result.whileAway,
+        causeEventIds: [...refs],
+        contributionCredits: clone(credits),
+        generationStatus: fallback ? "fallback" : "generated",
+      };
       w.snapshot.revision++;
       return this.snapshot(w);
     });

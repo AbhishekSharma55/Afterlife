@@ -4,7 +4,7 @@
 
 AFTERLIFE is a persistent kingdom story for Twitch. Viewers join factions and vote on decisions. The world records their choices, develops between episodes, and brings earlier alliances, betrayals, and unfinished conflicts into future streams.
 
-**Status:** backend foundation implemented on the backend feature branch; frontend implementation remains with the frontend teammate. Live-provider acceptance is pending.
+**Status:** persistent backend, rehearsal workflow, shared frontend schemas/fixtures, story continuity, and deployment packaging are implemented on the backend feature branch. Frontend implementation remains with the frontend teammate. Live-provider acceptance is deferred by request.
 
 **Team ownership**
 
@@ -43,3 +43,7 @@ See [backend progress and remaining work](docs/afterlife/progress.md) and [auton
 - `research/`: earlier competition research and a dated event-data snapshot. The Raid Parcel recommendation in this folder is historical; AFTERLIFE is the selected project.
 
 Official dates and requirements should be rechecked on the [hackathon website](https://twitchcon-codex.devpost.com/) before submission.
+
+Frontend consumers can import `worldSnapshotSchema` and public DTO types from `@afterlife/shared`. See [eight generated rehearsal snapshots](docs/afterlife/fixtures/README.md); run `npm run fixtures:check` to verify fixture consistency. Owner-only synthetic chat is available at `POST /api/worlds/:id/rehearsal/chat` only with explicit rehearsal enabled; the contract lists its payload.
+
+[Deployment guide](docs/afterlife/deployment.md) describes the backend-only container and persistent PostgreSQL setup.

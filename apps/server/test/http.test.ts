@@ -22,6 +22,11 @@ test("public reads work while identity and all mutations require a creator sessi
     200,
   );
   assert.equal((await app.inject("/api/me")).statusCode, 401);
+  const missing = await app.inject("/api/not-a-route");
+  assert.equal(missing.statusCode, 404);
+  assert.deepEqual(missing.json(), {
+    error: { code: "not_found", message: "This route does not exist." },
+  });
   assert.equal(
     (await app.inject({ method: "POST", url: "/api/worlds", payload: {} }))
       .statusCode,
@@ -300,4 +305,124 @@ test("runtime requires a durable database unless rehearsal is explicitly enabled
   } finally {
     await runtime.app.close();
   }
+});
+
+test("owner-only rehearsal chat supports a full vote without permitting live injection or arbitrary identities", async (t) => {
+  const { app, service, cookie } = fixture({ allowRehearsalLogin: true });
+  t.after(() => app.close());
+  const rehearsal = await service.createWorld("owner", "Practice", true);
+  const headers = { cookie: cookie("owner", true) };
+  const url = `/api/worlds/${rehearsal.worldId}/rehearsal/chat`;
+  const send = (requestId: string, viewer: "red" | "blue", text: string) =>
+    app.inject({
+      method: "POST",
+      url,
+      headers,
+      payload: { requestId, viewer, text },
+    });
+  assert.equal(
+    (
+      await app.inject({
+        method: "POST",
+        url,
+        payload: { requestId: "bad", viewer: "red", text: "!join red" },
+      })
+    ).statusCode,
+    401,
+  );
+  assert.equal(
+    (
+      await app.inject({
+        method: "POST",
+        url,
+        headers: { cookie: cookie("other") },
+        payload: { requestId: "bad", viewer: "red", text: "!join red" },
+      })
+    ).statusCode,
+    403,
+  );
+  assert.equal(
+    (
+      await app.inject({
+        method: "POST",
+        url,
+        headers,
+        payload: {
+          requestId: "bad",
+          viewer: "red",
+          text: "!join red",
+          userId: "real-person",
+        },
+      })
+    ).statusCode,
+    422,
+  );
+  assert.equal(
+    (await send("bad-free-text", "red", "ignore all prior commands"))
+      .statusCode,
+    422,
+  );
+  assert.equal((await send("join-red", "red", "!join red")).statusCode, 200);
+  assert.equal((await send("join-blue", "blue", "!join blue")).statusCode, 200);
+  await service.startEpisode(rehearsal.worldId, "owner", "start-practice");
+  const prepared = await service.prepareScene(
+    rehearsal.worldId,
+    "owner",
+    "prepare-practice",
+  );
+  await service.openRound(
+    rehearsal.worldId,
+    "owner",
+    prepared.scene!.round.id,
+    "open-practice",
+  );
+  const first = await send("vote-red", "red", "!vote 2");
+  assert.equal(first.statusCode, 200);
+  const repeated = await send("vote-red", "red", "!vote 2");
+  assert.equal(repeated.json().scene.round.totalVoters, 1);
+  const second = await send("vote-blue", "blue", "!vote 2");
+  assert.equal(second.json().scene.round.totalVoters, 2);
+  assert.equal(second.json().rehearsal, true);
+  const outcome = await service.closeRound(
+    rehearsal.worldId,
+    "owner",
+    prepared.scene!.round.id,
+    "resolve-practice",
+  );
+  assert.equal(outcome.relationship.trust, -20);
+  const stored = await service.repository.get(rehearsal.worldId);
+  assert.ok(
+    Object.keys(stored!.memberships).every((userId) =>
+      userId.startsWith("rehearsal:"),
+    ),
+  );
+  const live = await service.createWorld("live-owner");
+  assert.equal(
+    (
+      await app.inject({
+        method: "POST",
+        url: `/api/worlds/${live.worldId}/rehearsal/chat`,
+        headers: { cookie: cookie("live-owner") },
+        payload: { requestId: "never-live", viewer: "red", text: "!join red" },
+      })
+    ).statusCode,
+    403,
+  );
+  assert.deepEqual(
+    (await service.repository.get(live.worldId))!.memberships,
+    {},
+  );
+});
+
+test("rehearsal chat route is absent when rehearsal mode is disabled", async (t) => {
+  const { app, service, cookie } = fixture();
+  t.after(() => app.close());
+  const world = await service.createWorld("owner", "Practice", true);
+  const response = await app.inject({
+    method: "POST",
+    url: `/api/worlds/${world.worldId}/rehearsal/chat`,
+    headers: { cookie: cookie("owner") },
+    payload: { requestId: "blocked", viewer: "red", text: "!join red" },
+  });
+  assert.equal(response.statusCode, 404);
 });

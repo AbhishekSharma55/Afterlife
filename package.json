@@ -3,14 +3,19 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "apps/server"
+    "apps/server",
+    "packages/shared"
   ],
   "scripts": {
     "dev": "node --env-file-if-exists=.env --import tsx --watch apps/server/src/server.ts",
     "start": "node --env-file-if-exists=.env apps/server/dist/server.js",
-    "build": "npm run build --workspace @afterlife/server",
-    "test": "npm run test --workspace @afterlife/server",
-    "typecheck": "npm run typecheck --workspace @afterlife/server"
+    "build": "npm run build:shared && npm run build --workspace @afterlife/server",
+    "test": "npm run build:shared && npm run test --workspace @afterlife/shared && npm run test --workspace @afterlife/server",
+    "typecheck": "npm run build:shared && npm run typecheck --workspace @afterlife/server",
+    "build:shared": "npm run build --workspace @afterlife/shared",
+    "predev": "npm run build:shared",
+    "fixtures": "npm run build:shared && tsx scripts/generate-fixtures.ts",
+    "fixtures:check": "npm run build:shared && tsx scripts/generate-fixtures.ts --check"
   },
   "engines": {
     "node": ">=24"

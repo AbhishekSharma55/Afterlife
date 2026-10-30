@@ -1,8 +1,8 @@
-**AFTERLIFE — frontend/backend integration contract, draft v1**
+**AFTERLIFE — frontend/backend integration contract, v1**
 
-Prepared on 30 October 2026 to let two people build in parallel. This is a proposed interface to agree during Phase 0, not an implemented API. **Person A is the frontend teammate. Person B is the project owner working with Codex on the backend.** Person B owns server behavior and shared schemas; Person A owns fixture-driven UI and reports needed changes before altering the interface.
+Updated on 30 October 2026 to let two people build in parallel. The backend API and shared schemas are implemented; the frontend routes below remain the frontend teammate's implementation work. Live provider validation remains a separate acceptance check. **Person A is the frontend teammate. Person B is the project owner working with Codex on the backend.** Person B owns server behavior and shared schemas; Person A owns fixture-driven UI and reports needed changes before altering the interface.
 
-Read with [project-plan.md](project-plan.md). Freeze the first usable payload shape before substantial UI work.
+Read with [project-plan.md](project-plan.md). Public runtime schemas and TypeScript types are exported by `@afterlife/shared`; contract version `1.0.0`. Coordinate changes to these schemas before changing either side of the interface.
 
 **Repository boundaries**
 
@@ -17,17 +17,17 @@ The server owns all canonical world state and all vote resolution. The UI displa
 
 **Routes and surfaces**
 
-| Surface | Purpose |
-| --- | --- |
-| `/studio/:worldId` | Authenticated creator controls and connection/setup status |
-| `/world/:worldId` | Read-only spectator page with current scene and event chronicle |
+| Surface             | Purpose                                                                  |
+| ------------------- | ------------------------------------------------------------------------ |
+| `/studio/:worldId`  | Authenticated creator controls and connection/setup status               |
+| `/world/:worldId`   | Read-only spectator page with current scene and event chronicle          |
 | `/overlay/:worldId` | Read-only OBS layout with concise scene text, choices, and world changes |
 
 Public payloads contain game state, counts, and intentionally displayed credits. They exclude tokens, raw chat, credentials, and private creator controls. A public URL never authorizes mutations. World IDs and round IDs are opaque strings.
 
 **Snapshot example**
 
-The example below represents an open episode-two decision after a persisted betrayal. Names, limits, and initial stats are proposed fixture values. The final runtime schema should use explicit enums and required fields; nullable values are stated deliberately.
+The example below represents an open episode-two decision after a persisted betrayal. Names, limits, and initial stats are proposed fixture values. The shared runtime schema uses explicit enums and required fields; nullable values are stated deliberately.
 
 ```json
 {
@@ -100,6 +100,7 @@ The example below represents an open episode-two decision after a persisted betr
 ```
 
 Rules:
+
 - `revision` increases whenever the published view changes. Ignore older snapshots and reload the latest state after reconnecting.
 - `mode` is `ready | active | resting`. This game lifecycle is distinct from Twitch broadcast presence.
 - `episode` and `scene` can be null for a fresh world.
@@ -111,33 +112,68 @@ Rules:
 - All times use UTC ISO 8601. Use the server deadline for vote eligibility.
 - A compact event list is included in the snapshot; the history endpoint provides older events.
 
-Person A builds six fixtures from this schema: fresh, voting, resolved betrayal, resting, returning, and disconnected. Fixtures are rehearsal inputs and do not masquerade as real Twitch activity.
+Eight generated fixtures are available in [fixtures/](fixtures/README.md): fresh, prepared, voting, disconnected, resolved betrayal, resting, while away, and returning. They are produced through the real domain service using a fixed clock and normalized opaque IDs. All are explicitly marked `rehearsal: true`; they are sample data for frontend development and do not represent real Twitch activity. Run `npm run fixtures` to regenerate and `npm run fixtures:check` to detect drift.
+
+**Shared imports and optional metadata**
+
+```ts
+import {
+  SNAPSHOT_EVENT,
+  worldSnapshotSchema,
+  type WorldSnapshot,
+} from "@afterlife/shared";
+
+// Use the same parser for fetched JSON and world.snapshot event data.
+const snapshot: WorldSnapshot = worldSnapshotSchema.parse(receivedJson);
+```
+
+Run `npm install` at the repository root and build `@afterlife/shared` before starting a frontend development server. Root build/typecheck/test commands build the shared workspace first. The package exports browser-compatible ESM and declaration files; it contains no server code or credentials.
+
+`Scene` may include `encounterId` (`treaty`, `resource_crisis`, or `retaliation`) and `leaderReactions: [{ factionId, text }]`. `recap` may include `generationStatus` (`generated` or `fallback`) and up to three `contributionCredits: [{ displayName, factionId, choiceId, sourceEventId, summary }]`. These fields are optional for compatibility with already stored worlds. Display accurate credits when provided; do not infer a viewer's previous vote from their current faction.
+
+The exported request schemas are `createWorldCommandSchema`, `creatorCommandSchema`, and `openRoundCommandSchema`, plus `rehearsalChatCommandSchema` for the opt-in practice route. `historyPageSchema` validates paginated history; `apiErrorSchema` validates errors. Opaque IDs need not be UUIDs. Import types rather than duplicating interfaces in the frontend.
 
 **HTTP interface**
 
 All state-changing creator requests require an authenticated session tied to the world's broadcaster. Use a request ID for idempotent retries. Check world, episode, and round ownership/state on the server.
 
-| Method and path | Contract |
-| --- | --- |
-| `GET /auth/twitch` | Start broadcaster authorization |
-| `GET /auth/twitch/callback` | Validate OAuth state, establish session, return to studio |
-| `POST /auth/logout` | End creator session |
-| `GET /api/me` | Current creator identity and owned world IDs; no provider tokens |
-| `POST /api/worlds` | Create or return the creator's channel world |
-| `GET /api/worlds/:id` | Current public snapshot |
-| `GET /api/worlds/:id/history?before=<sequence>` | Ordered events and next cursor |
-| `GET /api/worlds/:id/stream` | Server-sent snapshot events |
-| `POST /api/worlds/:id/episodes/start` | Catch up due resting ticks, start the next episode, prepare recap |
-| `POST /api/worlds/:id/episodes/:episodeId/end` | Persist episode closure and enter resting mode |
-| `POST /api/worlds/:id/scenes/prepare` | Prepare one eligible dilemma; may return 202 while narration completes |
-| `POST /api/worlds/:id/rounds/:roundId/open` | Open a prepared round and establish its server deadline |
-| `POST /api/worlds/:id/rounds/:roundId/close` | Freeze votes and resolve once; a retry returns the same result |
+| Method and path                                 | Contract                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `GET /auth/twitch`                              | Start broadcaster authorization                                                 |
+| `GET /auth/twitch/callback`                     | Validate OAuth state, establish session, return to studio                       |
+| `POST /auth/logout`                             | End creator session                                                             |
+| `GET /api/me`                                   | Current creator identity and owned world IDs; no provider tokens                |
+| `POST /api/worlds`                              | Create or return the creator's channel world                                    |
+| `GET /api/worlds/:id`                           | Current public snapshot                                                         |
+| `GET /api/worlds/:id/history?before=<sequence>` | Ordered events and next cursor                                                  |
+| `GET /api/worlds/:id/stream`                    | Server-sent snapshot events                                                     |
+| `POST /api/worlds/:id/episodes/start`           | Catch up due resting ticks, start the next episode, prepare recap               |
+| `POST /api/worlds/:id/episodes/:episodeId/end`  | Persist episode closure and enter resting mode                                  |
+| `POST /api/worlds/:id/scenes/prepare`           | Prepare one eligible dilemma; may return 202 while narration completes          |
+| `POST /api/worlds/:id/rounds/:roundId/open`     | Open a prepared round and establish its server deadline                         |
+| `POST /api/worlds/:id/rounds/:roundId/close`    | Freeze votes and resolve once; a retry returns the same result                  |
+| `POST /api/worlds/:id/rounds/:roundId/resume`   | Explicitly resume a paused round after chat reconnects                          |
+| `POST /api/worlds/:id/rehearsal/chat`           | Opt-in, owner-authenticated synthetic join/vote input for rehearsal worlds only |
 
-Use small bodies such as `{ "requestId": "unique-action-id" }`; round opening may also specify an allowed duration. Return a snapshot on completed mutations, or `{ "status": "pending" }` when a prepared narrative is still being produced.
+Use small bodies such as `{ "requestId": "unique-action-id" }`; round opening may also specify `durationSeconds`, an integer from 10 to 300 (default 45). Return a snapshot on completed mutations, or `{ "status": "pending" }` when a prepared narrative is still being produced.
+
+Mutations use same-origin, HTTP-only session cookies. In frontend development, proxy `/api` and `/auth` to the backend and set `PUBLIC_ORIGIN` to the browser-facing frontend origin. Do not send owner IDs or provider tokens from the frontend.
 
 Return 401 for no creator session, 403 for the wrong world owner, 409 for incompatible current state, and 422 for invalid input. Error shape: `{ "error": { "code": "...", "message": "..." } }`.
 
 There is no public HTTP vote endpoint in live mode. Live votes enter through authenticated Twitch event data. A development adapter can supply rehearsal input only to clearly separated rehearsal worlds.
+
+**Practice participation without provider credentials**
+
+With `ALLOW_REHEARSAL=true`, a creator can send a bounded practice command to `POST /api/worlds/:id/rehearsal/chat`. It requires the normal creator session, checks ownership, and rejects every world with `rehearsal: false`. The route is absent when rehearsal is disabled. Local rehearsal sign-in remains available through `POST /auth/rehearsal` on localhost.
+
+```json
+{ "requestId": "practice-join-red-1", "viewer": "red", "text": "!join red" }
+```
+
+Use `viewer: "red"` or `"blue"` to select one of two fixed synthetic participants; display names are always `Rehearsal Red` and `Rehearsal Blue`. After joining and opening a round, send a fresh request ID with `text: "!vote 1"`, `"!vote 2"`, or `"!vote 3"`. A later valid vote from the same synthetic participant replaces its previous choice. Retries with the same request ID are deduplicated. The server supplies the timestamp, synthetic identity, and message ID. Arbitrary user IDs, display names, extra body fields, and free-form text are rejected.
+
+Validate this request with `rehearsalChatCommandSchema`. Every response remains marked `rehearsal: true`. Keep a visible rehearsal label; these inputs never constitute real Twitch participation evidence. Live worlds accept viewer commands only from Twitch.
 
 **Realtime**
 
@@ -149,7 +185,7 @@ A reconnect reloads `GET /api/worlds/:id` and resumes listening. Persisted serve
 
 - `!join red` and `!join blue` persist membership using Twitch user ID, with the latest display name stored for presentation.
 - Require membership before a counted vote. Membership switches apply between rounds; reject switches during an open round.
-- `!vote 1|2|3` maps to the pinned choice order of the current open round.
+- `!vote 1|2|3` maps to the pinned choice order of the current open round. A scene has one to three eligible choices, with consecutive positions starting at 1. Impossible resource actions are omitted before opening; commands for an absent position are ignored. Tally keys exactly match the available choice IDs.
 - One effective vote per Twitch account per round; a later valid vote replaces the earlier vote.
 - Deduplicate Twitch message IDs. Do not trust a username supplied through a browser request.
 - Count a vote only when it arrives before the server deadline and its Twitch timestamp falls within that round's open window. Old queued events cannot become votes for a later round.
@@ -163,14 +199,14 @@ A reconnect reloads `GET /api/worlds/:id` and resumes listening. Persisted serve
 
 Use a small action registry owned by the backend. Proposed demonstration seed: each faction starts with 50 supplies and 60 morale; trust starts at 40; Westbridge is open; a treaty exists in the initial world history.
 
-| Action | Canonical effect |
-| --- | --- |
-| Honor the treaty | Move 5 supplies from Red to Blue; trust +10 |
-| Break the treaty | Move 10 supplies from Blue to Red; trust -60; close Westbridge; create a Blue grievance caused by this event |
-| Hold position | Record the outcome without changing faction facts |
-| Resting development after betrayal | Once per eligible tick, advance the grievance's preparation stage and apply bounded morale changes |
-| Offer reparations | Transfer an allowed amount; improve trust; explicitly update grievance status according to the action definition |
-| Fortify / open talks | Apply bounded, predefined changes and retain or update the grievance as specified |
+| Action                             | Canonical effect                                                                                                 |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Honor the treaty                   | Move 5 supplies from Red to Blue; trust +10                                                                      |
+| Break the treaty                   | Move 10 supplies from Blue to Red; trust -60; close Westbridge; create a Blue grievance caused by this event     |
+| Hold position                      | Record the outcome without changing faction facts                                                                |
+| Resting development after betrayal | Once per eligible tick, advance the grievance's preparation stage and apply bounded morale changes               |
+| Offer reparations                  | Transfer an allowed amount; improve trust; explicitly update grievance status according to the action definition |
+| Fortify / open talks               | Apply bounded, predefined changes and retain or update the grievance as specified                                |
 
 For the sample snapshot, one betrayal yields Red 60 supplies, Blue 40, and trust -20; a recorded resting tick accounts for Blue's morale changing to 55.
 
@@ -193,7 +229,7 @@ eligibleEncounterId
 choiceLabels[{ actionId, label }]
 ```
 
-The AI may choose only an eligible encounter ID and label only the action IDs the engine supplied. Validate the schema, IDs, length, and references. Use a smaller recap schema containing `previously`, `whileAway`, and `referencedEventIds` for recap requests. Check the most important continuity claims against scenario expectations; schema adherence alone does not establish truthful history.
+The AI may choose only an eligible encounter ID and label only the one to three action IDs the engine supplied. Validate the schema, IDs, length, and references. Use a smaller recap schema containing `previously`, `whileAway`, and `referencedEventIds` for recap requests. Check the most important continuity claims against scenario expectations; schema adherence alone does not establish truthful history.
 
 Apply completed narration to the matching episode/scene and source event only. Late responses cannot rewrite a newer scene. Make bounded requests per scene/recap, keep output short, and use a configured model with verified Structured Outputs support. Keep model choice configurable; no specific account access or price is assumed.
 
@@ -210,4 +246,3 @@ Rehearsal can run the same operation with a controlled clock and visible rehears
 **First integration exercise**
 
 By the end of Oct 30, Person A's page should consume Person B's real persisted snapshot and show a development choice changing trust and the event chronicle. By Oct 31, repeat the change through genuine Twitch chat. By Nov 1 morning, repeat it across a backend restart and a new episode with a recorded resting-world consequence.
-

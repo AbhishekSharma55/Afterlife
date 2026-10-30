@@ -1,9 +1,15 @@
 import Fastify, { type FastifyRequest } from "fastify";
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { DomainError, type WorldSnapshot } from "../domain/types.js";
 import type { WorldService } from "../domain/world-service.js";
 import { SessionStore, type CreatorSession } from "./sessions.js";
+import { parseChatCommand } from "../integrations/twitch.js";
+import {
+  creatorCommandSchema as command,
+  openRoundCommandSchema as openCommand,
+  rehearsalChatCommandSchema,
+} from "@afterlife/shared";
 
 export interface OAuthProvider {
   authorizationUrl(state: string): string;
@@ -16,6 +22,8 @@ type ApiService = Pick<
   WorldService,
   | "createWorld"
   | "getWorld"
+  | "getOwnerId"
+  | "handleChat"
   | "history"
   | "listOwnedWorlds"
   | "startEpisode"
@@ -34,6 +42,7 @@ export interface AppOptions {
   secureCookies?: boolean;
   rehearsalOnly?: boolean;
   onScenePrepared?: (snapshot: WorldSnapshot) => Promise<WorldSnapshot>;
+  onEpisodeStarted?: (snapshot: WorldSnapshot) => Promise<WorldSnapshot>;
   oauth?: OAuthProvider;
   onAuthenticated?: (
     identity: { id: string; login?: string; displayName?: string },
@@ -41,10 +50,6 @@ export interface AppOptions {
   ) => Promise<void>;
 }
 const id = z.string().min(1).max(128);
-const command = z.object({ requestId: id }).strict();
-const openCommand = command.extend({
-  durationSeconds: z.number().int().min(10).max(300).optional(),
-});
 const cookieName = "afterlife_session";
 function cookies(request: FastifyRequest): Record<string, string> {
   const result: Record<string, string> = {};
@@ -142,36 +147,35 @@ export function createApp(options: AppOptions) {
   app.setErrorHandler(
     (error: Error & { statusCode?: number }, _request, reply) => {
       if (error instanceof z.ZodError)
-        return reply
-          .code(422)
-          .send({
-            error: {
-              code: "invalid_input",
-              message: "Request fields are invalid.",
-            },
-          });
+        return reply.code(422).send({
+          error: {
+            code: "invalid_input",
+            message: "Request fields are invalid.",
+          },
+        });
       if (error instanceof DomainError)
         return reply
           .code(error.status)
           .send({ error: { code: error.code, message: error.message } });
       if (error.statusCode && error.statusCode < 500)
-        return reply
-          .code(error.statusCode)
-          .send({
-            error: {
-              code: "invalid_request",
-              message: "The request could not be processed.",
-            },
-          });
-      return reply
-        .code(500)
-        .send({
+        return reply.code(error.statusCode).send({
           error: {
-            code: "internal_error",
-            message: "The request could not be completed.",
+            code: "invalid_request",
+            message: "The request could not be processed.",
           },
         });
+      return reply.code(500).send({
+        error: {
+          code: "internal_error",
+          message: "The request could not be completed.",
+        },
+      });
     },
+  );
+  app.setNotFoundHandler((_request, reply) =>
+    reply.code(404).send({
+      error: { code: "not_found", message: "This route does not exist." },
+    }),
   );
   app.get("/health", async () => ({ status: "ok" }));
   app.get("/api/me", async (request) => {
@@ -206,6 +210,44 @@ export function createApp(options: AppOptions) {
       );
       return { id: "rehearsal-owner", rehearsal: true };
     });
+  if (options.allowRehearsalLogin)
+    app.post<{ Params: { id: string } }>(
+      "/api/worlds/:id/rehearsal/chat",
+      async (request) => {
+        const creator = session(request);
+        const worldId = id.parse(request.params.id);
+        if ((await service.getOwnerId(worldId)) !== creator.ownerId)
+          throw new DomainError(
+            403,
+            "forbidden",
+            "Only the world owner can send rehearsal commands.",
+          );
+        const snapshot = await service.getWorld(worldId);
+        if (!snapshot.rehearsal)
+          throw new DomainError(
+            403,
+            "rehearsal_only",
+            "Synthetic commands are disabled for live worlds.",
+          );
+        const body = rehearsalChatCommandSchema.parse(request.body);
+        if (!parseChatCommand(body.text))
+          throw new DomainError(
+            422,
+            "invalid_command",
+            "Use a faction join or vote command.",
+          );
+        return publicSnapshot(
+          await service.handleChat(worldId, {
+            messageId: `rehearsal:${createHash("sha256").update(`${worldId}:${body.requestId}`).digest("hex")}`,
+            userId: `rehearsal:${worldId}:${body.viewer}`,
+            displayName:
+              body.viewer === "red" ? "Rehearsal Red" : "Rehearsal Blue",
+            text: body.text,
+            timestamp: new Date().toISOString(),
+          }),
+        );
+      },
+    );
   app.get("/auth/twitch", async (_request, reply) => {
     if (!options.oauth)
       throw new DomainError(
@@ -363,12 +405,15 @@ export function createApp(options: AppOptions) {
     async (request) => {
       const creator = await owner(request, request.params.id);
       const body = command.parse(request.body);
+      const snapshot = await service.startEpisode(
+        request.params.id,
+        creator.ownerId,
+        body.requestId,
+      );
       return publicSnapshot(
-        await service.startEpisode(
-          request.params.id,
-          creator.ownerId,
-          body.requestId,
-        ),
+        options.onEpisodeStarted
+          ? await options.onEpisodeStarted(snapshot)
+          : snapshot,
       );
     },
   );

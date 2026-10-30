@@ -1,60 +1,6 @@
-export type FactionId = "red" | "blue";
-export interface WorldEvent {
-  id: string;
-  sequence: number;
-  episodeNumber: number | null;
-  kind: string;
-  summary: string;
-  causeEventIds: string[];
-  effectiveAt: string;
-  processedAt: string;
-}
-export interface Round {
-  id: string;
-  status: "prepared" | "open" | "paused" | "resolved" | "deferred";
-  openedAt: string | null;
-  closesAt: string | null;
-  tally: Record<string, number>;
-  totalVoters: number;
-  winningChoiceId: string | null;
-  outcome: "choice_selected" | "tied" | "no_votes" | null;
-}
-export interface Scene {
-  id: string;
-  title: string;
-  narration: string;
-  causeEventIds: string[];
-  choices: { id: string; number: number; label: string }[];
-  round: Round;
-}
-export interface WorldSnapshot {
-  worldId: string;
-  revision: number;
-  name: string;
-  mode: "ready" | "active" | "resting";
-  episode: { id: string; number: number; status: "active" | "ended" } | null;
-  factions: { id: FactionId; name: string; supplies: number; morale: number }[];
-  relationship: {
-    trust: number;
-    grievance: string | null;
-    causeEventId: string | null;
-  };
-  locations: { id: string; name: string; status: string }[];
-  scene: Scene | null;
-  recap: { previously: string; whileAway: string; causeEventIds: string[] };
-  recentEvents: WorldEvent[];
-  narratorStatus: "idle" | "working" | "fallback";
-  twitch: {
-    connection:
-      | "disconnected"
-      | "connecting"
-      | "connected"
-      | "reconnecting"
-      | "unauthorized";
-    broadcast: "live" | "offline" | "unknown";
-  };
-  rehearsal: boolean;
-}
+import type { FactionId, WorldSnapshot, WorldEvent } from '@afterlife/shared';
+export type { FactionId, WorldEvent, Round, Scene, WorldSnapshot, EncounterId, ContributionCredit, Recap } from '@afterlife/shared';
+
 export interface ChatMessage {
   messageId: string;
   userId: string;
@@ -77,6 +23,8 @@ export interface StoredWorld {
   processedMessages: string[];
   requests: Record<string, { operation: string; snapshot: WorldSnapshot }>;
   resting: { id: string; since: number; ticks: number } | null;
+  contributionHistory?: Record<string, Vote[]>;
+  lastResourceEventId?: string;
   pausedRound?: { id: string; remainingMs: number };
 }
 export interface WorldRepository {

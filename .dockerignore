@@ -1,0 +1,23 @@
+# Build an explicit backend source context. Local credentials and scheduler logs
+# must never enter Docker's build context.
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!apps/
+!apps/server/
+!apps/server/package.json
+!apps/server/tsconfig.json
+!apps/server/src/
+!apps/server/src/**
+!packages/
+!packages/shared/
+!packages/shared/package.json
+!packages/shared/tsconfig.json
+!packages/shared/src/
+!packages/shared/src/**
+**/.env*
+**/node_modules
+**/*.pem
+**/*.key
+**/check_usage*

@@ -32,7 +32,11 @@ process.exit(u.allowed && Number.isFinite(u.usedPercent) && u.usedPercent < 85 &
   echo "$(date -Is) quota reserve reached; waiting" >> .afterlife/runner.log
   exit 0
 fi
-echo "$(date -Is) resuming backend session" >> .afterlife/runner.log
+echo "$(date -Is) starting checkpoint-based backend session" >> .afterlife/runner.log
 status=0
-timeout --signal=TERM --kill-after=60s 45m "$AFTERLIFE_CODEX" -a never -s danger-full-access exec --color never resume "$AFTERLIFE_THREAD" - < scripts/autonomous-prompt.md >> .afterlife/session.log 2>&1 || status=$?
+prompt=scripts/autonomous-prompt.md
+if [[ -f .afterlife/probe-only ]]; then
+  prompt=.afterlife/probe-prompt.md
+fi
+timeout --signal=TERM --kill-after=60s 45m "$AFTERLIFE_CODEX" -a never -s danger-full-access exec --color never - < "$prompt" >> .afterlife/session.log 2>&1 || status=$?
 echo "$(date -Is) session exited: $status" >> .afterlife/runner.log

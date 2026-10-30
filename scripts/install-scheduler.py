@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Install one quota-aware cron runner; preserve unrelated user jobs."""
-import os
 from pathlib import Path
 import shlex
 import shutil
@@ -10,10 +9,7 @@ import time
 root = Path(__file__).resolve().parent.parent
 state = root / '.afterlife'
 state.mkdir(exist_ok=True)
-thread = os.environ.get('CODEX_THREAD_ID')
-if not thread:
-    raise SystemExit('CODEX_THREAD_ID is required; no schedule installed.')
-values = {'AFTERLIFE_NODE': shutil.which('node'), 'AFTERLIFE_CODEX': shutil.which('codex'), 'AFTERLIFE_THREAD': thread}
+values = {'AFTERLIFE_NODE': shutil.which('node'), 'AFTERLIFE_CODEX': shutil.which('codex')}
 if not all(values.values()):
     raise SystemExit('Node and Codex must be installed.')
 config = state / 'runner.env'

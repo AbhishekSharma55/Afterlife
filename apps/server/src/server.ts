@@ -4,7 +4,11 @@ import { createApp } from "./http/app.js";
 import { WorldService } from "./domain/world-service.js";
 import { MemoryWorldRepository } from "./db/memory-repository.js";
 import { PgWorldRepository } from "./db/pg-repository.js";
-import { generateNarration } from "./integrations/narrator.js";
+import { generateNarration, generateRecap } from "./integrations/narrator.js";
+import {
+  RefreshingTwitchSession,
+  fetchBroadcastPresence,
+} from "./runtime/twitch-auth.js";
 import type { WorldSnapshot } from "./domain/types.js";
 import {
   TwitchEventSub,
@@ -36,6 +40,13 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
       "OFFLINE_INTERVAL_MS must be a positive integer; live worlds require at least 60000 ms.",
     );
   const service = new WorldService(repository, { offlineIntervalMs: interval });
+  // Provider sessions are memory-only. A restarted process must not advertise an old live connection.
+  for (const stored of await repository.list()) {
+    await service.setTwitchState(stored.snapshot.worldId, {
+      connection: "disconnected",
+      broadcast: "unknown",
+    });
+  }
   const publicOrigin =
     env.PUBLIC_ORIGIN ?? `http://127.0.0.1:${env.PORT ?? "4310"}`;
   const oauthConfigured = !!(
@@ -55,6 +66,7 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
     { client: TwitchEventSub; refreshTimer: ReturnType<typeof setInterval> }
   >();
   const narrations = new Map<string, Promise<WorldSnapshot>>();
+  const recaps = new Map<string, Promise<WorldSnapshot>>();
   const app = createApp({
     service,
     allowRehearsalLogin: allowRehearsal,
@@ -64,19 +76,34 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
     oauth,
     onScenePrepared: async (snapshot) => {
       const scene = snapshot.scene;
-      if (
-        !scene ||
-        scene.round.status !== "prepared" ||
-        !env.OPENAI_API_KEY ||
-        !env.OPENAI_MODEL
-      )
-        return snapshot;
+      if (!scene || scene.round.status !== "prepared") return snapshot;
       const existing = narrations.get(scene.id);
       if (existing) {
         await existing;
         return service.getWorld(snapshot.worldId);
       }
       const job = (async () => {
+        const memory = await service.getNarratorMemory(snapshot.worldId);
+        if (
+          memory.facts.mode !== "active" ||
+          memory.facts.scene?.id !== scene.id ||
+          memory.facts.scene.round.status !== "prepared" ||
+          memory.facts.scene.leaderReactions !== undefined
+        )
+          return memory.facts;
+        const relevantEvents = [
+          ...new Map(
+            [
+              ...snapshot.recentEvents.slice(-4),
+              ...memory.events.filter((event) =>
+                scene.causeEventIds.includes(event.id),
+              ),
+            ].map((event) => [
+              event.id,
+              { id: event.id, summary: event.summary },
+            ]),
+          ).values(),
+        ];
         const result = await generateNarration(
           {
             facts: {
@@ -84,11 +111,11 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
               relationship: snapshot.relationship,
               locations: snapshot.locations,
             },
-            events: snapshot.recentEvents
-              .slice(-5)
-              .map((event) => ({ id: event.id, summary: event.summary })),
+            events: relevantEvents,
+            contributions: memory.contributions,
             eligibleEncounterIds: [
-              snapshot.relationship.grievance ? "retaliation" : "treaty",
+              scene.encounterId ??
+                (snapshot.relationship.grievance ? "retaliation" : "treaty"),
             ],
             actions: scene.choices.map((choice) => ({
               id: choice.id,
@@ -111,6 +138,49 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
         narrations.delete(narrations.keys().next().value!);
       return job;
     },
+    onEpisodeStarted: async (snapshot) => {
+      const episode = snapshot.episode;
+      if (!episode || episode.status !== "active") return snapshot;
+      const existing = recaps.get(episode.id);
+      if (existing) {
+        await existing;
+        return service.getWorld(snapshot.worldId);
+      }
+      const job = (async () => {
+        const memory = await service.getNarratorMemory(snapshot.worldId);
+        if (
+          memory.episodeId !== episode.id ||
+          memory.facts.mode !== "active" ||
+          memory.facts.recap.generationStatus !== undefined
+        )
+          return memory.facts;
+        const result = await generateRecap(
+          {
+            facts: {
+              factions: snapshot.factions,
+              relationship: snapshot.relationship,
+              locations: snapshot.locations,
+            },
+            events: memory.events,
+            previousEvents: memory.previousEpisodeEvents,
+            offlineEvents: memory.offlineEvents,
+            contributions: memory.contributions,
+            fallbackPreviously: memory.fallbackPreviously,
+            fallbackWhileAway: memory.fallbackWhileAway,
+          },
+          { apiKey: env.OPENAI_API_KEY, model: env.OPENAI_MODEL },
+        );
+        return service.applyRecap(
+          snapshot.worldId,
+          episode.id,
+          result.recap,
+          result.status === "fallback",
+        );
+      })();
+      recaps.set(episode.id, job);
+      if (recaps.size > 1000) recaps.delete(recaps.keys().next().value!);
+      return job;
+    },
     onAuthenticated: async (identity, value) => {
       if (!oauth) return;
       const prior = connections.get(identity.id);
@@ -123,12 +193,17 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
         undefined,
         rehearsalOnly,
       );
-      let tokens = value as TwitchTokens;
-      let expiresAt = Date.now() + tokens.expiresIn * 1000;
+      const tokenSession = new RefreshingTwitchSession({
+        tokens: value as TwitchTokens,
+        refresh: (refreshToken) => oauth.refresh(refreshToken),
+      });
+      let presenceVersion = 0;
+      let connectionVersion = 0;
       const client = new TwitchEventSub({
         broadcasterId: identity.id,
         clientId: env.TWITCH_CLIENT_ID!,
-        accessToken: () => tokens.accessToken,
+        accessToken: tokenSession.accessToken,
+        request: tokenSession.request,
         onCommand: async (input) => {
           const text =
             input.command.type === "join"
@@ -143,27 +218,43 @@ export async function startServer(env: NodeJS.ProcessEnv = process.env) {
           });
         },
         onPresence: async (broadcast) => {
+          presenceVersion++;
           await service.setTwitchState(world.worldId, { broadcast });
         },
         onConnection: (connection) => {
-          void service
-            .setTwitchState(world.worldId, { connection })
-            .catch(() =>
-              app.log.warn("Could not persist Twitch connection state"),
+          const generation = ++connectionVersion;
+          const eventVersion = presenceVersion;
+          void (async () => {
+            await service.setTwitchState(world.worldId, {
+              connection,
+              ...(connection !== "connected"
+                ? { broadcast: "unknown" as const }
+                : {}),
+            });
+            if (connection !== "connected") return;
+            const broadcast = await fetchBroadcastPresence(
+              tokenSession,
+              identity.id,
+              env.TWITCH_CLIENT_ID!,
             );
+            if (
+              generation === connectionVersion &&
+              eventVersion === presenceVersion
+            ) {
+              await service.setTwitchState(world.worldId, { broadcast });
+            }
+          })().catch(() =>
+            app.log.warn("Could not reconcile Twitch connection state"),
+          );
         },
         onError: () => app.log.warn("Twitch connection needs attention"),
       });
       let refreshing = false;
       const refreshTimer = setInterval(() => {
-        if (refreshing || Date.now() < expiresAt - 120000) return;
+        if (refreshing) return;
         refreshing = true;
-        void oauth
-          .refresh(tokens.refreshToken)
-          .then((next) => {
-            tokens = next;
-            expiresAt = Date.now() + next.expiresIn * 1000;
-          })
+        void tokenSession
+          .refreshIfDue()
           .catch(async () => {
             client.stop();
             clearInterval(refreshTimer);

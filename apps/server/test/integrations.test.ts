@@ -361,3 +361,48 @@ test("narrator accepts fewer eligible choices but requires each supplied action 
   });
   assert.equal(missing.status, "fallback");
 });
+
+test('episode recaps source betrayal and offline developments and render canonical vote credits', async () => {
+  const { generateRecap } = await import('../src/integrations/narrator.js');
+  const recorded = { displayName: 'River', factionId: 'red' as const, choiceId: 'break_treaty', sourceEventId: 'betrayal', summary: 'River voted to break the treaty while aligned with Red.' };
+  const context = { facts: { trust: -20 }, previousEvents: [{ id: 'betrayal', summary: 'The community broke the treaty.' }], offlineEvents: [{ id: 'preparation', summary: 'Blue prepares retaliation.' }], contributions: [recorded], fallbackPreviously: 'The treaty was broken.', fallbackWhileAway: 'Blue prepares retaliation.' };
+  let payload: any;
+  const good = { previously: 'The council broke its promise.', whileAway: 'Blue prepared a response.', referencedEventIds: ['betrayal', 'preparation'], contributionRefs: [{ displayName: 'River', choiceId: 'break_treaty', sourceEventId: 'betrayal' }] };
+  const result = await generateRecap(context, { apiKey: 'key', model: 'model', request: fakeFetch(async (_url, init) => { payload = JSON.parse(String(init.body)); return Response.json(output(good)); }) });
+  assert.equal(result.status, 'generated');
+  assert.deepEqual(result.recap.contributionCredits, [recorded]);
+  assert.equal(payload.text.format.strict, true);
+  assert.deepEqual(JSON.parse(payload.input).facts, { trust: -20 });
+  for (const invalid of [
+    { ...good, referencedEventIds: ['betrayal', 'invented_war'] },
+    { ...good, referencedEventIds: ['betrayal'] },
+    { ...good, contributionRefs: [{ displayName: 'River', choiceId: 'honor_treaty', sourceEventId: 'betrayal' }] },
+    { ...good, contributionRefs: [{ displayName: 'Unknown viewer', choiceId: 'break_treaty', sourceEventId: 'betrayal' }] },
+    { ...good, contributionRefs: [...good.contributionRefs, ...good.contributionRefs] },
+  ]) {
+    const rejected = await generateRecap(context, { apiKey: 'key', model: 'model', request: fakeFetch(async () => Response.json(output(invalid))) });
+    assert.equal(rejected.status, 'fallback');
+    assert.equal(rejected.recap.previously, 'The treaty was broken.');
+    assert.deepEqual(rejected.recap.contributionCredits, [recorded]);
+  }
+});
+test('recap fallback preserves a historical vote after the viewer changes affiliation and does not invent offline action', async () => {
+  const { generateRecap } = await import('../src/integrations/narrator.js');
+  const recorded = { displayName: 'River', factionId: 'red' as const, choiceId: 'break_treaty', sourceEventId: 'betrayal', summary: 'River supported the treaty breach as a Red member.' };
+  const context = { facts: { currentMembership: 'blue' }, previousEvents: [{ id: 'betrayal', summary: 'Red breaks the treaty.' }], offlineEvents: [], contributions: [recorded], fallbackPreviously: 'The treaty was broken.', fallbackWhileAway: '' };
+  const fallback = await generateRecap(context);
+  assert.equal(fallback.recap.contributionCredits[0]!.factionId, 'red');
+  const generated = await generateRecap(context, { apiKey: 'key', model: 'model', request: fakeFetch(async () => Response.json(output({ previously: 'The community broke a treaty.', whileAway: 'An invented overnight battle took place.', referencedEventIds: ['betrayal'], contributionRefs: [] }))) });
+  assert.equal(generated.recap.whileAway, '');
+  const unavailable = await generateRecap(context, { apiKey: 'key', model: 'model', request: fakeFetch(async () => { throw new Error('offline'); }) });
+  assert.equal(unavailable.status, 'fallback');
+  assert.deepEqual(unavailable.recap.referencedEventIds, ['betrayal']);
+});
+
+test('fallback recap always includes the source of displayed individual credits in its bounded references', async () => {
+  const { factualRecap } = await import('../src/integrations/narrator.js');
+  const events = Array.from({ length: 20 }, (_, i) => ({ id: `event_${i}`, summary: `Recorded event ${i}` }));
+  const result = factualRecap({ facts: {}, previousEvents: events, offlineEvents: [], contributions: [{ displayName: 'River', factionId: 'red', choiceId: 'break_treaty', sourceEventId: 'event_19', summary: 'River voted to break the treaty.' }], fallbackPreviously: 'The treaty was broken.', fallbackWhileAway: '' });
+  assert.ok(result.recap.referencedEventIds.includes('event_19'));
+  assert.ok(result.recap.referencedEventIds.length <= 12);
+});

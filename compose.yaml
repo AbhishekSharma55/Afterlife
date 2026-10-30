@@ -1,0 +1,39 @@
+name: afterlife
+services:
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: afterlife
+      POSTGRES_DB: afterlife
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your untracked compose environment file}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 127.0.0.1:${POSTGRES_PORT:-5432}:5432
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U afterlife -d afterlife]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ${AFTERLIFE_ENV_FILE:-.env.compose.local}
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4310
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL using the postgres service hostname and matching password}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:4310}
+      ALLOW_REHEARSAL: "false"
+    ports:
+      - 127.0.0.1:${BACKEND_PORT:-4310}:4310
+    depends_on:
+      postgres:
+        condition: service_healthy
+    init: true
+    restart: unless-stopped
+volumes:
+  postgres_data:

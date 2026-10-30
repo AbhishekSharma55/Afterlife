@@ -245,3 +245,333 @@ test("narration rejects invented history and ignores responses after voting open
   });
   assert.deepEqual(await ctx.service.getWorld(id), resolved);
 });
+
+async function chooseAction(
+  ctx: ReturnType<typeof setup>,
+  id: string,
+  action: string,
+  tag: string,
+) {
+  const prepared = await ctx.service.prepareScene(
+    id,
+    "owner",
+    "prepare-" + tag,
+  );
+  const choice = prepared.scene!.choices.find((c) => c.id === action);
+  assert.ok(choice, `Expected eligible action ${action}`);
+  const round = prepared.scene!.round.id;
+  await ctx.service.openRound(id, "owner", round, "open-" + tag);
+  await chat(ctx, id, "player", "!join red");
+  await chat(ctx, id, "player", `!vote ${choice.number}`);
+  return ctx.service.closeRound(id, "owner", round, "close-" + tag);
+}
+
+test("shortage follows its exact resource event and foraging recovers supplies without erasing a betrayal", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  await ctx.repository.transact(id, (w) => {
+    w.snapshot.factions.find((f) => f.id === "blue")!.supplies = 30;
+  });
+  const betrayal = await chooseAction(ctx, id, "break_treaty", "betrayal");
+  const cause = betrayal.relationship.causeEventId!;
+  const crisis = await ctx.service.prepareScene(id, "owner", "crisis");
+  assert.equal(crisis.scene!.encounterId, "resource_crisis");
+  assert.ok(crisis.scene!.causeEventIds.includes(cause));
+  assert.equal(
+    crisis.relationship.grievance,
+    "The Westbridge treaty was broken.",
+  );
+  const forage = crisis.scene!.choices.find((c) => c.id === "forage_forest")!;
+  const round = crisis.scene!.round.id;
+  await ctx.service.openRound(id, "owner", round, "open-crisis");
+  await chat(ctx, id, "player", `!vote ${forage.number}`);
+  const recovered = await ctx.service.closeRound(id, "owner", round, "recover");
+  assert.deepEqual(
+    recovered.factions.map((f) => f.supplies),
+    [68, 28],
+  );
+  assert.deepEqual(
+    recovered.factions.map((f) => f.morale),
+    [57, 57],
+  );
+  assert.equal(recovered.relationship.causeEventId, cause);
+  const retaliation = await ctx.service.prepareScene(
+    id,
+    "owner",
+    "retaliation",
+  );
+  assert.equal(retaliation.scene!.encounterId, "retaliation");
+  assert.deepEqual(retaliation.scene!.causeEventIds, [cause]);
+});
+
+test("surplus is shared symmetrically with conserved supplies and bounded morale and trust", async () => {
+  for (const donor of ["red", "blue"]) {
+    const ctx = setup();
+    const w = await ctx.service.createWorld("owner");
+    const id = w.worldId;
+    await ctx.service.startEpisode(id, "owner", "start");
+    await ctx.repository.transact(id, (w) => {
+      for (const f of w.snapshot.factions) {
+        f.supplies = f.id === donor ? 90 : 5;
+        f.morale = f.id === donor ? 1 : 99;
+      }
+      w.snapshot.relationship.trust = 99;
+    });
+    const result = await chooseAction(ctx, id, "share_surplus", "share");
+    assert.equal(result.factions.find((f) => f.id === donor)!.supplies, 80);
+    assert.equal(result.factions.find((f) => f.id !== donor)!.supplies, 15);
+    assert.equal(
+      result.factions.reduce((sum, f) => sum + f.supplies, 0),
+      95,
+    );
+    assert.equal(result.factions.find((f) => f.id === donor)!.morale, 0);
+    assert.equal(result.factions.find((f) => f.id !== donor)!.morale, 100);
+    assert.equal(result.relationship.trust, 100);
+    assert.equal(result.relationship.grievance, null);
+  }
+});
+
+test("a depleted world remains playable; foraging obeys capacity and depleted morale bounds", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  await ctx.repository.transact(id, (w) => {
+    for (const f of w.snapshot.factions) {
+      f.supplies = 0;
+      f.morale = 1;
+    }
+  });
+  const scene = await ctx.service.prepareScene(id, "owner", "prepare");
+  assert.deepEqual(
+    scene.scene!.choices.map((c) => c.id),
+    ["forage_forest", "hold_position"],
+  );
+  assert.deepEqual(
+    scene.scene!.choices.map((c) => c.number),
+    [1, 2],
+  );
+  await ctx.service.openRound(id, "owner", scene.scene!.round.id, "open");
+  await chat(ctx, id, "player", "!join blue");
+  await chat(ctx, id, "player", "!vote 1");
+  const result = await ctx.service.closeRound(
+    id,
+    "owner",
+    scene.scene!.round.id,
+    "close",
+  );
+  assert.deepEqual(
+    result.factions.map((f) => f.supplies),
+    [8, 8],
+  );
+  assert.deepEqual(
+    result.factions.map((f) => f.morale),
+    [0, 0],
+  );
+  const next = await ctx.service.prepareScene(id, "owner", "prepare-next");
+  const source = (await ctx.service.history(id)).events.findLast(
+    (e) => e.kind === "decision_resolved",
+  )!;
+  assert.deepEqual(next.scene!.causeEventIds, [source.id]);
+});
+
+test("reparations settle a grievance explicitly while talks and fortification keep it unresolved", async () => {
+  for (const [action, redSupplies, blueSupplies, trust, cleared] of [
+    ["pay_reparations", 52, 48, 0, true],
+    ["open_talks", 57, 43, -10, false],
+    ["fortify_bridge", 55, 40, -25, false],
+  ] as const) {
+    const ctx = setup();
+    const w = await ctx.service.createWorld("owner");
+    const id = w.worldId;
+    await ctx.service.startEpisode(id, "owner", "start");
+    const betrayal = await chooseAction(ctx, id, "break_treaty", "betrayal");
+    const cause = betrayal.relationship.causeEventId;
+    const resolved = await chooseAction(ctx, id, action, action);
+    assert.deepEqual(
+      resolved.factions.map((f) => f.supplies),
+      [redSupplies, blueSupplies],
+    );
+    assert.equal(resolved.relationship.trust, trust);
+    assert.equal(resolved.relationship.causeEventId, cleared ? null : cause);
+    assert.equal(
+      resolved.locations.find((l) => l.id === "westbridge")!.status,
+      cleared ? "open" : "closed",
+    );
+    assert.ok(
+      (await ctx.service.history(id)).events
+        .findLast((e) => e.kind === "decision_resolved")!
+        .causeEventIds.includes(cause!),
+    );
+  }
+});
+
+test("deferred choices are revalidated after resting consumption changes eligibility", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  await ctx.repository.transact(id, (w) => {
+    w.snapshot.factions[0].supplies = 21;
+    w.snapshot.factions[1].supplies = 94;
+  });
+  const original = await ctx.service.prepareScene(id, "owner", "prepare");
+  assert.ok(original.scene!.choices.some((c) => c.id === "honor_treaty"));
+  await ctx.service.endEpisode(id, "owner", original.episode!.id, "end");
+  await ctx.repository.transact(id, (w) => {
+    w.snapshot.factions[0].supplies = 5;
+  });
+  ctx.advance(1000);
+  const next = await ctx.service.startEpisode(id, "owner", "next");
+  assert.equal(next.factions[0].supplies, 3);
+  assert.ok(!next.scene!.choices.some((c) => c.id === "honor_treaty"));
+  assert.deepEqual(
+    next.scene!.choices.map((c) => c.number),
+    next.scene!.choices.map((_, i) => i + 1),
+  );
+});
+
+test("returning memory credits exact recorded choices and original faction without exposing user IDs", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  const resolved = await chooseAction(ctx, id, "break_treaty", "betrayal");
+  const eventId = resolved.relationship.causeEventId!;
+  await chat(ctx, id, "player", "!join blue");
+  await ctx.service.endEpisode(id, "owner", resolved.episode!.id, "end");
+  ctx.advance(1000);
+  const next = await ctx.service.startEpisode(id, "owner", "start2");
+  const memory = await ctx.service.getNarratorMemory(id);
+  assert.equal(memory.contributions.length, 1);
+  const credit = memory.contributions[0];
+  assert.equal(credit.factionId, "red");
+  assert.equal(credit.choiceId, "break_treaty");
+  assert.equal(credit.sourceEventId, eventId);
+  assert.equal("userId" in credit, false);
+  assert.ok(memory.previousEpisodeEvents.some((e) => e.id === eventId));
+  assert.equal(memory.offlineEvents.length, 1);
+  const recap = {
+    previously: memory.fallbackPreviously,
+    whileAway: memory.fallbackWhileAway,
+    referencedEventIds: [eventId, ...memory.offlineEvents.map((e) => e.id)],
+    contributionCredits: [credit],
+  };
+  await assert.rejects(
+    ctx.service.applyRecap(id, next.episode!.id, {
+      ...recap,
+      contributionCredits: [{ ...credit, choiceId: "honor_treaty" }],
+    }),
+  );
+  await assert.rejects(
+    ctx.service.applyRecap(id, next.episode!.id, {
+      ...recap,
+      contributionCredits: [{ ...credit, summary: "player led the invasion" }],
+    }),
+  );
+  const accepted = await ctx.service.applyRecap(id, next.episode!.id, recap);
+  assert.equal(accepted.recap.generationStatus, "generated");
+  assert.deepEqual(accepted.recap.contributionCredits, [credit]);
+  const repeated = await ctx.service.applyRecap(id, next.episode!.id, {
+    ...recap,
+    previously: "A different interpretation",
+  });
+  assert.deepEqual(repeated, accepted);
+  const publicSnapshot = await ctx.service.getWorld(id);
+  assert.equal("contributionHistory" in publicSnapshot, false);
+});
+
+test("previous offline developments do not leak into a later absence with no elapsed ticks", async () => {
+  const ctx = setup();
+  const { id } = await opened(ctx);
+  const first = await ctx.service.getWorld(id);
+  await ctx.service.endEpisode(id, "owner", first.episode!.id, "end1");
+  ctx.advance(1000);
+  await ctx.service.startEpisode(id, "owner", "start2");
+  assert.ok((await ctx.service.getNarratorMemory(id)).offlineEvents.length);
+  const second = await ctx.service.getWorld(id);
+  await ctx.service.endEpisode(id, "owner", second.episode!.id, "end2");
+  const third = await ctx.service.startEpisode(id, "owner", "start3");
+  assert.equal(third.recap.whileAway, "");
+  const memory = await ctx.service.getNarratorMemory(id);
+  assert.deepEqual(memory.offlineEvents, []);
+  assert.equal(memory.fallbackWhileAway, "");
+  const before = await ctx.service.getWorld(id);
+  await ctx.service.applyRecap(id, second.episode!.id, {
+    previously: "stale",
+    whileAway: "stale",
+    referencedEventIds: [],
+    contributionCredits: [],
+  });
+  assert.deepEqual(await ctx.service.getWorld(id), before);
+});
+
+test("leader reactions are validated, persist once, and cannot change canonical world facts", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  const scene = await ctx.service.prepareScene(id, "owner", "prepare");
+  const sceneId = scene.scene!.id;
+  await assert.rejects(
+    ctx.service.applyNarration(id, sceneId, {
+      narration: "Peace is fragile.",
+      leaderReactions: [
+        { factionId: "red", text: "A" },
+        { factionId: "red", text: "B" },
+      ],
+    }),
+  );
+  const accepted = await ctx.service.applyNarration(id, sceneId, {
+    narration: "Peace is fragile.",
+    leaderReactions: [{ factionId: "blue", text: "Our treaty must stand." }],
+  });
+  assert.deepEqual(accepted.scene!.leaderReactions, [
+    { factionId: "blue", text: "Our treaty must stand." },
+  ]);
+  assert.equal(accepted.relationship.trust, 40);
+  const repeat = await ctx.service.applyNarration(id, sceneId, {
+    narration: "A replacement",
+  });
+  assert.deepEqual(repeat, accepted);
+});
+
+test("foraging caps a full neighbor while letting the depleted faction recover", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  const id = w.worldId;
+  await ctx.service.startEpisode(id, "owner", "start");
+  await ctx.repository.transact(id, (w) => {
+    w.snapshot.factions[0].supplies = 99;
+    w.snapshot.factions[1].supplies = 1;
+  });
+  const recovered = await chooseAction(ctx, id, "forage_forest", "recover");
+  assert.deepEqual(
+    recovered.factions.map((f) => f.supplies),
+    [100, 9],
+  );
+});
+
+test("a recovered decision cannot silently execute an action whose resources have become unavailable", async () => {
+  const ctx = setup();
+  const { id, round } = await opened(ctx);
+  await chat(ctx, id, "player", "!join red");
+  await chat(ctx, id, "player", "!vote 1");
+  await ctx.repository.transact(id, (w) => {
+    w.snapshot.factions[0].supplies = 0;
+  });
+  const before = await ctx.service.getWorld(id);
+  await assert.rejects(
+    ctx.service.closeRound(id, "owner", round, "close"),
+    (e: unknown) => e instanceof DomainError && e.code === "ACTION_UNAVAILABLE",
+  );
+  assert.deepEqual(await ctx.service.getWorld(id), before);
+  assert.equal(
+    (await ctx.service.history(id)).events.filter(
+      (e) => e.kind === "decision_resolved",
+    ).length,
+    0,
+  );
+});

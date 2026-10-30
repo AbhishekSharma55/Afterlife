@@ -1,7 +1,7 @@
 name: Backend checks
 on:
   pull_request:
-    paths: ['apps/server/**', 'package*.json', '.github/workflows/backend.yml']
+    paths: ['apps/server/**', 'packages/shared/**', 'docs/afterlife/fixtures/**', 'scripts/**', 'package*.json', '.github/workflows/backend.yml']
   push:
     branches: [main]
 jobs:
@@ -24,6 +24,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run build
+      - run: npm run fixtures -- --check
       - run: npm test
         env:
           TEST_DATABASE_URL: postgresql://postgres:afterlife-test@localhost:5432/postgres
