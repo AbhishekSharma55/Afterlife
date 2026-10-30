@@ -1,4 +1,4 @@
-**Backend checkpoint — 30 October 2026, 13:59 IST**
+**Backend checkpoint — 30 October 2026, 14:02 IST**
 
 Branch `feat/backend-foundation`, PR https://github.com/AbhishekSharma55/Afterlife/pull/1 remains open; do not merge. Fetched origin before editing and again before checkpointing; main through f44a021 is included, with no newer main changes. The initial working tree was clean. No frontend application changes.
 
@@ -22,6 +22,7 @@ This run fixed EventSub sockets stranded without a welcome, failed connection mi
 - `npm run typecheck`, Docker's workspace builds, and all eight deterministic fixture drift checks passed. `git diff --check` passed.
 - New `npm run smoke:rehearsal` builds and launches a real backend process against an empty disposable database. Two synthetic viewers joined and chose betrayal over HTTP; duplicate input did not add vote weight; the episode ended; an actual 60-second background tick prepared Blue's retaliation. SIGTERM stopped the backend; a new process loaded the same facts and history, rejected the old session, and preserved episode-two causal recall plus both recorded contribution credits. Repeated reads/commands added no duplicate tick or result.
 - The complete smoke passed once on host Node and again inside the rebuilt Node 24 production image as its unprivileged user. The default image command separately served `/health` with durable PostgreSQL and rehearsal disabled. The smoke also refused a populated world store without changing its records. CI now includes the real HTTP/restart rehearsal.
+- GitHub Actions passed on backend commit `fe5ff13`, including the full HTTP/restart smoke: [verified run](https://github.com/AbhishekSharma55/Afterlife/actions/runs/41026790789).
 - The earlier checkpoint validated Compose configuration. No public hosting or live-provider claim is made. Only this run's disposable containers, volumes, network and image tag were removed; unrelated Docker resources were preserved.
 
 The smoke uses `TEST_DATABASE_URL`, refuses a nonempty `afterlife_worlds` table, receives no Twitch/OpenAI credentials, and removes only its own rehearsal world. See [deployment.md](deployment.md) for reproducible commands and isolation requirements.
@@ -37,4 +38,4 @@ These are externally dependent acceptance steps, not unfinished independent back
 
 **Scheduler and quota**
 
-The existing cron runner launches independent checkpoint-based sessions and checks quota every ten minutes. Its launch/authentication probe was verified at 08:49 IST. This run inherited the cron parent's shared flock and refreshed the parent-active heartbeat. Latest allowance check: 13% current-window usage, 31% weekly. Controls and logs remain local/ignored; never print or commit `check_usage.js`, credentials, or runner config/logs. Stop initiating tasks at 85% window usage or 95% weekly usage; the submission deadline remains November 2 at 22:00 UTC (November 3 at 03:30 IST).
+The existing cron runner launches independent checkpoint-based sessions and checks quota every ten minutes. Its launch/authentication probe was verified at 08:49 IST. This run inherited the cron parent's shared flock and refreshed the parent-active heartbeat. Latest allowance check: 15% current-window usage, 31% weekly. Controls and logs remain local/ignored; never print or commit `check_usage.js`, credentials, or runner config/logs. Stop initiating tasks at 85% window usage or 95% weekly usage; the submission deadline remains November 2 at 22:00 UTC (November 3 at 03:30 IST).
