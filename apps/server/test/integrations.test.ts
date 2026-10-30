@@ -238,6 +238,122 @@ test("WebSocket migration preserves subscriptions and closes old socket only aft
   assert.equal(requests, 3);
   adapter.stop();
 });
+test("stopping during subscription prevents stale connected state and further subscriptions", async () => {
+  const socket = new FakeSocket();
+  const states: string[] = [];
+  let requests = 0;
+  let complete!: (response: Response) => void;
+  const adapter = new TwitchEventSub({
+    broadcasterId: "owner",
+    clientId: "client",
+    accessToken: () => "token",
+    onCommand: () => {},
+    onConnection: (state) => states.push(state),
+    socketFactory: () => socket,
+    request: fakeFetch(async () => {
+      requests++;
+      return new Promise<Response>((resolve) => {
+        complete = resolve;
+      });
+    }),
+  });
+  adapter.start();
+  socket.send({
+    metadata: { message_type: "session_welcome" },
+    payload: { session: { id: "first", keepalive_timeout_seconds: 60 } },
+  });
+  await flush();
+  assert.equal(requests, 1);
+  adapter.stop();
+  complete(Response.json({}, { status: 202 }));
+  await flush();
+  assert.equal(requests, 1);
+  assert.deepEqual(states, ["connecting", "disconnected"]);
+  assert.equal(socket.closed, true);
+});
+test("a socket without a welcome retries and stop cancels its timers", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const sockets: FakeSocket[] = [];
+  const adapter = new TwitchEventSub({
+    broadcasterId: "owner",
+    clientId: "client",
+    accessToken: () => "token",
+    onCommand: () => {},
+    socketFactory: () => {
+      const socket = new FakeSocket();
+      sockets.push(socket);
+      return socket;
+    },
+  });
+  t.after(() => adapter.stop());
+  adapter.start();
+  t.mock.timers.tick(10_000);
+  assert.equal(sockets[0]!.closed, true);
+  t.mock.timers.tick(1000);
+  assert.equal(sockets.length, 2);
+  adapter.stop();
+  t.mock.timers.tick(30_000);
+  assert.equal(sockets.length, 2);
+  adapter.start();
+  t.mock.timers.tick(10_000);
+  adapter.stop(); // Cancel a scheduled retry, then reuse this client.
+  adapter.start();
+  t.mock.timers.tick(10_000);
+  t.mock.timers.tick(1000);
+  assert.equal(sockets.length, 5);
+});
+test("a silent migration or lost old socket recovers with a fresh subscribed session", async (t) => {
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  for (const loseOld of [false, true]) {
+    const sockets: FakeSocket[] = [];
+    const states: string[] = [];
+    let requests = 0;
+    const adapter = new TwitchEventSub({
+      broadcasterId: "owner",
+      clientId: "client",
+      accessToken: () => "token",
+      onCommand: () => {},
+      onConnection: (state) => states.push(state),
+      socketFactory: () => {
+        const socket = new FakeSocket();
+        sockets.push(socket);
+        return socket;
+      },
+      request: fakeFetch(async () => {
+        requests++;
+        return Response.json({}, { status: 202 });
+      }),
+    });
+    const welcome = (socket: FakeSocket, id: string) =>
+      socket.send({
+        metadata: { message_type: "session_welcome" },
+        payload: { session: { id, keepalive_timeout_seconds: 60 } },
+      });
+    adapter.start();
+    welcome(sockets[0]!, "first");
+    await flush();
+    sockets[0]!.send({
+      metadata: { message_type: "session_reconnect" },
+      payload: {
+        session: {
+          reconnect_url: "wss://eventsub.wss.twitch.tv/ws?session=saved",
+        },
+      },
+    });
+    await flush();
+    if (loseOld) sockets[0]!.close();
+    else t.mock.timers.tick(10_000);
+    assert.equal(sockets[0]!.closed, true);
+    assert.equal(sockets[1]!.closed, true);
+    t.mock.timers.tick(1000);
+    assert.equal(sockets.length, 3);
+    welcome(sockets[2]!, "fresh");
+    await flush();
+    assert.equal(requests, 6);
+    assert.equal(states.at(-1), "connected");
+    adapter.stop();
+  }
+});
 test("narrator uses strict response schema and accepts only known actions and facts", async () => {
   let requestBody: any;
   const options = {

@@ -28,3 +28,8 @@ jobs:
       - run: npm test
         env:
           TEST_DATABASE_URL: postgresql://postgres:afterlife-test@localhost:5432/postgres
+      - name: Rehearse two episodes across a process restart
+        run: npm run smoke:rehearsal
+        timeout-minutes: 3
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:afterlife-test@localhost:5432/postgres

@@ -15,7 +15,8 @@
     "build:shared": "npm run build --workspace @afterlife/shared",
     "predev": "npm run build:shared",
     "fixtures": "npm run build:shared && tsx scripts/generate-fixtures.ts",
-    "fixtures:check": "npm run build:shared && tsx scripts/generate-fixtures.ts --check"
+    "fixtures:check": "npm run build:shared && tsx scripts/generate-fixtures.ts --check",
+    "smoke:rehearsal": "npm run build && node scripts/rehearsal-smoke.mjs"
   },
   "engines": {
     "node": ">=24"

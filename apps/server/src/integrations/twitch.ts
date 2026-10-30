@@ -178,6 +178,7 @@ export class TwitchEventSub {
   private generation = 0;
   private stopped = true;
   private watchdog?: ReturnType<typeof setTimeout>;
+  private welcomeTimeout?: ReturnType<typeof setTimeout>;
   private retry?: ReturnType<typeof setTimeout>;
   private seen = new Map<string, number>();
   private keepaliveSeconds = 10;
@@ -195,7 +196,9 @@ export class TwitchEventSub {
     this.stopped = true;
     this.generation++;
     clearTimeout(this.watchdog);
+    clearTimeout(this.welcomeTimeout);
     clearTimeout(this.retry);
+    this.retry = undefined;
     this.current?.close();
     this.pending?.close();
     this.current = undefined;
@@ -203,7 +206,7 @@ export class TwitchEventSub {
     this.options.onConnection?.("disconnected");
   }
   private connect(url: string, migrating: boolean): void {
-    if (this.stopped) return;
+    if (this.stopped || (migrating && this.pending)) return;
     this.options.onConnection?.(migrating ? "reconnecting" : "connecting");
     const socket = (
       this.options.socketFactory ?? ((address) => new WebSocket(address))
@@ -211,6 +214,10 @@ export class TwitchEventSub {
     const generation = this.generation;
     if (migrating) this.pending = socket;
     else this.current = socket;
+    // A socket that opens but never welcomes us must not strand an active round.
+    clearTimeout(this.welcomeTimeout);
+    this.welcomeTimeout = setTimeout(() => this.reconnect(socket), 10_000);
+    this.welcomeTimeout.unref?.();
     socket.addEventListener("message", (event) => {
       this.queue = this.queue
         .then(async () => {
@@ -230,12 +237,20 @@ export class TwitchEventSub {
           if (kind === "session_welcome") {
             const session = message.payload?.session;
             if (typeof session?.id !== "string") return;
+            clearTimeout(this.welcomeTimeout);
             if (migrating) {
               const old = this.current;
               this.current = socket;
               this.pending = undefined;
               old?.close();
-            } else await this.subscribe(session.id);
+            } else if (!(await this.subscribe(session.id, socket, generation)))
+              return;
+            if (
+              this.stopped ||
+              generation !== this.generation ||
+              socket !== this.current
+            )
+              return;
             this.keepaliveSeconds = Math.max(
               10,
               Math.min(600, Number(session.keepalive_timeout_seconds) || 10),
@@ -261,6 +276,7 @@ export class TwitchEventSub {
           }
         })
         .catch(() => {
+          if (this.stopped || generation !== this.generation) return;
           this.options.onError?.("Twitch event processing failed");
           this.reconnect(socket);
         });
@@ -279,34 +295,45 @@ export class TwitchEventSub {
     this.watchdog.unref?.();
   }
   private reconnect(socket: SocketLike): void {
-    if (!this.stopped && socket === this.pending) {
-      this.pending = undefined;
-      socket.close();
-      this.options.onError?.(
-        "Twitch migration interrupted; awaiting reconnect",
-      );
-      return;
-    }
-    if (this.stopped || socket !== this.current || this.pending || this.retry)
+    if (
+      this.stopped ||
+      (socket !== this.current && socket !== this.pending) ||
+      this.retry
+    )
       return;
     this.options.onConnection?.("reconnecting");
+    const current = this.current;
+    const pending = this.pending;
     this.current = undefined;
+    this.pending = undefined;
     this.generation++;
-    socket.close();
     clearTimeout(this.watchdog);
+    clearTimeout(this.welcomeTimeout);
+    current?.close();
+    pending?.close();
     this.retry = setTimeout(() => {
       this.retry = undefined;
       this.connect("wss://eventsub.wss.twitch.tv/ws", false);
     }, 1000);
     this.retry.unref?.();
   }
-  private async subscribe(sessionId: string): Promise<void> {
+  private async subscribe(
+    sessionId: string,
+    socket: SocketLike,
+    generation: number,
+  ): Promise<boolean> {
     const request = this.options.request ?? fetch;
     for (const type of [
       "channel.chat.message",
       "stream.online",
       "stream.offline",
     ]) {
+      if (
+        this.stopped ||
+        generation !== this.generation ||
+        socket !== this.current
+      )
+        return false;
       const condition =
         type === "channel.chat.message"
           ? {
@@ -335,6 +362,7 @@ export class TwitchEventSub {
       if (!response.ok)
         throw new Error(`Twitch subscription failed (${response.status})`);
     }
+    return true;
   }
   async ingest(message: any): Promise<void> {
     const metadata = message?.metadata;
