@@ -1,0 +1,526 @@
+/* OBS overlay. A fixed 1920×1080 stage; every size here is in stream pixels. The document is
+   transparent so OBS can composite it over gameplay. Panels are dark game-HUD glass with
+   gilded corner brackets, legible over any footage and after stream compression. */
+html.overlay-document,
+html.overlay-document body {
+  background: transparent;
+  overflow: hidden;
+}
+
+.ov-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+.ov-viewport--backdrop {
+  /* Preview only: a stand-in for gameplay so the overlay can be judged in context. */
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.35)),
+    url("/art/castle-winter.jpg") center / cover;
+}
+.ov-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.ov-panel,
+.ov-badge,
+.ov-realm,
+.ov-join,
+.ov-toast {
+  position: absolute;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 12, 16, 0.9),
+    rgba(10, 12, 16, 0.82)
+  );
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 24px 60px -16px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+}
+.ov-panel::before,
+.ov-realm::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--accent), var(--accent)) top left / 28px 3px,
+    linear-gradient(var(--accent), var(--accent)) top left / 3px 28px,
+    linear-gradient(var(--accent), var(--accent)) top right / 28px 3px,
+    linear-gradient(var(--accent), var(--accent)) top right / 3px 28px,
+    linear-gradient(var(--accent), var(--accent)) bottom left / 28px 3px,
+    linear-gradient(var(--accent), var(--accent)) bottom left / 3px 28px,
+    linear-gradient(var(--accent), var(--accent)) bottom right / 28px 3px,
+    linear-gradient(var(--accent), var(--accent)) bottom right / 3px 28px;
+  background-repeat: no-repeat;
+}
+
+/* ——— Badge ——— */
+.ov-badge {
+  top: 36px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 26px;
+}
+.ov-badge__brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.32em;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ov-badge__world {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-left: 20px;
+  border-left: 1px solid var(--line-strong);
+}
+.ov-badge .rehearsal-badge {
+  font-size: 16px;
+}
+.ov-badge__warn {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warn);
+}
+.ov-badge--error {
+  font-size: 22px;
+  color: var(--bad);
+}
+
+/* ——— Main panel ——— */
+.ov-panel {
+  top: 36px;
+  right: 40px;
+  width: 660px;
+  max-height: 900px;
+  display: grid;
+  gap: 20px;
+  padding: 32px 34px;
+  animation: ov-panel-in 0.6s var(--ease-out);
+}
+@keyframes ov-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+}
+.ov-eyebrow {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.ov-title {
+  margin-top: 6px;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.ov-narration {
+  font-size: 25px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ov-narration--soft {
+  font-size: 23px;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+.ov-scene__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.ov-scene .countdown__text {
+  font-size: 30px;
+}
+.ov-scene--paused {
+  border-color: var(--warn);
+}
+.ov-scene__foot .round-status {
+  font-size: 21px;
+}
+
+.ov-memory,
+.ov-away {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 16px 22px 16px 26px;
+  border: 1px solid var(--memory-line);
+  background: linear-gradient(
+    90deg,
+    rgba(233, 162, 76, 0.2),
+    rgba(233, 162, 76, 0.04)
+  );
+}
+.ov-memory::before,
+.ov-away::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 4px;
+  background: var(--memory);
+  box-shadow: 0 0 14px var(--memory);
+}
+.ov-away {
+  border-color: var(--blue-line);
+  background: linear-gradient(
+    90deg,
+    rgba(75, 143, 226, 0.2),
+    rgba(75, 143, 226, 0.04)
+  );
+}
+.ov-away::before {
+  background: var(--blue-strong);
+  box-shadow: 0 0 14px var(--blue);
+}
+.ov-memory__label {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--memory-strong);
+}
+.ov-away .ov-memory__label {
+  color: var(--blue-strong);
+}
+.ov-memory__text {
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.ov-outcome {
+  padding: 16px 22px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #1a1307;
+  background: linear-gradient(90deg, #f4d996, #d9b56b 60%, #b88b40);
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+  animation: ov-outcome-in 0.7s var(--ease-spring);
+}
+@keyframes ov-outcome-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+/* Large choices for 1080p: label and command share one row to stay compact. */
+.choices--large {
+  gap: 10px;
+}
+.choices--large .choice {
+  gap: 18px;
+  padding: 14px 18px 14px 14px;
+}
+.choices--large .choice__body {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px 14px;
+}
+.choices--large .choice__bar {
+  grid-column: 1 / -1;
+  height: 5px;
+}
+.choices--large .choice__key {
+  width: 54px;
+  height: 54px;
+  font-size: 22px;
+}
+.choices--large .choice__label {
+  font-size: 27px;
+  gap: 12px;
+}
+.choices--large .choice__command {
+  font-size: 19px;
+}
+.choices--large .choice__count strong {
+  font-size: 38px;
+}
+.choices--large .choice__count span {
+  font-size: 18px;
+}
+.choices--large .choice__badge {
+  font-size: 15px;
+  padding: 2px 10px;
+}
+
+/* ——— Join hint ——— */
+.ov-bottom-right {
+  position: absolute;
+  right: 40px;
+  bottom: 36px;
+}
+.ov-join {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px 12px 24px;
+  font-family: var(--font-ui);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.ov-join__cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 8px;
+  font-family: var(--font-mono);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ov-join__cmd--red {
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  color: #ffc2bb;
+}
+.ov-join__cmd--blue {
+  background: var(--blue-soft);
+  border: 1px solid var(--blue-line);
+  color: #c4dcff;
+}
+
+/* ——— Realm strip ——— */
+.ov-realm {
+  left: 40px;
+  bottom: 36px;
+  display: flex;
+  gap: 20px;
+  padding: 16px;
+}
+.ov-realm__map {
+  width: 380px;
+}
+.ov-realm__map .map__name {
+  font-size: 15px;
+}
+.ov-realm__map .map__status {
+  font-size: 12px;
+}
+.ov-realm__stats {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  min-width: 400px;
+}
+.ov-faction {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  font-family: var(--font-ui);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ov-faction--red {
+  background: linear-gradient(
+    90deg,
+    rgba(210, 74, 64, 0.3),
+    rgba(210, 74, 64, 0.06)
+  );
+  border-left: 3px solid var(--red);
+}
+.ov-faction--blue {
+  background: linear-gradient(
+    90deg,
+    rgba(75, 143, 226, 0.3),
+    rgba(75, 143, 226, 0.06)
+  );
+  border-left: 3px solid var(--blue);
+}
+.ov-faction__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.08em;
+}
+.ov-faction--red .ov-faction__name {
+  color: #ffc2bb;
+}
+.ov-faction--blue .ov-faction__name {
+  color: #c4dcff;
+}
+.ov-faction__stat {
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.ov-faction__stat strong {
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ov-realm em,
+.ov-trust em {
+  margin-left: 6px;
+  padding: 1px 7px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  animation: delta-in 0.5s var(--ease-spring);
+}
+.ov-realm em.up,
+.ov-trust em.up {
+  background: var(--good-soft);
+  color: var(--good);
+}
+.ov-realm em.down,
+.ov-trust em.down {
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+.ov-trust {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-ui);
+  font-size: 18px;
+}
+.ov-trust__label {
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+.ov-trust__track {
+  position: relative;
+  height: 5px;
+  min-width: 120px;
+  background: var(--trust-gradient);
+}
+.ov-trust__needle {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  transform: rotate(45deg);
+  background: var(--surface-solid);
+  border: 2px solid var(--accent-strong);
+  box-shadow: 0 0 10px rgba(241, 211, 143, 0.8);
+  transition: left 0.9s var(--ease-out);
+}
+.ov-trust strong {
+  font-family: var(--font-display);
+  font-size: 19px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ov-trust--war strong,
+.ov-trust--hostile strong {
+  color: var(--red-strong);
+}
+.ov-trust--allied strong,
+.ov-trust--cordial strong {
+  color: var(--good);
+}
+.ov-trust--uneasy strong {
+  color: var(--accent-strong);
+}
+.ov-trust__num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ——— Change toast ——— */
+/* Centered over the open gameplay area between the badge and the panel. */
+.ov-toast {
+  top: 132px;
+  left: 630px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 560px;
+  padding: 14px 26px;
+  border-color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  box-shadow:
+    0 0 40px -10px rgba(217, 181, 107, 0.6),
+    0 24px 60px -16px rgba(0, 0, 0, 0.85);
+  animation:
+    ov-toast-in 0.5s var(--ease-out),
+    ov-toast-out 0.6s ease-in 7.4s forwards;
+}
+.ov-toast__label {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+@keyframes ov-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+}
+@keyframes ov-toast-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+}
