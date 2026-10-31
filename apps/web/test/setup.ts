@@ -3,3 +3,6 @@ import { afterEach } from "vitest";
 import { cleanup } from "@testing-library/react";
 
 afterEach(() => cleanup());
+
+// jsdom has no layout, so scrolling is a no-op there.
+Element.prototype.scrollIntoView ??= function scrollIntoView() {};

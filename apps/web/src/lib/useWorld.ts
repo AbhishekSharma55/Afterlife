@@ -32,8 +32,13 @@ type Action =
     }
   | { type: "snapshot"; snapshot: WorldSnapshot }
   | { type: "feed"; feed: FeedStatus; error?: string | null }
-  | { type: "history"; events: WorldEvent[]; exhausted: boolean }
-  | { type: "historyLoading"; loading: boolean };
+  | {
+      type: "history";
+      worldId: string;
+      events: WorldEvent[];
+      exhausted: boolean;
+    }
+  | { type: "historyLoading"; worldId: string; loading: boolean };
 
 function mergeEvents(known: Record<string, WorldEvent>, events: WorldEvent[]) {
   let next = known;
@@ -87,6 +92,8 @@ function reducer(state: State, action: Action): State {
     case "feed":
       return { ...state, feed: action.feed, error: action.error ?? null };
     case "history":
+      // A page requested for a previous world must not leak into this one.
+      if (action.worldId !== state.worldId) return state;
       return {
         ...state,
         events: mergeEvents(state.events, action.events),
@@ -94,6 +101,7 @@ function reducer(state: State, action: Action): State {
         loadingHistory: false,
       };
     case "historyLoading":
+      if (action.worldId !== state.worldId) return state;
       return { ...state, loadingHistory: action.loading };
   }
 }
@@ -228,16 +236,17 @@ export function useWorld(
     const before = known.length
       ? Math.min(...known.map((event) => event.sequence))
       : undefined;
-    dispatch({ type: "historyLoading", loading: true });
+    dispatch({ type: "historyLoading", worldId, loading: true });
     try {
       const page = await api.history(worldId, before);
       dispatch({
         type: "history",
+        worldId,
         events: page.events,
         exhausted: page.nextCursor === null,
       });
     } catch {
-      dispatch({ type: "historyLoading", loading: false });
+      dispatch({ type: "historyLoading", worldId, loading: false });
     }
   }, [worldId, fixture]);
 
