@@ -1,7 +1,7 @@
-name: Backend checks
+name: Full application checks
 on:
   pull_request:
-    paths: ['apps/server/**', 'packages/shared/**', 'docs/afterlife/fixtures/**', 'scripts/**', 'package*.json', '.github/workflows/backend.yml']
+    paths: ['apps/**', 'packages/shared/**', 'docs/afterlife/fixtures/**', 'scripts/**', 'e2e/**', 'playwright.config.ts', 'Dockerfile', '.dockerignore', 'package*.json', '.github/workflows/backend.yml']
   push:
     branches: [main]
 jobs:
@@ -28,6 +28,15 @@ jobs:
       - run: npm test
         env:
           TEST_DATABASE_URL: postgresql://postgres:afterlife-test@localhost:5432/postgres
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Exercise connected frontend and backend
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-test-results
+          path: test-results/
       - name: Rehearse two episodes across a process restart
         run: npm run smoke:rehearsal
         timeout-minutes: 3

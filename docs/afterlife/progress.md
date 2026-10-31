@@ -1,41 +1,49 @@
-**Backend checkpoint — 30 October 2026, 14:02 IST**
+**Full application checkpoint — October 31, 2026**
 
-Branch `feat/backend-foundation`, PR https://github.com/AbhishekSharma55/Afterlife/pull/1 remains open; do not merge. Fetched origin before editing and again before checkpointing; main through f44a021 is included, with no newer main changes. The initial working tree was clean. No frontend application changes.
+Backend PR [#1](https://github.com/AbhishekSharma55/Afterlife/pull/1) and frontend PR [#2](https://github.com/AbhishekSharma55/Afterlife/pull/2) were merged in the requested order. Local main was refreshed to `20d806f`. Current work is on `feat/fullstack-integration`; do not merge its PR without a new explicit instruction. Origin was fetched before checkpointing and main has not advanced.
 
-**Current steering and status**
+**Current user steering**
 
-The user chose rehearsal for now; live Twitch/OpenAI credentials are intentionally not configured. Do not solicit them again or repeatedly spend runs on those checks. Independent backend implementation and the pending durable rehearsal are finished. Full backend acceptance remains incomplete because the real Twitch pilot and public deployment have not run. Do not write `.afterlife/COMPLETE` yet.
+Connect the teammate's frontend to the backend and assess the rendered implementation. The user explicitly said to leave bug finding/fixes for a dedicated agent. No frontend application files under `apps/web` were changed in this integration. See [frontend-integration-review.md](frontend-integration-review.md) for observations and handoff targets.
 
-At this checkpoint `.afterlife/WAITING_FOR_INPUT` holds the runner for the remaining external acceptance. The user can remove that marker when the deployment, live-provider checks, or teammate integration are ready. Keep `.afterlife/STOP` authoritative and retain the existing scheduler; do not install additional jobs.
+The user chose rehearsal for now; live Twitch/OpenAI credentials are intentionally not configured. Do not solicit them again or repeatedly spend runs on those checks. Do not claim public deployment, real Twitch voting, live narration, or full hackathon acceptance.
 
-**Implemented backend**
+**Integration completed**
 
-Persistent world engine and causal history; faction memberships and one-effective-vote rules; atomic idempotency; resource crises, foraging, symmetric aid, reparations, fortification and peace talks; bounded offline progression and deferred-choice revalidation; exact recorded contribution recall and historical affiliation; grounded/fallback episode recaps and persisted leader reactions; owner-authenticated HTTP/SSE; browser-bound OAuth; opt-in rehearsal chat with reserved synthetic identities and live-world injection protection; reactive/proactive token refresh; reconnect presence reconciliation; shared DTO/Zod schemas and eight deterministic fixtures.
+The backend now serves the built React application, assets, and exact studio/world/overlay deep links from the API/auth/SSE origin. Unknown API/auth routes and missing assets remain JSON errors. The frontend shell is not cached; fingerprinted assets receive immutable caching. Backend-only startup remains available when no frontend build exists.
+
+The Docker image builds and packages shared schemas, backend, and frontend, including local fonts/art and labeled fixture previews, then runs as an unprivileged user. Compose uses the same application service alongside persistent PostgreSQL. Root build/typecheck/test scripts and GitHub Actions include the frontend. Playwright now covers the connected two-episode flow, viewer/OBS updates, direct navigation, and a narrow viewer screen. README/deployment instructions describe running the combined app.
+
+**Current verification**
+
+- `npm run build`, `npm run typecheck`, all eight deterministic fixture drift checks, and `git diff --check` passed.
+- `npm test` with fresh disposable PostgreSQL 17: shared **5/5**, backend **62/62**, frontend **41/41**; **108 passed, zero failures/skips**. Six new backend tests cover static routes, caching/MIME, JSON errors, traversal/symlink protection, and missing-build startup.
+- Chromium Playwright: **2/2 passed**. The studio creates a rehearsal kingdom; two synthetic viewers join and vote for betrayal; a separate viewer page receives the tally through SSE; a separate OBS page shows the outcome; episode one ends; background progression prepares retaliation; episode two and the reloaded viewer preserve the grievance and original cause. The OBS viewport is 1920×1080. The 390px fixture viewer passes direct navigation and document-width checks. Browser success does not establish complete accessibility or OBS broadcast acceptance.
+- The full application Docker image built successfully. An isolated Compose/PostgreSQL stack served HTML, compiled JS/CSS, fonts, art, and all supported SPA deep links while preserving JSON API/auth errors. A stored synthetic betrayal and its cause survived application-container restart. Runtime UID was 1000. Test containers/network/database storage were removed afterward.
+- The previous October 30 backend rehearsal also verified a real 60-second offline worker tick and process restart through HTTP on host and inside the production container. That backend CI passed at commit `fe5ff13`; current integration CI status should be read from its own PR/checks.
+
+Generated screenshots and test logs are local/ignored. Run `npm run test:e2e` to regenerate the browser evidence. See the [deployment guide](deployment.md) for container and durable rehearsal commands.
+
+**Frontend review handoff**
+
+The normal connected rehearsal works and the creator/viewer/OBS presentation is coherent. Code inspection identified uncertain command retries losing request IDs after HTTP 5xx and delayed history responses lacking a world-navigation guard. Visual review identified notification overlap and mobile fixture navigation for usability checks. The current dependency audit reports advisories requiring exposure/upgrade triage. These were documented, not fixed. A dedicated frontend bug agent should reproduce and address them with focused regression coverage.
+
+**Implemented backend and limits**
+
+Persistent world engine and causal history; faction membership and one-effective-vote rules; atomic idempotency; resource crises, foraging, symmetric aid, reparations, fortification and peace talks; bounded offline progression and deferred-choice revalidation; recorded contribution recall and historical affiliation; grounded/fallback episode recaps and persisted leader reactions; owner-authenticated HTTP/SSE; browser-bound OAuth; opt-in rehearsal chat with reserved synthetic identities and live-world injection protection; reactive/proactive token refresh; reconnect presence reconciliation; shared DTO/Zod schemas and eight deterministic fixtures.
 
 Persistence uses one locked PostgreSQL JSONB aggregate per world. Provider tokens and creator sessions remain memory-only: restarting requires re-sign-in, while canonical world facts/history persist. Startup clears stale connection status. Generated prose is interpretation guarded by IDs/prompts; canonical facts and recorded credits remain authoritative.
 
-This run fixed EventSub sockets stranded without a welcome, failed connection migration recovery, and stale subscription completion after stop/replacement. Startup validates configuration before allocating database resources, closes resources on failed migration/read/app creation/listen, and waits for an active worker before closing the pool. Nine new injected tests cover these lifecycle paths.
+**Remaining acceptance**
 
-**Completed verification**
-
-- `TEST_DATABASE_URL=... npm test`: shared **5/5**, backend **56/56**, **61 total**, no skips, with real disposable PostgreSQL.
-- `npm run typecheck`, Docker's workspace builds, and all eight deterministic fixture drift checks passed. `git diff --check` passed.
-- New `npm run smoke:rehearsal` builds and launches a real backend process against an empty disposable database. Two synthetic viewers joined and chose betrayal over HTTP; duplicate input did not add vote weight; the episode ended; an actual 60-second background tick prepared Blue's retaliation. SIGTERM stopped the backend; a new process loaded the same facts and history, rejected the old session, and preserved episode-two causal recall plus both recorded contribution credits. Repeated reads/commands added no duplicate tick or result.
-- The complete smoke passed once on host Node and again inside the rebuilt Node 24 production image as its unprivileged user. The default image command separately served `/health` with durable PostgreSQL and rehearsal disabled. The smoke also refused a populated world store without changing its records. CI now includes the real HTTP/restart rehearsal.
-- GitHub Actions passed on backend commit `fe5ff13`, including the full HTTP/restart smoke: [verified run](https://github.com/AbhishekSharma55/Afterlife/actions/runs/41026790789).
-- The earlier checkpoint validated Compose configuration. No public hosting or live-provider claim is made. Only this run's disposable containers, volumes, network and image tag were removed; unrelated Docker resources were preserved.
-
-The smoke uses `TEST_DATABASE_URL`, refuses a nonempty `afterlife_worlds` table, receives no Twitch/OpenAI credentials, and removes only its own rehearsal world. See [deployment.md](deployment.md) for reproducible commands and isolation requirements.
-
-**Remaining external acceptance, in order when ready**
-
-1. Select/configure the public always-running host and durable PostgreSQL; deploy, verify HTTPS/SSE, and repeat restart/redeploy persistence on that host. Local container verification does not establish public hosting.
-2. Verify Twitch OAuth and two distinct real accounts joining/voting, including replacement, disconnect/pause/resume, presence reconciliation and token lifecycle. Injected tests and synthetic participants do not establish live Twitch participation.
-3. Verify an accepted scene and recap with the configured OpenAI model and observe latency. Missing keys currently exercise persisted factual fallbacks; no live model response is claimed.
-4. Integrate the teammate's frontend, run the creator/viewer pilot and OBS readability check, and record the two-episode story. Do not implement or overwrite `apps/web`.
-
-These are externally dependent acceptance steps, not unfinished independent backend behavior identified in this review. Preserve this distinction when deciding whether to resume or mark completion.
+1. Dedicated frontend bug review and fixes, then a creator/viewer pilot and actual OBS compositor/readability check over stream content.
+2. Select/configure an always-running public host and durable PostgreSQL; verify HTTPS/SSE and restart/redeploy persistence on that host.
+3. When the user changes the rehearsal-only choice, verify Twitch OAuth with two real accounts, vote replacement, disconnect/pause/resume, presence reconciliation, and token lifecycle.
+4. When live narration is enabled, verify one accepted scene and recap with the configured provider and observe latency. No live model response is claimed.
+5. Record the two-episode demo and complete submission materials/official acceptance checks.
 
 **Scheduler and quota**
 
-The existing cron runner launches independent checkpoint-based sessions and checks quota every ten minutes. Its launch/authentication probe was verified at 08:49 IST. This run inherited the cron parent's shared flock and refreshed the parent-active heartbeat. Latest allowance check: 15% current-window usage, 31% weekly. Controls and logs remain local/ignored; never print or commit `check_usage.js`, credentials, or runner config/logs. Stop initiating tasks at 85% window usage or 95% weekly usage; the submission deadline remains November 2 at 22:00 UTC (November 3 at 03:30 IST).
+The existing cron runner checks quota every ten minutes and reads this checkpoint. Preserve `.afterlife/STOP`; do not install duplicate or recursive jobs. Its shared flock is held during foreground work. At this checkpoint `.afterlife/WAITING_FOR_INPUT` remains in place because the next work is the separately requested dedicated frontend review or external acceptance, not permission to modify the teammate's UI autonomously. Do not remove this hold or write `.afterlife/COMPLETE` merely because integration tests pass. A new user task can resume authorized work.
+
+Check quota only with `node scripts/check-usage.mjs`; never print or commit `check_usage.js`, credentials, or runner logs/config. Stop initiating tasks at 85% window usage or 95% weekly usage. The submission deadline remains November 2 at 22:00 UTC (November 3 at 03:30 IST).
