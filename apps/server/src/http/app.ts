@@ -1,4 +1,5 @@
 import Fastify, { type FastifyRequest } from "fastify";
+import { configureFrontend } from "./static.js";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { DomainError, type WorldSnapshot } from "../domain/types.js";
@@ -36,6 +37,7 @@ type ApiService = Pick<
 >;
 export interface AppOptions {
   service: ApiService;
+  webDist?: string | false;
   sessions?: SessionStore;
   allowRehearsalLogin?: boolean;
   publicOrigin?: string;
@@ -172,11 +174,7 @@ export function createApp(options: AppOptions) {
       });
     },
   );
-  app.setNotFoundHandler((_request, reply) =>
-    reply.code(404).send({
-      error: { code: "not_found", message: "This route does not exist." },
-    }),
-  );
+  configureFrontend(app, options.webDist);
   app.get("/health", async () => ({ status: "ok" }));
   app.get("/api/me", async (request) => {
     const value = session(request);

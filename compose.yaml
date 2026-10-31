@@ -16,6 +16,7 @@ services:
       timeout: 5s
       retries: 12
     restart: unless-stopped
+  # Serves the frontend bundle, HTTP API, auth callbacks and snapshot SSE together.
   backend:
     build:
       context: .
@@ -25,6 +26,7 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 4310
+      WEB_DIST: /app/apps/web/dist
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL using the postgres service hostname and matching password}
       PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:4310}
       ALLOW_REHEARSAL: "false"

@@ -1,10 +1,10 @@
-**AFTERLIFE backend container deployment**
+**AFTERLIFE application container deployment**
 
-This packages the backend and its shared schema workspace. It does not deploy a frontend or create any external hosting resources.
+This packages the backend, frontend, and shared schema workspace in one application image. The Node server serves the built frontend and the HTTP/auth/SSE endpoints on one origin. PostgreSQL remains a separate persistent service. These files do not create external hosting resources.
 
 **Requirements**
 
-Docker with BuildKit and Compose v2; a host that can run a continuously running Node service and PostgreSQL; outbound HTTPS/WebSocket access to Twitch and the selected OpenAI endpoint. The image builds from Node 24 and runs the application as the unprivileged `node` user. PostgreSQL 17 uses a named volume.
+Docker with BuildKit and Compose v2; a host that can run a continuously running Node service and PostgreSQL; outbound HTTPS/WebSocket access to Twitch and the selected OpenAI endpoint. The image builds from Node 24 and runs the application as the unprivileged `node` user. All three workspace manifests are available during dependency installation. The frontend build includes its local fonts, public artwork, and explicitly labeled rehearsal fixtures; private environment files and scheduler logs stay outside the build context. PostgreSQL 17 uses a named volume.
 
 **Prepare local configuration**
 
@@ -24,7 +24,10 @@ Start with:
 docker compose --env-file .env.compose.local config --quiet
 docker compose --env-file .env.compose.local up --build -d
 curl --fail http://localhost:4310/health
+curl --fail http://localhost:4310/
 ```
+
+The Compose service is still named `backend`, and now serves both application layers. Open `http://localhost:4310/` to use the frontend. Browser requests to `/api`, `/auth`, and the snapshot SSE endpoint use that same origin. A separate Vite process is only needed for local frontend development. The image fixes `WEB_DIST=/app/apps/web/dist`; the server derives the same default when running the built repository directly.
 
 `BACKEND_PORT` and `POSTGRES_PORT` can change the host ports. Update browser origin/callback configuration if the backend host port changes. To use another environment-file path, set `AFTERLIFE_ENV_FILE` as well as passing that file through `--env-file`.
 
@@ -74,7 +77,7 @@ Live-provider validation is deferred by user choice. Before claiming a complete 
 - Deploy the backend and durable database to an awake host; verify HTTPS, public snapshot/SSE delivery, and state after a real service restart or redeploy.
 - Sign in through the registered Twitch callback, then have two distinct real Twitch accounts join and vote. Confirm vote replacement and reconnect/pause/resume behavior. Synthetic rehearsal participants do not satisfy this check.
 - With a configured model, verify one accepted scene and recap through the provider. Injected tests cover invalid output and grounded fallbacks; they do not prove account access, model availability, or deployment latency.
-- Integrate the teammate's frontend and run the creator/viewer pilot, including OBS readability and the visible link from episode two to the original betrayal.
+- Run the creator/viewer pilot on the integrated frontend, including OBS readability and the visible link from episode two to the original betrayal.
 
 Provider tokens and creator sessions deliberately require sign-in after restart. Canonical world persistence and credential recovery are separate observations.
 
@@ -88,8 +91,17 @@ docker build --secret id=proxy_ca,src=/path/to/trusted-ca-bundle.pem -t afterlif
 
 Keep TLS verification enabled. Preserve the session's configured proxy settings. For Compose builds, supply the same `proxy_ca` build secret through a local Compose override. For runtime HTTPS through that proxy, mount the public CA bundle read-only and set `NODE_EXTRA_CA_CERTS` to its container path; keep that environment-specific override out of the image.
 
-**Verification status**
+**Previous backend-only verification (October 30)**
 
 On 30 October 2026, the real HTTP rehearsal passed against disposable PostgreSQL: two synthetic viewers chose betrayal, a scheduled 60-second tick changed the resting world, the backend process stopped with SIGTERM and restarted, and episode two retained the causal event links and recorded viewer credits. This used factual fallback narration with no live provider credentials.
 
 The rebuilt Node 24 Docker image passed the same complete rehearsal inside the container as the unprivileged `node` user, using its packaged production dependencies and a disposable PostgreSQL container. Its default command also served `/health` with PostgreSQL configured and rehearsal disabled. Compose configuration validation passed in the earlier checkpoint. Only task-owned disposable containers and their volumes were removed. Current test totals are recorded in [progress.md](progress.md). No public deployment, live model response, or real Twitch broadcast is claimed.
+
+
+**Integrated application verification (October 31)**
+
+The complete Node 24 application image built successfully with shared, backend, and frontend workspaces. An isolated Compose stack passed HTTP smoke checks for the homepage, compiled JavaScript/CSS, bundled fonts, public artwork, and `/studio`, `/studio/:worldId`, `/world/:worldId`, and `/overlay/:worldId` deep links. Backend API/auth failures remained JSON errors rather than receiving the SPA fallback.
+
+The same stack seeded a clearly synthetic rehearsal world through the packaged domain engine and PostgreSQL, then read its betrayal state and cause through the real public API. After restarting the application container, the saved state and cause were unchanged. The runtime ran as user ID 1000. The PostgreSQL password was generated only for that disposable test; all test-owned containers, network, and database volume were removed afterward.
+
+This verifies packaged asset delivery, same-origin HTTP routes, production runtime dependencies, and database persistence across a container restart. It does not replace browser interaction/OBS acceptance, real Twitch voting, live narration, or testing on an external deployment.

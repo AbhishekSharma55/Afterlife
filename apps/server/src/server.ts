@@ -114,6 +114,7 @@ export async function startServer(
     }
     const application = (dependencies.createApp ?? createApp)({
       service,
+      webDist: env.WEB_DIST || undefined,
       allowRehearsalLogin: allowRehearsal,
       rehearsalOnly,
       publicOrigin,

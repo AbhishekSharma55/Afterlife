@@ -21,3 +21,7 @@ coverage/
 # Local usage credentials and autonomous-run state
 /check_usage.js
 /.afterlife/
+
+# Browser verification artifacts
+/test-results/
+/playwright-report/

@@ -10,9 +10,9 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env --import tsx --watch apps/server/src/server.ts",
     "start": "node --env-file-if-exists=.env apps/server/dist/server.js",
-    "build": "npm run build:shared && npm run build --workspace @afterlife/server",
-    "test": "npm run build:shared && npm run test --workspace @afterlife/shared && npm run test --workspace @afterlife/server",
-    "typecheck": "npm run build:shared && npm run typecheck --workspace @afterlife/server",
+    "build": "npm run build:shared && npm run build --workspace @afterlife/server && npm run build --workspace @afterlife/web",
+    "test": "npm run build:shared && npm run test --workspace @afterlife/shared && npm run test --workspace @afterlife/server && npm run test --workspace @afterlife/web",
+    "typecheck": "npm run build:shared && npm run typecheck --workspace @afterlife/server && npm run typecheck --workspace @afterlife/web",
     "build:shared": "npm run build --workspace @afterlife/shared",
     "predev": "npm run build:shared",
     "fixtures": "npm run build:shared && tsx scripts/generate-fixtures.ts",
@@ -21,12 +21,14 @@
     "dev:web": "npm run build:shared && npm run dev --workspace @afterlife/web",
     "build:web": "npm run build:shared && npm run build --workspace @afterlife/web",
     "test:web": "npm run build:shared && npm run test --workspace @afterlife/web",
-    "typecheck:web": "npm run build:shared && npm run typecheck --workspace @afterlife/web"
+    "typecheck:web": "npm run build:shared && npm run typecheck --workspace @afterlife/web",
+    "test:e2e": "npm run build && playwright test"
   },
   "engines": {
     "node": ">=24"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "prettier": "^3.9.10"
   }
 }
