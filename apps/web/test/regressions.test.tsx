@@ -5,7 +5,7 @@ import type { WorldEvent, WorldSnapshot } from "@afterlife/shared";
 import { Chronicle } from "../src/components/Chronicle";
 import { ToastProvider } from "../src/components/Toasts";
 import { api, ApiError } from "../src/lib/api";
-import { getFixture } from "../src/lib/fixtures";
+import { getFixture, type FixtureName } from "../src/lib/fixtures";
 import { useCommand } from "../src/lib/useCommand";
 import { useWorld } from "../src/lib/useWorld";
 
@@ -152,4 +152,71 @@ describe("useWorld", () => {
     expect(result.current.hasOlderHistory).toBe(true);
     vi.unstubAllGlobals();
   });
+  for (const fails of [false, true]) {
+    it(`discards old history ${fails ? "failure" : "success"} across fixture and same-world return`, async () => {
+      class Source {
+        static CLOSED = 2;
+        readyState = 0;
+        addEventListener() {}
+        close() {}
+      }
+      vi.stubGlobal("EventSource", Source);
+      try {
+        const snapshot = getFixture("fresh");
+        snapshot.worldId = "world-a";
+        snapshot.recentEvents = [event(40, "world_created")];
+        vi.spyOn(api, "getWorld").mockResolvedValue(snapshot);
+        let finish!: (value: never) => void;
+        let fail!: (reason: Error) => void;
+        vi.spyOn(api, "history")
+          .mockImplementationOnce(
+            () =>
+              new Promise((resolve, reject) => {
+                finish = resolve;
+                fail = reject;
+              }),
+          )
+          .mockImplementation(() => new Promise(() => {}));
+        const { result, rerender } = renderHook(
+          ({ fixture }: { fixture: FixtureName | undefined }) =>
+            useWorld("world-a", fixture),
+          { initialProps: { fixture: undefined as FixtureName | undefined } },
+        );
+        await act(async () => {});
+        let oldRequest!: Promise<void>;
+        act(() => {
+          oldRequest = result.current.loadOlderHistory();
+        });
+        rerender({ fixture: "returning" });
+        await act(async () => {});
+        expect(result.current.isFixture).toBe(true);
+        if (!fails) {
+          await act(async () => {
+            finish({
+              events: [event(1, "world_created")],
+              nextCursor: null,
+            } as never);
+            await oldRequest;
+          });
+          expect(result.current.events["world-a-ev-1"]).toBeUndefined();
+        }
+        rerender({ fixture: undefined });
+        await act(async () => {});
+        act(() => {
+          void result.current.loadOlderHistory();
+        });
+        expect(result.current.loadingHistory).toBe(true);
+        if (fails)
+          await act(async () => {
+            fail(new Error("Old request failed"));
+            await oldRequest;
+          });
+        expect(result.current.loadingHistory).toBe(true);
+        expect(result.current.hasOlderHistory).toBe(true);
+        expect(result.current.events["world-a-ev-1"]).toBeUndefined();
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
+  }
 });

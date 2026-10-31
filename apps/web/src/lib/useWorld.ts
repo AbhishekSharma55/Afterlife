@@ -137,8 +137,11 @@ export function useWorld(
   );
   const stateRef = useRef(state);
   stateRef.current = state;
+  const historyGeneration = useRef(0);
 
   useEffect(() => {
+    // A fixture switch or a return to the same world also starts a new history lifetime.
+    historyGeneration.current++;
     if (fixture) {
       dispatch({
         type: "reset",
@@ -146,7 +149,9 @@ export function useWorld(
         feed: "fixture",
         snapshot: getFixture(fixture),
       });
-      return;
+      return () => {
+        historyGeneration.current++;
+      };
     }
     dispatch({ type: "reset", worldId, feed: "loading" });
     let disposed = false;
@@ -223,6 +228,7 @@ export function useWorld(
       if (keepGoing && !disposed) connect();
     });
     return () => {
+      historyGeneration.current++;
       disposed = true;
       clearTimeout(retryTimer);
       source?.close();
@@ -231,7 +237,14 @@ export function useWorld(
 
   const loadOlderHistory = useCallback(async () => {
     const current = stateRef.current;
-    if (fixture || current.loadingHistory || current.historyExhausted) return;
+    if (
+      fixture ||
+      current.feed === "fixture" ||
+      current.loadingHistory ||
+      current.historyExhausted
+    )
+      return;
+    const generation = historyGeneration.current;
     const known = Object.values(current.events);
     const before = known.length
       ? Math.min(...known.map((event) => event.sequence))
@@ -239,6 +252,7 @@ export function useWorld(
     dispatch({ type: "historyLoading", worldId, loading: true });
     try {
       const page = await api.history(worldId, before);
+      if (generation !== historyGeneration.current) return;
       dispatch({
         type: "history",
         worldId,
@@ -246,6 +260,7 @@ export function useWorld(
         exhausted: page.nextCursor === null,
       });
     } catch {
+      if (generation !== historyGeneration.current) return;
       dispatch({ type: "historyLoading", worldId, loading: false });
     }
   }, [worldId, fixture]);
@@ -260,7 +275,7 @@ export function useWorld(
   const autoFetches = useRef(0);
   useEffect(() => {
     autoFetches.current = 0;
-  }, [worldId]);
+  }, [worldId, fixture]);
   useEffect(() => {
     if (
       !missing ||
