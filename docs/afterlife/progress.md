@@ -4,6 +4,8 @@ Backend PR [#1](https://github.com/AbhishekSharma55/Afterlife/pull/1) and fronte
 
 **Current user steering**
 
+The subsequently requested dedicated frontend agent review is complete. [Five P2 findings](frontend-bug-review.md) were reproduced without modifying frontend code. Fixes are pending a separate task. Integration PR [#3](https://github.com/AbhishekSharma55/Afterlife/pull/3) is open; its application commit `afdc4e8` passed [full CI](https://github.com/AbhishekSharma55/Afterlife/actions/runs/41208948149), including browser and restart rehearsals.
+
 Connect the teammate's frontend to the backend and assess the rendered implementation. The user explicitly said to leave bug finding/fixes for a dedicated agent. No frontend application files under `apps/web` were changed in this integration. See [frontend-integration-review.md](frontend-integration-review.md) for observations and handoff targets.
 
 The user chose rehearsal for now; live Twitch/OpenAI credentials are intentionally not configured. Do not solicit them again or repeatedly spend runs on those checks. Do not claim public deployment, real Twitch voting, live narration, or full hackathon acceptance.

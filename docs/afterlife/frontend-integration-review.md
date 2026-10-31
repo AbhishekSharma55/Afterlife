@@ -1,5 +1,7 @@
 **Frontend/backend integration review — October 31, 2026**
 
+A subsequent dedicated agent reproduced five actionable issues. See the [dedicated frontend bug review](frontend-bug-review.md) for the findings and evidence; no fixes were applied.
+
 The frontend provides a strong basis for the demo: a creator studio with one prominent next action, distinct public viewer and OBS surfaces, consistent kingdom styling, and visible causal links from episode two to the original betrayal. It consumes shared schemas, keeps fixture/rehearsal labels visible, and follows backend snapshots through SSE. The normal two-episode rehearsal works in Chromium against the real server.
 
 The user requested that frontend bugs remain for a dedicated agent. This integration changes no application code under `apps/web`. The observations below are review targets, not a completed bug audit or a claim of production readiness.
