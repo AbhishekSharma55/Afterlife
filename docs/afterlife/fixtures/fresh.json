@@ -1,0 +1,72 @@
+{
+  "worldId": "world_fixture",
+  "revision": 1,
+  "name": "Westbridge",
+  "mode": "ready",
+  "episode": null,
+  "factions": [
+    {
+      "id": "red",
+      "name": "Red Kingdom",
+      "supplies": 50,
+      "morale": 60
+    },
+    {
+      "id": "blue",
+      "name": "Blue Kingdom",
+      "supplies": 50,
+      "morale": 60
+    }
+  ],
+  "relationship": {
+    "trust": 40,
+    "grievance": null,
+    "causeEventId": null
+  },
+  "locations": [
+    {
+      "id": "red_keep",
+      "name": "Red Keep",
+      "status": "stable"
+    },
+    {
+      "id": "blue_keep",
+      "name": "Blue Keep",
+      "status": "stable"
+    },
+    {
+      "id": "westbridge",
+      "name": "Westbridge",
+      "status": "open"
+    },
+    {
+      "id": "forest",
+      "name": "Whispering Wood",
+      "status": "stable"
+    }
+  ],
+  "scene": null,
+  "recap": {
+    "previously": "A fragile treaty joins Red and Blue.",
+    "whileAway": "",
+    "causeEventIds": []
+  },
+  "recentEvents": [
+    {
+      "id": "fixture_id_001",
+      "sequence": 1,
+      "episodeNumber": null,
+      "kind": "world_created",
+      "summary": "Red and Blue sign the Westbridge treaty.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:00.000Z",
+      "processedAt": "2026-10-30T08:00:00.000Z"
+    }
+  ],
+  "narratorStatus": "fallback",
+  "twitch": {
+    "connection": "disconnected",
+    "broadcast": "unknown"
+  },
+  "rehearsal": true
+}

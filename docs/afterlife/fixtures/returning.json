@@ -1,0 +1,171 @@
+{
+  "worldId": "world_fixture",
+  "revision": 19,
+  "name": "Westbridge",
+  "mode": "active",
+  "episode": {
+    "id": "fixture_id_009",
+    "number": 2,
+    "status": "active"
+  },
+  "factions": [
+    {
+      "id": "red",
+      "name": "Red Kingdom",
+      "supplies": 60,
+      "morale": 60
+    },
+    {
+      "id": "blue",
+      "name": "Blue Kingdom",
+      "supplies": 40,
+      "morale": 55
+    }
+  ],
+  "relationship": {
+    "trust": -20,
+    "grievance": "The Westbridge treaty was broken.",
+    "causeEventId": "fixture_id_006"
+  },
+  "locations": [
+    {
+      "id": "red_keep",
+      "name": "Red Keep",
+      "status": "stable"
+    },
+    {
+      "id": "blue_keep",
+      "name": "Blue Keep",
+      "status": "preparing"
+    },
+    {
+      "id": "westbridge",
+      "name": "Westbridge",
+      "status": "closed"
+    },
+    {
+      "id": "forest",
+      "name": "Whispering Wood",
+      "status": "stable"
+    }
+  ],
+  "scene": {
+    "id": "fixture_id_010",
+    "title": "Blue demands an answer",
+    "narration": "Blue returns to the bridge where the community broke its treaty.",
+    "encounterId": "retaliation",
+    "causeEventIds": [
+      "fixture_id_006"
+    ],
+    "choices": [
+      {
+        "id": "pay_reparations",
+        "number": 1,
+        "label": "Offer reparations"
+      },
+      {
+        "id": "fortify_bridge",
+        "number": 2,
+        "label": "Fortify the bridge"
+      },
+      {
+        "id": "open_talks",
+        "number": 3,
+        "label": "Open peace talks"
+      }
+    ],
+    "round": {
+      "id": "fixture_id_011",
+      "status": "prepared",
+      "openedAt": null,
+      "closesAt": null,
+      "tally": {
+        "pay_reparations": 0,
+        "fortify_bridge": 0,
+        "open_talks": 0
+      },
+      "totalVoters": 0,
+      "winningChoiceId": null,
+      "outcome": null
+    }
+  },
+  "recap": {
+    "previously": "The community breaks the Westbridge treaty with Blue.",
+    "whileAway": "Blue prepares retaliation for the broken treaty.",
+    "causeEventIds": [
+      "fixture_id_006",
+      "fixture_id_008"
+    ],
+    "contributionCredits": []
+  },
+  "recentEvents": [
+    {
+      "id": "fixture_id_001",
+      "sequence": 1,
+      "episodeNumber": null,
+      "kind": "world_created",
+      "summary": "Red and Blue sign the Westbridge treaty.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:00.000Z",
+      "processedAt": "2026-10-30T08:00:00.000Z"
+    },
+    {
+      "id": "fixture_id_005",
+      "sequence": 2,
+      "episodeNumber": 1,
+      "kind": "episode_started",
+      "summary": "Episode 1 begins.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:00.000Z",
+      "processedAt": "2026-10-30T08:00:00.000Z"
+    },
+    {
+      "id": "fixture_id_006",
+      "sequence": 3,
+      "episodeNumber": 1,
+      "kind": "decision_resolved",
+      "summary": "The community breaks the Westbridge treaty with Blue.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:01.000Z",
+      "processedAt": "2026-10-30T08:00:01.000Z"
+    },
+    {
+      "id": "fixture_id_007",
+      "sequence": 4,
+      "episodeNumber": 1,
+      "kind": "episode_ended",
+      "summary": "Episode 1 ends.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:01.000Z",
+      "processedAt": "2026-10-30T08:00:01.000Z"
+    },
+    {
+      "id": "fixture_id_008",
+      "sequence": 5,
+      "episodeNumber": null,
+      "kind": "offline_development",
+      "summary": "Blue prepares retaliation for the broken treaty.",
+      "causeEventIds": [
+        "fixture_id_006"
+      ],
+      "effectiveAt": "2026-10-30T14:00:01.000Z",
+      "processedAt": "2026-10-30T14:00:01.000Z"
+    },
+    {
+      "id": "fixture_id_012",
+      "sequence": 6,
+      "episodeNumber": 2,
+      "kind": "episode_started",
+      "summary": "Episode 2 begins.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T14:00:01.000Z",
+      "processedAt": "2026-10-30T14:00:01.000Z"
+    }
+  ],
+  "narratorStatus": "fallback",
+  "twitch": {
+    "connection": "connected",
+    "broadcast": "live"
+  },
+  "rehearsal": true
+}

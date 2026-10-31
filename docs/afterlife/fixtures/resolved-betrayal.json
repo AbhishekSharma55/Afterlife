@@ -1,0 +1,136 @@
+{
+  "worldId": "world_fixture",
+  "revision": 13,
+  "name": "Westbridge",
+  "mode": "active",
+  "episode": {
+    "id": "fixture_id_002",
+    "number": 1,
+    "status": "active"
+  },
+  "factions": [
+    {
+      "id": "red",
+      "name": "Red Kingdom",
+      "supplies": 60,
+      "morale": 60
+    },
+    {
+      "id": "blue",
+      "name": "Blue Kingdom",
+      "supplies": 40,
+      "morale": 60
+    }
+  ],
+  "relationship": {
+    "trust": -20,
+    "grievance": "The Westbridge treaty was broken.",
+    "causeEventId": "fixture_id_006"
+  },
+  "locations": [
+    {
+      "id": "red_keep",
+      "name": "Red Keep",
+      "status": "stable"
+    },
+    {
+      "id": "blue_keep",
+      "name": "Blue Keep",
+      "status": "stable"
+    },
+    {
+      "id": "westbridge",
+      "name": "Westbridge",
+      "status": "closed"
+    },
+    {
+      "id": "forest",
+      "name": "Whispering Wood",
+      "status": "stable"
+    }
+  ],
+  "scene": {
+    "id": "fixture_id_003",
+    "title": "The Westbridge treaty",
+    "narration": "The community breaks the Westbridge treaty with Blue.",
+    "encounterId": "treaty",
+    "causeEventIds": [],
+    "choices": [
+      {
+        "id": "honor_treaty",
+        "number": 1,
+        "label": "Honor the treaty"
+      },
+      {
+        "id": "break_treaty",
+        "number": 2,
+        "label": "Break the treaty"
+      },
+      {
+        "id": "hold_position",
+        "number": 3,
+        "label": "Hold position"
+      }
+    ],
+    "round": {
+      "id": "fixture_id_004",
+      "status": "resolved",
+      "openedAt": "2026-10-30T08:00:01.000Z",
+      "closesAt": "2026-10-30T08:00:45.000Z",
+      "tally": {
+        "honor_treaty": 0,
+        "break_treaty": 2,
+        "hold_position": 0
+      },
+      "totalVoters": 2,
+      "winningChoiceId": "break_treaty",
+      "outcome": "choice_selected"
+    }
+  },
+  "recap": {
+    "previously": "The community breaks the Westbridge treaty with Blue.",
+    "whileAway": "",
+    "causeEventIds": [
+      "fixture_id_006"
+    ],
+    "contributionCredits": []
+  },
+  "recentEvents": [
+    {
+      "id": "fixture_id_001",
+      "sequence": 1,
+      "episodeNumber": null,
+      "kind": "world_created",
+      "summary": "Red and Blue sign the Westbridge treaty.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:00.000Z",
+      "processedAt": "2026-10-30T08:00:00.000Z"
+    },
+    {
+      "id": "fixture_id_005",
+      "sequence": 2,
+      "episodeNumber": 1,
+      "kind": "episode_started",
+      "summary": "Episode 1 begins.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:00.000Z",
+      "processedAt": "2026-10-30T08:00:00.000Z"
+    },
+    {
+      "id": "fixture_id_006",
+      "sequence": 3,
+      "episodeNumber": 1,
+      "kind": "decision_resolved",
+      "summary": "The community breaks the Westbridge treaty with Blue.",
+      "causeEventIds": [],
+      "effectiveAt": "2026-10-30T08:00:01.000Z",
+      "processedAt": "2026-10-30T08:00:01.000Z"
+    }
+  ],
+  "narratorStatus": "fallback",
+  "twitch": {
+    "connection": "connected",
+    "broadcast": "live"
+  },
+  "rehearsal": true
+}
