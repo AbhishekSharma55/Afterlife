@@ -24,6 +24,10 @@ The first milestone is a kingdom that survives a backend restart. The defining d
 
 The implementation uses TypeScript, a Node/Fastify backend, PostgreSQL, Twitch EventSub, and the OpenAI Responses API. React/Vite is the planned frontend.
 
+**Frontend development**
+
+The React/Vite client lives in `apps/web`: creator studio, public world page and OBS overlay. Start the backend in rehearsal mode with `PUBLIC_ORIGIN=http://localhost:5173`, then run `npm run dev:web` and open `http://localhost:5173/studio`. Every surface can also be previewed without a server using the generated fixtures (`?fixture=returning`). See the [frontend guide](apps/web/README.md).
+
 **Backend development**
 
 Requires Node 24+. Run `npm ci`, then `npm run typecheck` and `npm test`. `npm run build` builds the server. For local rehearsal without provider credentials or a database, run `DATABASE_URL= ALLOW_REHEARSAL=true npm run dev`. The empty database URL overrides any value in `.env` and explicitly uses temporary in-memory storage. Production requires PostgreSQL through `DATABASE_URL`.
