@@ -5,6 +5,7 @@ import { WorldService } from "./domain/world-service.js";
 import { MemoryWorldRepository } from "./db/memory-repository.js";
 import { PgWorldRepository } from "./db/pg-repository.js";
 import { generateNarration, generateRecap } from "./integrations/narrator.js";
+import { narratorOptionsFromEnv } from "./runtime/ai-config.js";
 import {
   RefreshingTwitchSession,
   fetchBroadcastPresence,
@@ -25,6 +26,7 @@ export async function startServer(
   env: NodeJS.ProcessEnv = process.env,
   dependencies: StartupDependencies = {},
 ) {
+  const narratorOptions = narratorOptionsFromEnv(env);
   const allowRehearsal = env.ALLOW_REHEARSAL === "true";
   const rehearsalOnly = !env.DATABASE_URL;
   if (rehearsalOnly && !allowRehearsal)
@@ -170,7 +172,7 @@ export async function startServer(
               fallbackTitle: scene.title,
               fallbackNarration: scene.narration,
             },
-            { apiKey: env.OPENAI_API_KEY, model: env.OPENAI_MODEL },
+            narratorOptions,
           );
           return service.applyNarration(
             snapshot.worldId,
@@ -214,7 +216,7 @@ export async function startServer(
               fallbackPreviously: memory.fallbackPreviously,
               fallbackWhileAway: memory.fallbackWhileAway,
             },
-            { apiKey: env.OPENAI_API_KEY, model: env.OPENAI_MODEL },
+            narratorOptions,
           );
           return service.applyRecap(
             snapshot.worldId,

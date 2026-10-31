@@ -19,6 +19,7 @@ test("invalid runtime configuration fails before allocating a database pool", as
     },
   };
   for (const [config, message] of [
+    [{ AI_PROVIDER: "unknown" }, /AI_PROVIDER/],
     [{ PORT: "-1" }, /PORT/],
     [{ PORT: "1.5" }, /PORT/],
     [{ OFFLINE_INTERVAL_MS: "59999" }, /OFFLINE_INTERVAL_MS/],

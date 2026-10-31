@@ -4,7 +4,7 @@ This packages the backend, frontend, and shared schema workspace in one applicat
 
 **Requirements**
 
-Docker with BuildKit and Compose v2; a host that can run a continuously running Node service and PostgreSQL; outbound HTTPS/WebSocket access to Twitch and the selected OpenAI endpoint. The image builds from Node 24 and runs the application as the unprivileged `node` user. All three workspace manifests are available during dependency installation. The frontend build includes its local fonts, public artwork, and explicitly labeled rehearsal fixtures; private environment files and scheduler logs stay outside the build context. PostgreSQL 17 uses a named volume.
+Docker with BuildKit and Compose v2; a host that can run a continuously running Node service and PostgreSQL; outbound HTTPS/WebSocket access to Twitch and the selected OpenRouter or OpenAI endpoint. The image builds from Node 24 and runs the application as the unprivileged `node` user. All three workspace manifests are available during dependency installation. The frontend build includes its local fonts, public artwork, and explicitly labeled rehearsal fixtures; private environment files and scheduler logs stay outside the build context. PostgreSQL 17 uses a named volume.
 
 **Prepare local configuration**
 
@@ -12,7 +12,7 @@ Docker with BuildKit and Compose v2; a host that can run a continuously running 
 2. Add `POSTGRES_PASSWORD` with your own generated secret. For example, `openssl rand -hex 32` produces a password without URI-reserved punctuation. Do not use a default or shared deployment password.
 3. Set `DATABASE_URL=postgresql://afterlife:YOUR_PASSWORD@postgres:5432/afterlife`. The hostname is `postgres` inside Compose. If the password contains URI-reserved characters, percent-encode it in the URL; `POSTGRES_PASSWORD` remains the original unencoded value.
 4. Set `PUBLIC_ORIGIN` and `TWITCH_REDIRECT_URI` to the exact origin/callback that the browser will use. For local testing, use `http://localhost:4310` and `http://localhost:4310/auth/twitch/callback`. Register that callback in the Twitch application.
-5. Supply `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`, `OPENAI_API_KEY`, and `OPENAI_MODEL` as needed. A missing OpenAI configuration uses factual fallback narration; a missing Twitch configuration does not establish real Twitch integration.
+5. Supply `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET`. For narration, set `AI_PROVIDER`, `AI_MODEL`, and the selected provider key (`OPENROUTER_API_KEY` or `OPENAI_API_KEY`). The example selects OpenRouter / `deepseek/deepseek-v4-flash`; see [provider switching](ai-providers.md). Missing narrator configuration uses factual fallback narration; missing Twitch configuration does not establish real Twitch integration.
 
 Compose fails if the password or database URL is missing. It forces persistent database mode and disables the developer rehearsal login. For isolated in-memory rehearsal, use the documented local Node workflow instead.
 
