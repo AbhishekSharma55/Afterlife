@@ -15,6 +15,8 @@ test(
       const owner = crypto.randomUUID();
       const s = new WorldService(repo);
       const w = await s.createWorld(owner);
+      // Live worlds open voting only while chat is connected.
+      await s.setTwitchState(w.worldId, { connection: "connected" });
       id = w.worldId;
       await s.startEpisode(id, owner, "start");
       await s.prepareScene(id, owner, "prepare");

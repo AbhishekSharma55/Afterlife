@@ -17,6 +17,8 @@ test("public reads work while identity and all mutations require a creator sessi
   const { app, service } = fixture();
   t.after(() => app.close());
   const world = await service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(world.worldId, { connection: "connected" });
   assert.equal(
     (await app.inject(`/api/worlds/${world.worldId}`)).statusCode,
     200,
@@ -59,6 +61,8 @@ test("owner authorization, input validation and origin checking guard world muta
   });
   t.after(() => app.close());
   const world = await service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(world.worldId, { connection: "connected" });
   const url = `/api/worlds/${world.worldId}/episodes/start`;
   assert.equal(
     (
@@ -110,6 +114,8 @@ test("round routes resolve real engine votes once and expose history", async (t)
   t.after(() => app.close());
   const headers = { cookie: cookie("owner") };
   const world = await service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(world.worldId, { connection: "connected" });
   const post = (path: string, payload: unknown) =>
     app.inject({
       method: "POST",
@@ -204,6 +210,8 @@ test("rehearsal authentication is explicit, local only and cannot control live w
   });
   assert.equal(created.json().rehearsal, true);
   const live = await service.createWorld("live-owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(live.worldId, { connection: "connected" });
   assert.equal(
     (
       await app.inject({
@@ -264,6 +272,8 @@ test("SSE emits persisted snapshots and closes when the client aborts", async (t
   const { app, service } = fixture();
   t.after(() => app.close());
   const world = await service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(world.worldId, { connection: "connected" });
   await app.listen({ host: "127.0.0.1", port: 0 });
   const address = app.server.address();
   assert.ok(address && typeof address !== "string");
@@ -397,6 +407,8 @@ test("owner-only rehearsal chat supports a full vote without permitting live inj
     ),
   );
   const live = await service.createWorld("live-owner");
+  // Live worlds open voting only while chat is connected.
+  await service.setTwitchState(live.worldId, { connection: "connected" });
   assert.equal(
     (
       await app.inject({
