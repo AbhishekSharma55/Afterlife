@@ -453,6 +453,9 @@ export class WorldService {
         r.status !== "prepared"
       )
         fail("ROUND_NOT_PREPARED", "The round is not prepared.");
+      // A live world without chat would spend its voting window with nobody able to vote.
+      if (!w.snapshot.rehearsal && w.snapshot.twitch.connection !== "connected")
+        fail("CHAT_DISCONNECTED", "Reconnect chat before opening voting.");
       r!.status = "open";
       r!.openedAt = new Date(this.now()).toISOString();
       r!.closesAt = new Date(this.now() + durationSeconds * 1000).toISOString();
@@ -509,10 +512,14 @@ export class WorldService {
       const votes = w.votes[r.id];
       const old = votes.find((v) => v.userId === message.userId);
       if (old) {
+        // Chat can arrive out of order: an older message never replaces a newer vote.
+        // Equal timestamps keep delivery order (the later delivery wins).
+        if (old.at !== undefined && time < old.at) return this.snapshot(w);
         r.tally[old.choiceId]--;
         Object.assign(old, {
           choiceId: choice.id,
           displayName: message.displayName,
+          at: time,
         });
       } else {
         votes.push({
@@ -520,6 +527,7 @@ export class WorldService {
           choiceId: choice.id,
           faction: member.faction,
           displayName: message.displayName,
+          at: time,
         });
         r.totalVoters++;
       }
@@ -664,6 +672,9 @@ export class WorldService {
         w.snapshot.relationship.causeEventId = null;
         w.snapshot.locations.find((l) => l.id === "westbridge")!.status =
           "open";
+        // The grievance was Blue's only reason to prepare retaliation.
+        const keep = w.snapshot.locations.find((l) => l.id === "blue_keep")!;
+        if (keep.status === "preparing") keep.status = "stable";
         summary =
           "The community pays reparations and resolves the treaty grievance.";
       } else if (action === "open_talks") {

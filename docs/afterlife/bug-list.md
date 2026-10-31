@@ -4,15 +4,25 @@ Reviewed October 31, 2026 against main commit `0c6fee1`, after integration PR #3
 
 P1 means high impact; P2 means medium impact. All entries are open. Reproduction evidence establishes the behavior described, not every possible downstream consequence. Live Twitch/OpenAI calls and OBS compositing were outside this review.
 
+## Status update — October 31, 2026 (branch `fix/frontend-bugs-and-ui`)
+
+- FE-01 to FE-05 are fixed, each with a regression test in `apps/web/test/regressions.test.tsx`.
+- New and fixed: **BE-04**. On Windows, the built frontend's `/assets/*` returned HTTP 403 because `relative()` produced backslash paths that `@fastify/static` rejects. The page rendered blank and both Playwright scenarios failed. `apps/server/src/http/static.ts` now converts the path to `/` separators. Both e2e scenarios pass on Windows.
+- Known Windows-only test limitation: six `static.test.ts` cases fail with `EPERM` on `symlink` unless Developer Mode or admin rights are enabled. This is a test-setup issue, not an app defect; they pass on Linux CI.
+- BE-01 fixed: each counted vote stores its chat timestamp. A delayed, strictly older `!vote` no longer replaces a newer one; equal timestamps keep delivery order.
+- BE-02 fixed: paying reparations returns Blue Keep from `preparing` to `stable` in the same transaction.
+- BE-03 fixed: `openRound` rejects a live (non-rehearsal) world whose chat is not connected, with `CHAT_DISCONNECTED`. Rehearsal worlds are unaffected. Existing tests that open rounds in live worlds now connect chat first.
+- Regression tests for BE-01 to BE-03 are in `apps/server/test/domain.test.ts`. All eight audit findings are now fixed.
+
 ## Frontend
 
 | ID | Priority | Issue | Source |
 | --- | --- | --- | --- |
-| FE-01 | P2 | Old-world history contaminates the newly selected world | [useWorld.ts](../../apps/web/src/lib/useWorld.ts), history request at line 233 and reducer at line 89 |
-| FE-02 | P2 | Expired session leaves creator controls enabled without offering sign-in | [useSession.ts](../../apps/web/src/lib/useSession.ts):29; [useCommand.ts](../../apps/web/src/lib/useCommand.ts):31; [Studio.tsx](../../apps/web/src/pages/Studio.tsx):552 |
-| FE-03 | P2 | Empty story filter hides access to existing history | [Chronicle.tsx](../../apps/web/src/components/Chronicle.tsx):53 |
-| FE-04 | P2 | Studio memory links fail to reveal causes outside the recent list | [Chronicle.tsx](../../apps/web/src/components/Chronicle.tsx):44; [Studio.tsx](../../apps/web/src/pages/Studio.tsx):695 |
-| FE-05 | P2 | HTTP 5xx retries discard the logical action's idempotency key | [useCommand.ts](../../apps/web/src/lib/useCommand.ts):34 |
+| FE-01 | P2 (fixed) | Old-world history contaminates the newly selected world | [useWorld.ts](../../apps/web/src/lib/useWorld.ts), history request at line 233 and reducer at line 89 |
+| FE-02 | P2 (fixed) | Expired session leaves creator controls enabled without offering sign-in | [useSession.ts](../../apps/web/src/lib/useSession.ts):29; [useCommand.ts](../../apps/web/src/lib/useCommand.ts):31; [Studio.tsx](../../apps/web/src/pages/Studio.tsx):552 |
+| FE-03 | P2 (fixed) | Empty story filter hides access to existing history | [Chronicle.tsx](../../apps/web/src/components/Chronicle.tsx):53 |
+| FE-04 | P2 (fixed) | Studio memory links fail to reveal causes outside the recent list | [Chronicle.tsx](../../apps/web/src/components/Chronicle.tsx):44; [Studio.tsx](../../apps/web/src/pages/Studio.tsx):695 |
+| FE-05 | P2 (fixed) | HTTP 5xx retries discard the logical action's idempotency key | [useCommand.ts](../../apps/web/src/lib/useCommand.ts):34 |
 
 ### FE-01 — History responses survive a world switch
 
@@ -58,9 +68,9 @@ P1 means high impact; P2 means medium impact. All entries are open. Reproduction
 
 | ID | Priority | Issue | Source |
 | --- | --- | --- | --- |
-| BE-01 | P2 | A delayed older chat vote overwrites the viewer's newer choice | [world-service.ts](../../apps/server/src/domain/world-service.ts):510; stored vote shape in [types.ts](../../apps/server/src/domain/types.ts):12 |
-| BE-02 | P2 | Reparations resolve the grievance but leave Blue Keep preparing retaliation | [world-service.ts](../../apps/server/src/domain/world-service.ts):663 |
-| BE-03 | P2 | A disconnected live world can open and resolve a voting round | [world-service.ts](../../apps/server/src/domain/world-service.ts):448 |
+| BE-01 | P2 (fixed) | A delayed older chat vote overwrites the viewer's newer choice | [world-service.ts](../../apps/server/src/domain/world-service.ts):510; stored vote shape in [types.ts](../../apps/server/src/domain/types.ts):12 |
+| BE-02 | P2 (fixed) | Reparations resolve the grievance but leave Blue Keep preparing retaliation | [world-service.ts](../../apps/server/src/domain/world-service.ts):663 |
+| BE-03 | P2 (fixed) | A disconnected live world can open and resolve a voting round | [world-service.ts](../../apps/server/src/domain/world-service.ts):448 |
 
 ### BE-01 — Replacement votes use delivery order instead of message order
 

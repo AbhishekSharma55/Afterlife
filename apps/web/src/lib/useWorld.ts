@@ -32,8 +32,13 @@ type Action =
     }
   | { type: "snapshot"; snapshot: WorldSnapshot }
   | { type: "feed"; feed: FeedStatus; error?: string | null }
-  | { type: "history"; events: WorldEvent[]; exhausted: boolean }
-  | { type: "historyLoading"; loading: boolean };
+  | {
+      type: "history";
+      worldId: string;
+      events: WorldEvent[];
+      exhausted: boolean;
+    }
+  | { type: "historyLoading"; worldId: string; loading: boolean };
 
 function mergeEvents(known: Record<string, WorldEvent>, events: WorldEvent[]) {
   let next = known;
@@ -87,6 +92,8 @@ function reducer(state: State, action: Action): State {
     case "feed":
       return { ...state, feed: action.feed, error: action.error ?? null };
     case "history":
+      // A page requested for a previous world must not leak into this one.
+      if (action.worldId !== state.worldId) return state;
       return {
         ...state,
         events: mergeEvents(state.events, action.events),
@@ -94,6 +101,7 @@ function reducer(state: State, action: Action): State {
         loadingHistory: false,
       };
     case "historyLoading":
+      if (action.worldId !== state.worldId) return state;
       return { ...state, loadingHistory: action.loading };
   }
 }
@@ -129,8 +137,11 @@ export function useWorld(
   );
   const stateRef = useRef(state);
   stateRef.current = state;
+  const historyGeneration = useRef(0);
 
   useEffect(() => {
+    // A fixture switch or a return to the same world also starts a new history lifetime.
+    historyGeneration.current++;
     if (fixture) {
       dispatch({
         type: "reset",
@@ -138,7 +149,9 @@ export function useWorld(
         feed: "fixture",
         snapshot: getFixture(fixture),
       });
-      return;
+      return () => {
+        historyGeneration.current++;
+      };
     }
     dispatch({ type: "reset", worldId, feed: "loading" });
     let disposed = false;
@@ -215,6 +228,7 @@ export function useWorld(
       if (keepGoing && !disposed) connect();
     });
     return () => {
+      historyGeneration.current++;
       disposed = true;
       clearTimeout(retryTimer);
       source?.close();
@@ -223,21 +237,31 @@ export function useWorld(
 
   const loadOlderHistory = useCallback(async () => {
     const current = stateRef.current;
-    if (fixture || current.loadingHistory || current.historyExhausted) return;
+    if (
+      fixture ||
+      current.feed === "fixture" ||
+      current.loadingHistory ||
+      current.historyExhausted
+    )
+      return;
+    const generation = historyGeneration.current;
     const known = Object.values(current.events);
     const before = known.length
       ? Math.min(...known.map((event) => event.sequence))
       : undefined;
-    dispatch({ type: "historyLoading", loading: true });
+    dispatch({ type: "historyLoading", worldId, loading: true });
     try {
       const page = await api.history(worldId, before);
+      if (generation !== historyGeneration.current) return;
       dispatch({
         type: "history",
+        worldId,
         events: page.events,
         exhausted: page.nextCursor === null,
       });
     } catch {
-      dispatch({ type: "historyLoading", loading: false });
+      if (generation !== historyGeneration.current) return;
+      dispatch({ type: "historyLoading", worldId, loading: false });
     }
   }, [worldId, fixture]);
 
@@ -251,7 +275,7 @@ export function useWorld(
   const autoFetches = useRef(0);
   useEffect(() => {
     autoFetches.current = 0;
-  }, [worldId]);
+  }, [worldId, fixture]);
   useEffect(() => {
     if (
       !missing ||

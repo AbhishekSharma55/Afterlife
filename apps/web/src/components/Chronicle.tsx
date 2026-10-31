@@ -41,7 +41,11 @@ export function Chronicle({
   const story = events.filter(isStoryEvent);
   const visible = showAll ? events : story;
   const hidden = events.length - story.length;
-  const items = limit ? visible.slice(0, limit) : visible;
+  let items = limit ? visible.slice(0, limit) : visible;
+  // A cause link can point past the short list; show that entry too so the link always lands.
+  const selected = selectedId ? known[selectedId] : undefined;
+  if (selected && !items.some((event) => event.id === selected.id))
+    items = [...items, selected];
   const selectedRef = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
     selectedRef.current?.scrollIntoView({
@@ -50,74 +54,82 @@ export function Chronicle({
     });
   }, [selectedId]);
 
-  if (!items.length) return <p className="muted">Nothing has happened yet.</p>;
   return (
     <div className="chronicle">
-      <ol className="chronicle__list">
-        {items.map((event) => {
-          const kind = eventKind(event.kind);
-          const isRemembered =
-            remembered.includes(event.id) && isStoryEvent(event);
-          const isSelected = selectedId === event.id;
-          return (
-            <li
-              key={event.id}
-              id={`event-${event.id}`}
-              ref={isSelected ? selectedRef : undefined}
-              className={[
-                "entry",
-                `entry--${kind.tone}`,
-                isRemembered ? "entry--remembered" : "",
-                isSelected ? "entry--selected" : "",
-              ].join(" ")}
-            >
-              <span className="entry__marker" aria-hidden="true" />
-              <div className="entry__body">
-                <p className="entry__summary">{event.summary}</p>
-                <div className="entry__meta">
-                  <span className={`entry__kind entry__kind--${kind.tone}`}>
-                    {kind.label}
-                  </span>
-                  {/* "While resting" and "Founding" already say when they happened. */}
-                  {(kind.tone === "decision" || kind.tone === "episode") && (
-                    <span>{eventWhen(event)}</span>
-                  )}
-                  <time
-                    dateTime={event.effectiveAt}
-                    title={`Recorded ${new Date(event.processedAt).toLocaleString()}`}
-                  >
-                    {time.format(new Date(event.effectiveAt))}
-                  </time>
-                  <span className="entry__seq">#{event.sequence}</span>
-                  {isRemembered && (
-                    <span className="entry__flag">Remembered</span>
-                  )}
-                  {event.causeEventIds.map((id) => {
-                    const cause = known[id];
-                    const label = cause
-                      ? `Because of #${cause.sequence}`
-                      : "Because of an earlier event";
-                    return onSelect && cause ? (
-                      <button
-                        key={id}
-                        type="button"
-                        className="entry__cause"
-                        onClick={() => onSelect(id)}
-                      >
-                        {label}
-                      </button>
-                    ) : (
-                      <span key={id} className="entry__cause">
-                        {label}
-                      </span>
-                    );
-                  })}
+      {!items.length && (
+        <p className="muted">
+          {hidden > 0 || hasOlder
+            ? "No story events in this stretch of history."
+            : "Nothing has happened yet."}
+        </p>
+      )}
+      {items.length > 0 && (
+        <ol className="chronicle__list">
+          {items.map((event) => {
+            const kind = eventKind(event.kind);
+            const isRemembered =
+              remembered.includes(event.id) && isStoryEvent(event);
+            const isSelected = selectedId === event.id;
+            return (
+              <li
+                key={event.id}
+                id={`event-${event.id}`}
+                ref={isSelected ? selectedRef : undefined}
+                className={[
+                  "entry",
+                  `entry--${kind.tone}`,
+                  isRemembered ? "entry--remembered" : "",
+                  isSelected ? "entry--selected" : "",
+                ].join(" ")}
+              >
+                <span className="entry__marker" aria-hidden="true" />
+                <div className="entry__body">
+                  <p className="entry__summary">{event.summary}</p>
+                  <div className="entry__meta">
+                    <span className={`entry__kind entry__kind--${kind.tone}`}>
+                      {kind.label}
+                    </span>
+                    {/* "While resting" and "Founding" already say when they happened. */}
+                    {(kind.tone === "decision" || kind.tone === "episode") && (
+                      <span>{eventWhen(event)}</span>
+                    )}
+                    <time
+                      dateTime={event.effectiveAt}
+                      title={`Recorded ${new Date(event.processedAt).toLocaleString()}`}
+                    >
+                      {time.format(new Date(event.effectiveAt))}
+                    </time>
+                    <span className="entry__seq">#{event.sequence}</span>
+                    {isRemembered && (
+                      <span className="entry__flag">Remembered</span>
+                    )}
+                    {event.causeEventIds.map((id) => {
+                      const cause = known[id];
+                      const label = cause
+                        ? `Because of #${cause.sequence}`
+                        : "Because of an earlier event";
+                      return onSelect && cause ? (
+                        <button
+                          key={id}
+                          type="button"
+                          className="entry__cause"
+                          onClick={() => onSelect(id)}
+                        >
+                          {label}
+                        </button>
+                      ) : (
+                        <span key={id} className="entry__cause">
+                          {label}
+                        </span>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+              </li>
+            );
+          })}
+        </ol>
+      )}
       {(hidden > 0 || (hasOlder && onLoadOlder && !limit)) && (
         <div className="chronicle__actions">
           {hidden > 0 && (

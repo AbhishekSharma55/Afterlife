@@ -19,6 +19,8 @@ function setup() {
 async function opened(ctx: ReturnType<typeof setup>) {
   const { service: s } = ctx;
   const world = await s.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await s.setTwitchState(world.worldId, { connection: "connected" });
   const id = world.worldId;
   await s.startEpisode(id, "owner", "start");
   const scene = await s.prepareScene(id, "owner", "prepare");
@@ -218,6 +220,8 @@ test("deadlines resolve without a creator request; offline presence defers unfin
 test("narration rejects invented history and ignores responses after voting opens", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   const prepared = await ctx.service.prepareScene(id, "owner", "prepare");
@@ -269,6 +273,8 @@ async function chooseAction(
 test("shortage follows its exact resource event and foraging recovers supplies without erasing a betrayal", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   await ctx.repository.transact(id, (w) => {
@@ -310,6 +316,8 @@ test("surplus is shared symmetrically with conserved supplies and bounded morale
   for (const donor of ["red", "blue"]) {
     const ctx = setup();
     const w = await ctx.service.createWorld("owner");
+    // Live worlds open voting only while chat is connected.
+    await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
     const id = w.worldId;
     await ctx.service.startEpisode(id, "owner", "start");
     await ctx.repository.transact(id, (w) => {
@@ -336,6 +344,8 @@ test("surplus is shared symmetrically with conserved supplies and bounded morale
 test("a depleted world remains playable; foraging obeys capacity and depleted morale bounds", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   await ctx.repository.transact(id, (w) => {
@@ -385,6 +395,8 @@ test("reparations settle a grievance explicitly while talks and fortification ke
   ] as const) {
     const ctx = setup();
     const w = await ctx.service.createWorld("owner");
+    // Live worlds open voting only while chat is connected.
+    await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
     const id = w.worldId;
     await ctx.service.startEpisode(id, "owner", "start");
     const betrayal = await chooseAction(ctx, id, "break_treaty", "betrayal");
@@ -411,6 +423,8 @@ test("reparations settle a grievance explicitly while talks and fortification ke
 test("deferred choices are revalidated after resting consumption changes eligibility", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   await ctx.repository.transact(id, (w) => {
@@ -436,6 +450,8 @@ test("deferred choices are revalidated after resting consumption changes eligibi
 test("returning memory credits exact recorded choices and original faction without exposing user IDs", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   const resolved = await chooseAction(ctx, id, "break_treaty", "betrayal");
@@ -511,6 +527,8 @@ test("previous offline developments do not leak into a later absence with no ela
 test("leader reactions are validated, persist once, and cannot change canonical world facts", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   const scene = await ctx.service.prepareScene(id, "owner", "prepare");
@@ -541,6 +559,8 @@ test("leader reactions are validated, persist once, and cannot change canonical 
 test("foraging caps a full neighbor while letting the depleted faction recover", async () => {
   const ctx = setup();
   const w = await ctx.service.createWorld("owner");
+  // Live worlds open voting only while chat is connected.
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
   const id = w.worldId;
   await ctx.service.startEpisode(id, "owner", "start");
   await ctx.repository.transact(id, (w) => {
@@ -574,4 +594,73 @@ test("a recovered decision cannot silently execute an action whose resources hav
     ).length,
     0,
   );
+});
+
+test("a delayed older vote cannot replace a newer one (BE-01)", async () => {
+  const ctx = setup();
+  const { id } = await opened(ctx);
+  await chat(ctx, id, "alice", "!join red");
+  const early = ctx.now();
+  ctx.advance(1000);
+  await chat(ctx, id, "alice", "!vote 2");
+  // The earlier !vote 1 is delivered after the newer !vote 2.
+  const s = await ctx.service.handleChat(id, {
+    messageId: "late-delivery",
+    userId: "alice",
+    displayName: "alice",
+    text: "!vote 1",
+    timestamp: early,
+  });
+  assert.equal(s.scene!.round.totalVoters, 1);
+  assert.equal(s.scene!.round.tally.break_treaty, 1);
+  assert.equal(s.scene!.round.tally.honor_treaty, 0);
+});
+
+test("reparations also end Blue's retaliation preparations (BE-02)", async () => {
+  const ctx = setup();
+  const w = await ctx.service.createWorld("owner");
+  await ctx.service.setTwitchState(w.worldId, { connection: "connected" });
+  const id = w.worldId;
+  const started = await ctx.service.startEpisode(id, "owner", "start");
+  await chooseAction(ctx, id, "break_treaty", "betrayal");
+  await ctx.service.endEpisode(id, "owner", started.episode!.id, "end");
+  ctx.advance(1000);
+  const returning = await ctx.service.startEpisode(id, "owner", "start-2");
+  const keep = (s: typeof returning) =>
+    s.locations.find((l) => l.id === "blue_keep")!.status;
+  assert.equal(keep(returning), "preparing");
+  const resolved = await chooseAction(ctx, id, "pay_reparations", "repair");
+  assert.equal(resolved.relationship.grievance, null);
+  assert.equal(keep(resolved), "stable");
+});
+
+test("a live world cannot open voting while chat is disconnected (BE-03)", async () => {
+  const ctx = setup();
+  const live = await ctx.service.createWorld("owner");
+  await ctx.service.startEpisode(live.worldId, "owner", "start");
+  const scene = await ctx.service.prepareScene(live.worldId, "owner", "prep");
+  await assert.rejects(
+    ctx.service.openRound(live.worldId, "owner", scene.scene!.round.id, "open"),
+    (e: unknown) => e instanceof DomainError && e.code === "CHAT_DISCONNECTED",
+  );
+  assert.equal(
+    (await ctx.service.getWorld(live.worldId)).scene!.round.status,
+    "prepared",
+  );
+
+  // Rehearsal has no chat connection and stays playable.
+  const practice = await ctx.service.createWorld("rehearser", "Practice", true);
+  await ctx.service.startEpisode(practice.worldId, "rehearser", "start");
+  const prepared = await ctx.service.prepareScene(
+    practice.worldId,
+    "rehearser",
+    "prep",
+  );
+  const opened = await ctx.service.openRound(
+    practice.worldId,
+    "rehearser",
+    prepared.scene!.round.id,
+    "open",
+  );
+  assert.equal(opened.scene!.round.status, "open");
 });

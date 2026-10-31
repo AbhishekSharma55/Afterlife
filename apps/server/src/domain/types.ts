@@ -13,6 +13,8 @@ export interface Vote {
   choiceId: string;
   faction: FactionId;
   displayName: string;
+  /** Chat timestamp (ms) of the counted vote, so a delayed older message cannot replace it. */
+  at?: number;
 }
 export interface StoredWorld {
   ownerId: string;

@@ -14,6 +14,7 @@ import "./styles/base.css";
 import "./styles/components.css";
 import "./styles/pages.css";
 import "./styles/overlay.css";
+import "./styles/realism.css";
 import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(

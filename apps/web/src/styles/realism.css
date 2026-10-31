@@ -1,0 +1,449 @@
+/* Realism layer — loaded last. Turns the flat dark panels into physical materials over a live,
+   breathing landscape: the photograph stays visible (as in a modern game lobby), panels read as
+   smoked glass in a forged frame, light falls from above, and fog, embers and film grain give
+   the scene depth. Everything here is decoration: removing this file leaves a working UI.
+   The OBS overlay has no `.page`, so none of the atmosphere reaches the stream. */
+
+:root {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --brushed: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.012) 0 1px,
+    rgba(0, 0, 0, 0.02) 1px 3px
+  );
+  --metal-edge: linear-gradient(
+    180deg,
+    #f6dfa5 0%,
+    #c99a4a 38%,
+    #7a5622 62%,
+    #d6ad62 100%
+  );
+  --panel-light: linear-gradient(
+    180deg,
+    rgba(255, 244, 214, 0.075) 0%,
+    rgba(255, 244, 214, 0.02) 22%,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.22) 100%
+  );
+  --surface: rgba(10, 12, 16, 0.72);
+  --shadow:
+    0 2px 0 rgba(0, 0, 0, 0.5), 0 24px 50px -16px rgba(0, 0, 0, 0.85),
+    0 60px 120px -40px rgba(0, 0, 0, 0.7);
+}
+
+/* ——— The world behind the glass ——— */
+
+.page::before {
+  /* Lighter grade so the landscape is actually seen; panels carry the contrast instead. */
+  background:
+    var(--page-grade, linear-gradient(transparent, transparent)),
+    radial-gradient(
+      ellipse 130% 100% at 55% 30%,
+      rgba(7, 8, 11, 0) 0%,
+      rgba(7, 8, 11, 0.25) 55%,
+      rgba(7, 8, 11, 0.85) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(7, 8, 11, 0.35) 0%,
+      rgba(7, 8, 11, 0.12) 30%,
+      rgba(7, 8, 11, 0.45) 70%,
+      rgba(7, 8, 11, 0.92) 100%
+    ),
+    var(--page-art, none) center / cover no-repeat,
+    var(--bg);
+  transform-origin: 60% 40%;
+  animation: realism-drift 60s ease-in-out infinite alternate;
+}
+
+/* Drifting low fog and a few rising embers, layered between the photo and the panels. */
+.page::after {
+  content: "";
+  position: fixed;
+  inset: -10% -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 40% 18% at 20% 78%,
+      rgba(210, 215, 225, 0.12),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 35% 14% at 70% 86%,
+      rgba(210, 215, 225, 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 20% at 45% 95%,
+      rgba(230, 200, 150, 0.08),
+      transparent 70%
+    );
+  filter: blur(6px);
+  animation: realism-fog 38s ease-in-out infinite alternate;
+}
+
+body:has(.page)::before,
+body:has(.page)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+/* Film grain and a lens vignette over everything, like a camera rather than a screen. */
+body:has(.page)::before {
+  background:
+    radial-gradient(
+      ellipse 100% 100% at 50% 45%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.45) 100%
+    ),
+    var(--grain);
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
+}
+body:has(.page)::after {
+  z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 190, 110, 0.9) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(255, 160, 80, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(255, 210, 140, 0.6) 0 1.2px, transparent 2px);
+  background-size:
+    340px 420px,
+    520px 600px,
+    760px 820px;
+  background-position:
+    40px 0,
+    210px 120px,
+    500px 60px;
+  opacity: 0.45;
+  animation: realism-embers 26s linear infinite;
+}
+
+@keyframes realism-drift {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(-1.2%, -0.8%, 0);
+  }
+}
+@keyframes realism-fog {
+  from {
+    transform: translate3d(-4%, 0, 0);
+  }
+  to {
+    transform: translate3d(5%, -2%, 0);
+  }
+}
+@keyframes realism-embers {
+  from {
+    background-position:
+      40px 0,
+      210px 120px,
+      500px 60px;
+  }
+  to {
+    background-position:
+      100px -420px,
+      150px -480px,
+      560px -760px;
+  }
+}
+
+/* ——— Panels: smoked glass in a forged, gilt-edged frame ——— */
+
+.card {
+  background:
+    var(--panel-light), var(--brushed),
+    linear-gradient(180deg, rgba(16, 18, 23, 0.78), rgba(7, 8, 11, 0.86));
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 181, 107, 0.22),
+    inset 0 1px 0 rgba(255, 236, 190, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(0, 0, 0, 0.35),
+    var(--shadow);
+  backdrop-filter: blur(18px) saturate(1.35) brightness(0.9);
+}
+/* Gilded corner fittings with a bevel, instead of flat brackets. */
+.card::before {
+  inset: -2px;
+  background:
+    var(--metal-edge) top left / 26px 3px,
+    var(--metal-edge) top left / 3px 26px,
+    var(--metal-edge) top right / 26px 3px,
+    var(--metal-edge) top right / 3px 26px,
+    var(--metal-edge) bottom left / 26px 3px,
+    var(--metal-edge) bottom left / 3px 26px,
+    var(--metal-edge) bottom right / 26px 3px,
+    var(--metal-edge) bottom right / 3px 26px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 0 6px rgba(217, 181, 107, 0.25));
+  opacity: 1;
+}
+
+/* ——— Top bar: a solid lobby header with a gilt rail ——— */
+
+.topbar {
+  background: linear-gradient(
+    180deg,
+    rgba(4, 5, 7, 0.95),
+    rgba(10, 11, 14, 0.85)
+  );
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.8),
+    0 12px 30px -10px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(16px) saturate(1.3);
+}
+.topbar::after {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #8a6a2c 12%,
+    #f1d38f 50%,
+    #8a6a2c 88%,
+    transparent
+  );
+  box-shadow: 0 0 12px rgba(241, 211, 143, 0.35);
+}
+.brand__word {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.9));
+}
+
+/* ——— Buttons: struck metal plates ——— */
+
+.btn {
+  min-height: 44px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.25)
+    ),
+    var(--btn-bg, rgba(20, 22, 28, 0.85));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+.btn::after {
+  /* A sheen that sweeps across on hover */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 245, 220, 0.28) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+.btn:hover:not(:disabled)::after {
+  transform: translateX(120%);
+  transition: transform 0.7s var(--ease-out);
+}
+.btn--primary {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0) 48%,
+      rgba(0, 0, 0, 0.18)
+    ),
+    linear-gradient(180deg, #f0cd85, #c6923f 60%, #a2742c);
+  color: #1b1307;
+  text-shadow: 0 1px 0 rgba(255, 240, 200, 0.5);
+  border-color: #6b4c1a;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 225, 0.7),
+    inset 0 -2px 0 rgba(90, 60, 15, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 6px 18px -4px rgba(217, 160, 70, 0.55);
+}
+.btn--primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 225, 0.8),
+    inset 0 -2px 0 rgba(90, 60, 15, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 8px 28px -4px rgba(241, 190, 100, 0.75);
+}
+.btn--small {
+  min-height: 34px;
+}
+
+/* ——— Map: real paper, singed edges ——— */
+
+.map {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.8),
+    0 0 0 4px #2a1d0e,
+    0 0 0 5px rgba(217, 181, 107, 0.45),
+    0 18px 40px -10px rgba(0, 0, 0, 0.9);
+}
+.map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 75% 70% at 50% 50%,
+      transparent 55%,
+      rgba(70, 40, 10, 0.45) 90%,
+      rgba(30, 15, 5, 0.75) 100%
+    ),
+    var(--grain);
+  background-size: auto, 180px;
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+/* ——— Vote options: engraved plates that light up like a selected menu row ——— */
+
+.choice {
+  border-color: rgba(0, 0, 0, 0.6);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0) 45%,
+      rgba(0, 0, 0, 0.2)
+    ),
+    linear-gradient(90deg, rgba(34, 37, 44, 0.85), rgba(18, 20, 25, 0.7));
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 181, 107, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 4px 10px -4px rgba(0, 0, 0, 0.7);
+}
+.choice:hover {
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 181, 107, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 16px -6px rgba(0, 0, 0, 0.8);
+}
+.choice--leading {
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 181, 107, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 24px -8px rgba(217, 181, 107, 0.45);
+}
+.choice--winner {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 240, 200, 0.14),
+      rgba(255, 255, 255, 0) 50%
+    ),
+    linear-gradient(90deg, rgba(217, 181, 107, 0.3), rgba(217, 181, 107, 0.06));
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    inset 0 1px 0 rgba(255, 248, 225, 0.35),
+    0 0 36px -8px rgba(217, 181, 107, 0.65);
+}
+
+/* ——— Kingdom banners: dyed cloth on a dark ground ——— */
+
+.faction {
+  background-image: var(--panel-light);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 30px rgba(0, 0, 0, 0.45),
+    0 10px 24px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* ——— Fixture bar: keep it a single scrolling strip on narrow screens ——— */
+
+.fixture-bar {
+  background: linear-gradient(180deg, #050608, #0c0d10);
+}
+
+/* ——— Responsive: tablets and phones ——— */
+
+@media (max-width: 1100px) {
+  .world {
+    padding-inline: clamp(0.75rem, 3vw, 1.5rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .card::before {
+    inset: -1px;
+    background-size:
+      18px 2px,
+      2px 18px,
+      18px 2px,
+      2px 18px,
+      18px 2px,
+      2px 18px,
+      18px 2px,
+      2px 18px;
+  }
+  .topbar {
+    padding: 0.6rem 0.9rem;
+    gap: 0.5rem 0.9rem;
+  }
+  .topbar__divider {
+    display: none;
+  }
+  .topbar__right {
+    width: 100%;
+  }
+  .fixture-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fixture-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .fixture-bar__list {
+    flex-wrap: nowrap;
+  }
+  .fixture-bar__item {
+    white-space: nowrap;
+  }
+  /* Phones have less GPU headroom; fewer moving layers. */
+  body:has(.page)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    width: auto;
+  }
+  .btn--large {
+    width: 100%;
+    justify-content: center;
+  }
+  .page::before {
+    background-position: 60% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page::before,
+  .page::after,
+  body:has(.page)::after {
+    animation: none;
+  }
+  .btn:hover:not(:disabled)::after {
+    transition: none;
+  }
+}

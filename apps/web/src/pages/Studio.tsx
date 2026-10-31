@@ -512,7 +512,7 @@ export function Studio() {
   const fixture = useFixtureParam();
   const world = useWorld(worldId, fixture);
   const { session, refresh } = useSession(!fixture);
-  const { run, busy } = useCommand(world.apply);
+  const { run, busy } = useCommand(world.apply, refresh);
   const change = useDelta(world.snapshot);
   const toast = useToast();
   const [selected, setSelected] = useState<string | null>(null);
