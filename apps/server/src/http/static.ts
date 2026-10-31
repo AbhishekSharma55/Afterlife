@@ -86,7 +86,8 @@ export function configureFrontend(
     } catch {
       return notFound(reply);
     }
-    const filename = relative(root, file);
+    // URL-style separators: on Windows `relative` uses backslashes, which `send` rejects (403).
+    const filename = relative(root, file).split(sep).join("/");
     const immutable = !spa && /^assets\/.*-[\w-]{8,}\.[\w]+$/.test(filename);
     if (spa || filename === "index.html")
       reply.header("Cache-Control", "no-store");
