@@ -1,14 +1,14 @@
 **Full application checkpoint — October 31, 2026**
 
-Backend PR [#1](https://github.com/AbhishekSharma55/Afterlife/pull/1) and frontend PR [#2](https://github.com/AbhishekSharma55/Afterlife/pull/2) were merged in the requested order. Local main was refreshed to `20d806f`. Current work is on `feat/fullstack-integration`; do not merge its PR without a new explicit instruction. Origin was fetched before checkpointing and main has not advanced.
+Backend PRs #1, frontend #2, and integration #3 are merged. Main was refreshed to `0c6fee1` before the current review. The user explicitly requested the combined bug list be pushed directly to main. No application fixes are part of this checkpoint.
 
 **Current user steering**
 
-The subsequently requested dedicated frontend agent review is complete. [Five P2 findings](frontend-bug-review.md) were reproduced without modifying frontend code. Fixes are pending a separate task. Integration PR [#3](https://github.com/AbhishekSharma55/Afterlife/pull/3) is open; its application commit `afdc4e8` passed [full CI](https://github.com/AbhishekSharma55/Afterlife/actions/runs/41208948149), including browser and restart rehearsals.
+Two dedicated agents reviewed frontend and backend on main. The [combined bug list](bug-list.md) records **eight reproduced P2 findings: five frontend and three backend**, their source references, concrete reproduction steps, evidence limits, and suggested fix directions. Findings are open; no frontend/backend application code was modified. The earlier [frontend-only review](frontend-bug-review.md) remains as historical detail.
 
-Connect the teammate's frontend to the backend and assess the rendered implementation. The user explicitly said to leave bug finding/fixes for a dedicated agent. No frontend application files under `apps/web` were changed in this integration. See [frontend-integration-review.md](frontend-integration-review.md) for observations and handoff targets.
+The user offered to configure Twitch/OpenAI credentials for live testing; an ignored local `.env` template was prepared. Credential values were not inspected during this audit, and no provider calls were made. Do not assume credentials are configured or claim real Twitch participation, live narration, public deployment, or complete hackathon acceptance. Any local test should isolate its environment rather than silently load `.env`.
 
-The user chose rehearsal for now; live Twitch/OpenAI credentials are intentionally not configured. Do not solicit them again or repeatedly spend runs on those checks. Do not claim public deployment, real Twitch voting, live narration, or full hackathon acceptance.
+Integration application commit `afdc4e8` passed [full CI](https://github.com/AbhishekSharma55/Afterlife/actions/runs/41208948149), including browser and restart rehearsals. Its application source matches reviewed main `0c6fee1`; this review adds documentation only.
 
 **Integration completed**
 
@@ -28,7 +28,7 @@ Generated screenshots and test logs are local/ignored. Run `npm run test:e2e` to
 
 **Frontend review handoff**
 
-The normal connected rehearsal works and the creator/viewer/OBS presentation is coherent. Code inspection identified uncertain command retries losing request IDs after HTTP 5xx and delayed history responses lacking a world-navigation guard. Visual review identified notification overlap and mobile fixture navigation for usability checks. The current dependency audit reports advisories requiring exposure/upgrade triage. These were documented, not fixed. A dedicated frontend bug agent should reproduce and address them with focused regression coverage.
+The normal connected rehearsal works and the creator/viewer/OBS presentation is coherent. Code inspection identified uncertain command retries losing request IDs after HTTP 5xx and delayed history responses lacking a world-navigation guard. Visual review identified notification overlap and mobile fixture navigation for usability checks. The current dependency audit reports advisories requiring exposure/upgrade triage. These were documented, not fixed. The dedicated frontend agent subsequently reproduced the five findings; see the combined bug list for the current frontend/backend handoff.
 
 **Implemented backend and limits**
 
@@ -38,14 +38,14 @@ Persistence uses one locked PostgreSQL JSONB aggregate per world. Provider token
 
 **Remaining acceptance**
 
-1. Dedicated frontend bug review and fixes, then a creator/viewer pilot and actual OBS compositor/readability check over stream content.
+1. Address the eight findings in the combined bug list with regression coverage, then run a creator/viewer pilot and actual OBS compositor/readability check over stream content.
 2. Select/configure an always-running public host and durable PostgreSQL; verify HTTPS/SSE and restart/redeploy persistence on that host.
-3. When the user changes the rehearsal-only choice, verify Twitch OAuth with two real accounts, vote replacement, disconnect/pause/resume, presence reconciliation, and token lifecycle.
+3. When local credentials are ready for a separate live test, verify Twitch OAuth with two real accounts, vote replacement, disconnect/pause/resume, presence reconciliation, and token lifecycle.
 4. When live narration is enabled, verify one accepted scene and recap with the configured provider and observe latency. No live model response is claimed.
 5. Record the two-episode demo and complete submission materials/official acceptance checks.
 
 **Scheduler and quota**
 
-The existing cron runner checks quota every ten minutes and reads this checkpoint. Preserve `.afterlife/STOP`; do not install duplicate or recursive jobs. Its shared flock is held during foreground work. At this checkpoint `.afterlife/WAITING_FOR_INPUT` remains in place because the next work is the separately requested dedicated frontend review or external acceptance, not permission to modify the teammate's UI autonomously. Do not remove this hold or write `.afterlife/COMPLETE` merely because integration tests pass. A new user task can resume authorized work.
+The existing cron runner checks quota every ten minutes and reads this checkpoint. Preserve `.afterlife/STOP`; do not install duplicate or recursive jobs. Its shared flock is held during foreground work. At this checkpoint `.afterlife/WAITING_FOR_INPUT` remains in place because this task authorizes review/reporting; applying the listed fixes and external acceptance are separate next steps. Do not remove this hold or write `.afterlife/COMPLETE` merely because integration tests pass. A new user task can resume authorized work.
 
 Check quota only with `node scripts/check-usage.mjs`; never print or commit `check_usage.js`, credentials, or runner logs/config. Stop initiating tasks at 85% window usage or 95% weekly usage. The submission deadline remains November 2 at 22:00 UTC (November 3 at 03:30 IST).

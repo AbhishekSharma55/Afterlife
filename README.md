@@ -4,7 +4,7 @@
 
 AFTERLIFE is a persistent kingdom story for Twitch. Viewers join factions and vote on decisions. The world records their choices, develops between episodes, and brings earlier alliances, betrayals, and unfinished conflicts into future streams.
 
-**Status:** the backend and teammate's React frontend are merged. The integration branch serves the studio, viewer page, OBS overlay, API, and SSE together, with a connected browser rehearsal and full application Docker image. Frontend bugs are reserved for a dedicated review; live-provider acceptance is deferred by request. See the [integration review](docs/afterlife/frontend-integration-review.md).
+**Status:** the backend and teammate's React frontend are merged. The integration branch serves the studio, viewer page, OBS overlay, API, and SSE together, with a connected browser rehearsal and full application Docker image. A dedicated frontend/backend review recorded eight open findings; live-provider acceptance is pending. See the [integration review](docs/afterlife/frontend-integration-review.md).
 
 **Team ownership**
 
@@ -19,6 +19,7 @@ The approximate technical-responsibility split is 40% frontend/presentation and 
 
 - [Project plan and phase checkpoints](docs/afterlife/project-plan.md)
 - [Frontend/backend integration contract](docs/afterlife/integration-contract.md)
+- [Frontend and backend bug list](docs/afterlife/bug-list.md)
 
 The first milestone is a kingdom that survives a backend restart. The defining demonstration is a decision in episode one causing a remembered consequence in episode two.
 
