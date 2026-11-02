@@ -92,11 +92,13 @@ You can move directly to the next section. This version demonstrates saved memor
 
 1. Click **Start episode 2**. Wait for the recap to finish loading.
 2. Click **Prepare dilemma** if that button appears.
-3. Scroll to the new dilemma. Show the choices about **reparations, fortification, and peace talks**.
+3. Scroll down to the large story card headed **On screen now**. This card is the new dilemma; there is no button called “New dilemma.” After a successful treaty-breaking vote in Episode 1, it should show the choices **Offer reparations**, **Fortify the bridge**, and **Open peace talks**.
 4. Find the gold **The world remembers** panel. Click the **sentence about breaking the treaty** inside it.
 5. The original betrayal will be revealed in **Recent history**. Hold on that entry so the audience can recognise the event from the previous episode.
 
-Leave Episode 2's vote unopened. You will return to this screen for the final line.
+If you still see **The Westbridge Treaty**, **The council holds its position**, or **No votes**, the betrayal has not happened in this take. Go back to the voting section: a real `!vote 2` must be counted while voting is open, and the result must say **The community chose: Break the treaty** before ending that episode. Without that result, the retaliation choices and betrayal memory will not appear. If you are already in Episode 2, doing this now makes the returning episode Episode 3; the Episode 1→2 recording needs a fresh take.
+
+Leave Episode 2's vote unopened after you have the expected retaliation scene. You will return to this screen for the final line.
 
 **READ:**
 
