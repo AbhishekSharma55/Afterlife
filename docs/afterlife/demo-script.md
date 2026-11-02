@@ -1,6 +1,6 @@
 # AFTERLIFE — demo video script
 
-**Read-aloud file:** [demo-voiceover.txt](demo-voiceover.txt). Read only the quoted narration below; the screen directions are for recording/editing. The voiceover is about 357 words. At 140–150 words per minute, aim for roughly 2:40–2:50. Time one full read before recording; leave room for pauses within the three-minute limit. Timestamps are editing targets, not a timer that should override the actual screen state.
+**Read-aloud file:** [demo-voiceover.txt](demo-voiceover.txt). Read only the quoted narration below; the screen directions are for recording/editing. The voiceover is about 357 words. At 140–150 words per minute, aim for roughly 2:40–2:50. Time one full read before recording; include the complete Twitch demo and Codex explanation within the first three minutes, with room for pauses. Timestamps are editing targets, not a timer that should override the actual screen state.
 
 ## Current deployment and existing footage
 
@@ -128,8 +128,8 @@ Do not describe fallback text as generated output or text narration as spoken AI
 - An actual background tick creates the retaliation-preparation event **before** the next episode starts. Keep the server running; wait for the event instead of assuming 60 seconds was sufficient.
 - The next scene/recap links back to the same recorded betrayal. Click that cause link.
 - The video shows how Codex was used, with real implementation/test evidence.
-- The exported video is at most three minutes. Target under 2:50. The official requirements ask for a working Twitch demo and Codex usage; upload the final video publicly to YouTube for the submission.
+- Keep everything needed to evaluate the project within the first three minutes; only those minutes are reviewed. Target an export under 2:50. Upload to **YouTube only**, set visibility to **Public or Unlisted**, use no password, and paste that video URL into the form.
 
 If chat messages never appear in AFTERLIFE, pause the recording and diagnose the connection. Do not replace the live segment with fixtures or synthetic viewers while calling it real Twitch participation. If you use fixture or rehearsal footage as supplemental material, retain its labels and identify it as such.
 
-**Verified official sources (November 2, 2026 IST):** [submission requirements](https://twitchcon-codex.devpost.com/) — maximum three-minute publicly visible YouTube video showing the project working on Twitch and how Codex was used; [judging criteria](https://twitchcon-codex.devpost.com/) — innovation, potential impact, implementation/Codex use, and design. These local script files do not upload or enter anything on Devpost.
+**Submission form clarification:** The participant-provided screenshot confirms YouTube only, public or unlisted visibility with no password, and review of only the first three minutes. The video must show the project working on Twitch and how OpenAI Codex was used. These instructions were updated to match that screenshot; these local script files do not upload or enter anything on Devpost.
