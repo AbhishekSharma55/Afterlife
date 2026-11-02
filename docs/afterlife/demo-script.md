@@ -19,12 +19,13 @@
 4. Open the viewer page and overlay in their own tabs. Capture 1920×1080 where possible, hide bookmarks/unrelated tabs and notifications, and make chat text large enough to read. Do not record secret configuration or OAuth callback URLs while they contain authorization codes.
 5. Record screen clips first, then read the voiceover over the edited footage if switching accounts while speaking is awkward. Capture the live chat-to-tally moment continuously; use explicit cuts for the longer offline wait.
 6. Before recording the AI paragraph, verify actual generated narration/recap in this world. Earlier direct-provider checks generated both, but one scene attempt fell back. If the current take shows Factual narration, use the alternate sentence below and show the status honestly.
+7. Add the [busy Twitch chat preview](demo-assets/twitch-chat-simulated.png) to the opening. It shows fictional faction joins, votes, and reactions in Twitch's actual chat interface. Keep its “DEMO CHAT · SIMULATED ACTIVITY” label visible. The later two-account voting segment uses real chat footage.
 
 ## Read this, and show this
 
 ### 00:00–00:21 — Open with the kingdom
 
-**SHOW:** Show the public viewer page, with the kingdom map, Red/Blue factions, and the current dilemma visible. Add a small title: AFTERLIFE — The stream ends. The world remembers. Start on the product.
+**SHOW:** For the first 5–6 seconds, show the [busy Twitch chat preview](demo-assets/twitch-chat-simulated.png) as you say “Imagine you're watching a Twitch stream, and chat decides to betray an entire kingdom.” Keep the full simulated-activity label visible, with the colorful names and reactions readable. Then cut to the real public viewer page with the kingdom map, Red/Blue factions, and current dilemma. Add a small title: AFTERLIFE — The stream ends. The world remembers. This opening uses the existing narration and adds no speaking time.
 
 **READ:**
 
@@ -121,6 +122,7 @@ Do not describe fallback text as generated output or text narration as spoken AI
 ## Recording checkpoints
 
 - Two real account names and genuine `!join` / `!vote` messages are visible in the same Twitch channel.
+- The busy opening screenshot retains its simulated-activity label; the two-account voting segment shows actual Twitch messages and their real tally updates.
 - Changing one account’s vote preserves the total voter count of two.
 - The resolved betrayal closes the bridge, changes trust, and creates a Chronicle event.
 - An actual background tick creates the retaliation-preparation event **before** the next episode starts. Keep the server running; wait for the event instead of assuming 60 seconds was sufficient.
