@@ -6,7 +6,7 @@ I'm using two separate Twitch accounts here. As I send their votes, you can see 
 
 Now look at the map. The bridge has closed, trust has dropped, and the betrayal is saved in the world's history. We've given Blue something to remember.
 
-I'll end the episode here. For this local demo, we've sped things up so the world updates after a minute. We'll skip the wait. While the world is resting, Blue starts preparing retaliation because of that betrayal.
+I'll end the episode here. That closes this part of the story, but it doesn't erase what happened. Let's come back and start Episode Two to see what the world has kept.
 
 When we start Episode Two, Blue still remembers. The recap brings us back to what happened, and now we have to decide how to respond: pay for the damage, fortify the bridge, or try peace talks. I can click this memory to see the original betrayal. Yesterday's choice has become today's problem.
 

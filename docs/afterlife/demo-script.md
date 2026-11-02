@@ -1,135 +1,78 @@
-# AFTERLIFE — demo video script
+# AFTERLIFE — simple screen-recording guide
 
-**Read-aloud file:** [demo-voiceover.txt](demo-voiceover.txt). Read only the quoted narration below; the screen directions are for recording/editing. The voiceover is about 357 words. At 140–150 words per minute, aim for roughly 2:40–2:50. Time one full read before recording; include the complete Twitch demo and Codex explanation within the first three minutes, with room for pauses. Timestamps are editing targets, not a timer that should override the actual screen state.
+**Record the screen first. Add your voice afterward.** Read [demo-voiceover.txt](demo-voiceover.txt): it has nine paragraphs. Each paragraph goes with one numbered clip below.
 
-## Current deployment and existing footage
+The finished video should be about **2:40–2:50**. You can take longer to perform the actions, then trim loading waits and window switching.
 
-- The app is live at **https://afterlife.34-205-137-206.sslip.io/studio**, backed by persistent PostgreSQL on AWS. Sign in with the original streamer Twitch account. The local backend was stopped during cutover; AWS is the active installation.
-- Current saved world: Westbridge. Public links: [studio](https://afterlife.34-205-137-206.sslip.io/studio/0864f1ea-ae09-4669-a5ae-a0c14e06f20d), [viewer](https://afterlife.34-205-137-206.sslip.io/world/0864f1ea-ae09-4669-a5ae-a0c14e06f20d), [OBS overlay](https://afterlife.34-205-137-206.sslip.io/overlay/0864f1ea-ae09-4669-a5ae-a0c14e06f20d). Use the studio's Stream setup links if the selected world changes.
-- The cloud offline clock is the normal **six hours per update**. Earlier local pilot footage used an explicit **60-second** process override. The read-aloud file uses the accelerated local footage. For cloud-only footage, use the alternate offline paragraph below. Keep the timing caption matched to the footage.
-- The user-requested reset preceded the verified local pilot. The current world has since completed Episodes 1 and 2 and is **resting after Episode 2**. Deployment preserved it. The script below describes the episode-one-to-two demonstration, not the next action on this existing world. Use the actual captured pilot footage or deliberately prepare a separate recording world; do not reset the saved world implicitly.
-- **Pilot verified (November 2):** two distinct real Twitch accounts voted for betrayal in Episode 1. The canonical betrayal is event **#4**; Episode 2 references it. Background retaliation events were processed before Episode 2 began, and its generated recap carries two contribution credits. Screenshots and verification summaries are saved locally under `.afterlife/evidence/`. Capture actual screen footage for the video; screenshots are supporting evidence.
-- Cloud HTTPS, browser pages, SSE, persistence after restart, and an accepted generated narration request passed. A completed cloud Twitch sign-in/chat check still needs the streamer. See [deployment operations](../../infra/aws/README.md).
+## Before you record
 
-## Before pressing record
+Open these four things:
 
-1. Use two Twitch accounts total: your main streamer account in a normal browser and the second account in another browser or a private window. Both open **the main account’s channel chat**. Only the main account needs to sign in to AFTERLIFE.
-2. In the studio wait for Chat connected. Start the next episode. If the deferred treaty is already prepared, go directly to voting; otherwise click Prepare dilemma. Confirm choice 2 is Break the treaty. If the title is rewritten by AI, follow the actual choice meanings.
-3. Send `!join red` from the main account and `!join blue` from the second account before opening voting. Use a two-minute voting window to allow switching accounts; the final video need not show the full wait because you can close voting early.
-4. Open the viewer page and overlay in their own tabs. Capture 1920×1080 where possible, hide bookmarks/unrelated tabs and notifications, and make chat text large enough to read. Do not record secret configuration or OAuth callback URLs while they contain authorization codes.
-5. Record screen clips first, then read the voiceover over the edited footage if switching accounts while speaking is awkward. Capture the live chat-to-tally moment continuously; use explicit cuts for the longer offline wait.
-6. Before recording the AI paragraph, verify actual generated narration/recap in this world. Earlier direct-provider checks generated both, but one scene attempt fell back. If the current take shows Factual narration, use the alternate sentence below and show the status honestly.
-7. Add the [busy Twitch chat preview](demo-assets/twitch-chat-simulated.png) to the opening. It shows fictional faction joins, votes, and reactions in Twitch's actual chat interface. Keep its “DEMO CHAT · SIMULATED ACTIVITY” label visible. The later two-account voting segment uses real chat footage.
+| Name used below | Open this |
+| --- | --- |
+| **Studio** | [Your Westbridge studio](https://afterlife.34-205-137-206.sslip.io/studio/0864f1ea-ae09-4669-a5ae-a0c14e06f20d), signed in with your main Twitch account. |
+| **Chat A** | [Your channel chat](https://www.twitch.tv/popout/star_x_gaming/chat), signed in with your main account. |
+| **Chat B** | The **same chat link**, in a private window or second browser, signed in with your second account. |
+| **Codex** | One real Codex conversation about building or testing AFTERLIFE. |
 
-## Read this, and show this
+Both accounts use **star_x_gaming's channel chat**. Refresh the Studio and check **Chat connected** before recording. Hide unrelated tabs/notifications and use 1920×1080 if possible.
 
-### 00:00–00:21 — Open with the kingdom
+Westbridge was reset at your request. At that checkpoint, it was ready to **Start episode 1**. These directions do not reset it again if you have since advanced it.
 
-**SHOW:** For the first 5–6 seconds, show the [busy Twitch chat preview](demo-assets/twitch-chat-simulated.png) as you say “Imagine you're watching a Twitch stream, and chat decides to betray an entire kingdom.” Keep the full simulated-activity label visible, with the colorful names and reactions readable. Then cut to the real public viewer page with the kingdom map, Red/Blue factions, and current dilemma. Add a small title: AFTERLIFE — The stream ends. The world remembers. This opening uses the existing narration and adds no speaking time.
+## The nine clips, in order
 
-**READ:**
+| Clip / approximate time | Voiceover paragraph begins… | Exactly what to put on screen |
+| --- | --- | --- |
+| **1 · 0:00–0:21** | “Imagine you're watching a Twitch stream…” | Show the [busy-chat image](demo-assets/twitch-chat-simulated.png) for **five seconds**, keeping its **SIMULATED ACTIVITY** label visible. Then switch to **Studio** and show the **map and Red/Blue cards**. Hold still. |
+| **2 · 0:21–0:40** | “Let me show you…” | In **Studio**, click **Start episode 1**, then **Prepare dilemma**. Wait for the treaty choices. Show **Chat A** sending `!join red`, then **Chat B** sending `!join blue`. Return to Studio and show the three choices. |
+| **3 · 0:40–0:58** | “I'm using two separate Twitch accounts…” | Show **Studio on the left** and **Twitch chat on the right**. Record the vote sequence in the small checklist below. Keep the chat messages and tally readable. |
+| **4 · 0:58–1:10** | “Now look at the map…” | Make **Studio full-screen**. Show **The community chose: Break the treaty**. Scroll to **Westbridge: Closed** and the lower trust value. Then show the treaty-breaking entry in **Recent history**. Remember its event number. |
+| **5 · 1:10–1:27** | “I'll end the episode here…” | In **Studio**, scroll to the top. Click **End episode 1**, then **Yes, end episode**. Hold on **Resting between episodes** and the **Start episode 2** button. |
+| **6 · 1:27–1:48** | “When we start Episode Two…” | Click **Start episode 2**, then **Prepare dilemma** if offered. Show the new choices about **reparations, fortification, and peace talks**. Click the betrayal sentence inside **The world remembers**. Hold on the original event it reveals in **Recent history**. |
+| **7 · 1:48–2:06** | “AI helps tell that story…” | Show **Previously in your kingdom** and the recap in **Studio**. Then scroll to **Stream setup → OBS overlay → Open**. Show the overlay page full-screen. Opening the browser page is enough; you do not need to configure OBS on camera. |
+| **8 · 2:06–2:25** | “My teammate focused on the frontend…” | Switch to **Codex**. Show one real request about building the app or finding a bug. Then show the matching code/test change or successful check. Keep each screen still long enough to read. |
+| **9 · 2:25–2:45** | “That's AFTERLIFE…” | Return to **Studio**. Hold on the Episode 2 dilemma and **The world remembers** panel. Finish your final line over that screen: **“The stream ends. The world remembers.”** |
 
-> Imagine you're watching a Twitch stream, and chat decides to betray an entire kingdom. Everyone's laughing, the stream ends... but what happens when you come back tomorrow? That's the idea behind AFTERLIFE. It's a world your viewers help shape, and it remembers what they did.
+**After Clip 4:** leave the resolved result on screen until you end Episode 1. Do not prepare another dilemma first.
 
-### 00:21–00:40 — Show how viewers participate
+**After Clip 6:** leave the second vote unopened. You can return to that same screen for Clip 9.
 
-**SHOW:** Cut to the creator studio, then a readable side-by-side view of Twitch chat and the public world page. Show !join red from the main account and !join blue from the second account, both in the main account’s channel. Reveal the treaty choices. Open a two-minute vote; close it early after capturing the actions below.
+## Clip 3 — the exact vote sequence
 
-**READ:**
+First confirm **Break the treaty** is option **2**. The commands below assume that order.
 
-> Let me show you. We have two kingdoms, Red and Blue, who've agreed to a treaty. The streamer runs the episode from this studio, while viewers pick a side and vote right in Twitch chat. They can keep the peace, or break the treaty.
+Put Studio in one window on the **left half** of your screen. Put Twitch chat on the **right half**. Switch the right-hand window between Chat A and Chat B while keeping Studio visible.
 
-### 00:40–00:58 — Prove real chat changes the tally
+| Do this | Where | Wait until you see this |
+| --- | --- | --- |
+| Select **2 min**, then click **Open voting**. Scroll back to the choices. | Studio | Voting is open. |
+| Send `!vote 1`. | Chat A | One vote for **Honor the treaty**. |
+| Send `!vote 2`. | Chat B | One vote for each choice; **two voters total**. |
+| Send `!vote 2`. | Chat A | **Two votes for Break the treaty**, still two voters total. |
+| Scroll to the top and click **Close voting early**. | Studio | The betrayal wins. If the timer has ended, the button may say **Count votes now**. |
 
-**SHOW:** Keep both Twitch usernames and the tally readable. Main account sends !vote 1; second account sends !vote 2; main account changes to !vote 2. Capture the split vote becoming two votes for Break the treaty while total voters stays two. Close voting early in the studio. Use genuine chat footage; keep the send-to-update moment uncut.
+Wait for each tally update before sending the next command. Keep the actual message-to-tally updates in the video. The busy-chat image is only for Clip 1; this clip uses your real Twitch accounts.
 
-**READ:**
+## Clip 8 — an easy Codex example to show
 
-> I'm using two separate Twitch accounts here. As I send their votes, you can see the numbers changing on screen. And if someone changes their mind, their new vote replaces the old one. Here, both viewers have decided to break the treaty.
+Use **one** example:
 
-### 00:58–01:10 — Show the committed consequence
+- A Codex request about the world remembering choices, followed by `apps/server/src/domain/world-service.ts`.
+- A Codex bug-review exchange, followed by a matching test in `apps/web/test/regressions.test.tsx`.
+- A Codex testing exchange, followed by the successful checks on [merged PR #4](https://github.com/AbhishekSharma55/Afterlife/pull/4).
 
-**SHOW:** Hold on the resolved result, the closed Westbridge marker, lower trust, and the new betrayal entry in the Chronicle. Highlight the event’s sequence number. Use the actual values displayed in the recording; do not add invented vote counts or resource effects.
+Two readable screens are enough. Keep `.env`, keys, and unrelated conversations out of the recording.
 
-**READ:**
+## Two details for this take
 
-> Now look at the map. The bridge has closed, trust has dropped, and the betrayal is saved in the world's history. We've given Blue something to remember.
+**No offline wait is needed for this version.** Clip 5 ends Episode 1, and Clip 6 starts Episode 2 to show that the betrayal is remembered. The AWS offline clock remains six hours. The voiceover has been updated to remove the old one-minute claim; this take does not demonstrate an offline background tick.
 
-### 01:10–01:27 — Show the world developing between episodes
+**Show the actual narration status.** If this take has no generated recap or reactions, replace paragraph 7 with: “Here you can read the story so far. This take is using the built-in narration fallback. The world history is saved in a database, and there's also a viewer page and an overlay the streamer can add to OBS.”
 
-**SHOW:** In the studio click End episode, then Yes, end episode. Briefly show the resting state. For the accelerated local take, keep the backend running and wait at least 60 seconds for Blue’s retaliation-preparation event to appear. The live cloud clock is six hours; use the appropriate footage and caption. Capture that new Chronicle entry before starting the next episode. Cut out the wait and display BOTH captions: Local demo: offline clock accelerated to 60 seconds per update (normal: 6 hours), and One minute later — wait shortened.
+## Finish the video
 
-**READ:**
-
-> I'll end the episode here. For this local demo, we've sped things up so the world updates after a minute. We'll skip the wait. While the world is resting, Blue starts preparing retaliation because of that betrayal.
-
-### 01:27–01:48 — Deliver the memory payoff
-
-**SHOW:** Start the next episode and click Prepare dilemma if offered. Show Previously in your kingdom and While you were away, then the retaliation scene. Click the betrayal sentence inside the gold The world remembers panel (the whole sentence is a button), or the #4 citation in the recap, so its Chronicle entry is revealed. Keep the original event number readable. Show the new choices: reparations, fortification, and talks. Do not resolve this second vote; preserve the payoff for recording.
-
-**READ:**
-
-> When we start Episode Two, Blue still remembers. The recap brings us back to what happened, and now we have to decide how to respond: pay for the damage, fortify the bridge, or try peace talks. I can click this memory to see the original betrayal. Yesterday's choice has become today's problem.
-
-### 01:48–02:06 — Show the streamer-ready presentation
-
-**SHOW:** Show generated narration or leader reactions only if they are present; keep the actual narration-status badge visible. Cut to the OBS overlay at 1920×1080. Ideally composite it above gameplay or your normal stream scene in OBS; if showing it in a browser, describe it only as the overlay page. Add a small architecture caption: Twitch chat → validated world rules → PostgreSQL → viewer + OBS. Optional caption for the current configuration: Narrator: DeepSeek V4.1 Flash via OpenRouter.
-
-**READ:**
-
-> AI helps tell that story through recaps and character reactions. The actual changes follow the game's rules, and the history is saved in a database. There's also a viewer page and an overlay the streamer can add to OBS.
-
-### 02:06–02:25 — Explain and demonstrate Codex’s contribution
-
-**SHOW:** Show a clean excerpt of the actual Codex build/review thread and the relevant code or test diff. Suggested evidence: apps/server/src/domain/world-service.ts, apps/web/test/regressions.test.tsx, and the successful checks on merged PR #4. Pan through one concrete fix/test rather than scrolling rapidly. Crop out unrelated chats, email, .env, credentials, tokens, and browser settings.
-
-**READ:**
-
-> My teammate focused on the frontend, and I worked on the backend with Codex. We used Codex to build the world logic, connect Twitch chat, and test what survives between episodes. It also helped us find bugs and add tests for the fixes.
-
-### 02:25–02:39 — Close on the remembered world
-
-**SHOW:** Return to the real retaliation scene and its remembered betrayal. Finish with the AFTERLIFE name and tagline. Keep the product visible behind the closing text. Add the repository link if useful, without showing secret configuration.
-
-**READ:**
-
-> That's AFTERLIFE. You come back to see what happened to the world you helped create... and whether Blue has forgiven you yet. The stream ends. The world remembers.
-
-## Read it like you're showing a friend
-
-The voiceover file contains only the words to say. Read “Episode Two” naturally; pause briefly after “but what happens when you come back tomorrow?” and let the bridge change stay visible before moving on. You don't need a dramatic announcer voice. Speak as if one person is sitting next to you asking how it works. The opening and closing are the only places that need an extra beat.
-
-The first-person actions describe the screen clips: say “I'll end the episode here” over the actual click, even if you record the voiceover afterward. Use the vote-replacement sentence only with footage of the vote changing. If your existing pilot footage shows only two final votes, replace the voting paragraph with:
-
-> These are two separate Twitch accounts, and both viewers have voted to break the treaty. You can see their votes coming through from chat, and the result appearing here in the studio.
-
-## For cloud-only footage
-
-Replace the offline paragraph in the read-aloud file with this only if you captured the actual six-hour gap:
-
-> I'll end the episode here. The world keeps running on AWS while the streamer is away. Six hours later, Blue starts preparing retaliation because of that betrayal. We've cut out the wait so you can see what happens next.
-
-Show “Six hours later — wait shortened.” Keep the one-minute caption only on the accelerated local footage.
-
-## Match the AI paragraph to the screen
-
-The main paragraph describes the feature without claiming that every scene is generated. Show the generated recap for the recorded Episode Two take and keep the scene's “Factual narration” badge visible. If you want to explain that badge aloud, use this replacement:
-
-> AI wrote this recap from the saved history. This scene is using the built-in fallback, so the story can continue even when the AI response isn't usable. The history stays saved, and the viewer page and OBS overlay keep up with the world.
-
-Do not describe fallback text as generated output or text narration as spoken AI audio.
-
-## Recording checkpoints
-
-- Two real account names and genuine `!join` / `!vote` messages are visible in the same Twitch channel.
-- The busy opening screenshot retains its simulated-activity label; the two-account voting segment shows actual Twitch messages and their real tally updates.
-- Changing one account’s vote preserves the total voter count of two.
-- The resolved betrayal closes the bridge, changes trust, and creates a Chronicle event.
-- An actual background tick creates the retaliation-preparation event **before** the next episode starts. Keep the server running; wait for the event instead of assuming 60 seconds was sufficient.
-- The next scene/recap links back to the same recorded betrayal. Click that cause link.
-- The video shows how Codex was used, with real implementation/test evidence.
-- Keep everything needed to evaluate the project within the first three minutes; only those minutes are reviewed. Target an export under 2:50. Upload to **YouTube only**, set visibility to **Public or Unlisted**, use no password, and paste that video URL into the form.
-
-If chat messages never appear in AFTERLIFE, pause the recording and diagnose the connection. Do not replace the live segment with fixtures or synthetic viewers while calling it real Twitch participation. If you use fixture or rehearsal footage as supplemental material, retain its labels and identify it as such.
-
-**Submission form clarification:** The participant-provided screenshot confirms YouTube only, public or unlisted visibility with no password, and review of only the first three minutes. The video must show the project working on Twitch and how OpenAI Codex was used. These instructions were updated to match that screenshot; these local script files do not upload or enter anything on Devpost.
+1. Put clips **1 → 9** in order.
+2. Read the nine voiceover paragraphs over their matching clips. Speak naturally; you do not need to talk while operating both accounts.
+3. Trim loading waits and window switching. Keep the real chat-to-tally updates visible.
+4. Check that the Twitch demo and Codex explanation both fit within the **first three minutes**. Aim to finish under **2:50**.
+5. Upload to **YouTube**, choose **Public or Unlisted**, use **no password**, and paste the URL into the submission form.
