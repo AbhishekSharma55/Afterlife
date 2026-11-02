@@ -1,0 +1,49 @@
+name: afterlife-cloud
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:?Set POSTGRES_IMAGE}
+    environment:
+      POSTGRES_USER: afterlife
+      POSTGRES_DB: afterlife
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - /srv/afterlife/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -h 127.0.0.1 -U afterlife -d afterlife]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 512m
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+  backend:
+    image: ${AFTERLIFE_APP_IMAGE:?Set AFTERLIFE_APP_IMAGE}
+    env_file:
+      - path: ./backend.env
+        format: raw
+    depends_on:
+      postgres:
+        condition: service_healthy
+    init: true
+    restart: unless-stopped
+    mem_limit: 512m
+    logging: *logging
+  proxy:
+    image: ${CADDY_IMAGE:?Set CADDY_IMAGE}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - /srv/afterlife/caddy-data:/data
+      - /srv/afterlife/caddy-config:/config
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 128m
+    logging: *logging

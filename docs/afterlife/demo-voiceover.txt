@@ -1,0 +1,19 @@
+RECORDING NOTE — not spoken: The one-minute paragraph applies to the accelerated local pilot. AWS uses six-hour offline updates. For cloud-only footage, use the alternate paragraph in demo-script.md. The current saved world is resting after Episode 2; deployment did not reset it.
+
+Your viewers make one choice tonight. Next stream, the kingdom still remembers it. This is AFTERLIFE: a persistent story world for Twitch, where the community's decisions become the history of the next episode.
+
+The streamer controls the episode from this studio. Viewers join Red or Blue directly in Twitch chat, then vote on a dilemma. Here, the community must decide whether to honor the Westbridge treaty, break it, or hold position.
+
+These are two separate Twitch accounts. Watch the live tally as their messages arrive. When one viewer changes their vote, the total stays at two. Each account has one effective vote. The community has chosen to break the treaty.
+
+The bridge closes, trust falls, and the betrayal enters the Chronicle. This is a recorded world event. Its consequences will carry forward after this episode ends.
+
+Now the streamer ends the episode. For this demonstration, we've accelerated offline updates to one minute. The backend keeps running while the kingdom rests. Blue begins preparing retaliation because of the broken treaty. We're cutting out the wait.
+
+When the next episode starts, the recap brings that history back. Blue remembers the betrayal and demands a response. This memory link points to the exact event, and the world offers reparations, fortification, or peace talks. Viewers inherit the consequences of their earlier choice.
+
+AI adds narration, leader reactions, and recaps using the saved facts and events. Validated game rules control the actual changes, and PostgreSQL preserves the world. The public viewer page and OBS overlay follow those changes through live updates.
+
+We built AFTERLIFE with OpenAI Codex. Codex helped implement the persistent world engine, Twitch integration, and shared frontend contract. We also used it to investigate bugs, add regression tests, and verify the complete two-episode rehearsal.
+
+AFTERLIFE gives streamers an ongoing community story and viewers a reason to return. They helped shape this world. Next stream, they find out what it remembers.

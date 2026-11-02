@@ -1,6 +1,8 @@
 **AFTERLIFE application container deployment**
 
-This packages the backend, frontend, and shared schema workspace in one application image. The Node server serves the built frontend and the HTTP/auth/SSE endpoints on one origin. PostgreSQL remains a separate persistent service. These files do not create external hosting resources.
+The app is now live at [the AWS creator studio](https://afterlife.34-205-137-206.sslip.io/studio). The [AWS operations guide](../../infra/aws/README.md) documents provisioning, migration, secrets, redeployment, and backups. The public deployment passed HTTPS/browser/SSE checks, a real backend restart with world-state preservation, and a live generated narration request. Its callback is registered; the final public Twitch sign-in/chat check needs the streamer to sign in.
+
+The instructions below describe the general local container workflow. This packages the backend, frontend, and shared schema workspace in one application image. The Node server serves the built frontend and the HTTP/auth/SSE endpoints on one origin. PostgreSQL remains a separate persistent service. The root Compose files do not create external hosting resources; `infra/aws/` contains the separate AWS CLI workflow.
 
 **Requirements**
 
@@ -72,11 +74,11 @@ Use a database with an entirely empty `afterlife_worlds` store. Startup reconcil
 
 **Remaining external acceptance**
 
-Live-provider validation is deferred by user choice. Before claiming a complete live deployment, record these checks on the actual hosting configuration:
+Current hosting and live-provider results are recorded in [progress.md](progress.md). Before claiming complete end-to-end acceptance, record these checks on the actual hosting configuration:
 
-- Deploy the backend and durable database to an awake host; verify HTTPS, public snapshot/SSE delivery, and state after a real service restart or redeploy.
+- Hosting, HTTPS, public snapshot/SSE delivery, and a real backend restart preserving world state: verified on AWS on November 2.
 - Sign in through the registered Twitch callback, then have two distinct real Twitch accounts join and vote. Confirm vote replacement and reconnect/pause/resume behavior. Synthetic rehearsal participants do not satisfy this check.
-- With a configured model, verify one accepted scene and recap through the provider. Injected tests cover invalid output and grounded fallbacks; they do not prove account access, model availability, or deployment latency.
+- Both scenes and recaps generated successfully in local provider checks; the AWS scene smoke also returned accepted generated narration. Verify narration in the final recorded take and retain the factual fallback label when used.
 - Run the creator/viewer pilot on the integrated frontend, including OBS readability and the visible link from episode two to the original betrayal.
 
 Provider tokens and creator sessions deliberately require sign-in after restart. Canonical world persistence and credential recovery are separate observations.

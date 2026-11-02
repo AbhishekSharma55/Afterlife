@@ -1,0 +1,14 @@
+{
+    servers {
+        protocols h1 h2
+    }
+}
+__PUBLIC_HOST__ {
+    header {
+        Strict-Transport-Security "max-age=604800"
+        -Server
+    }
+    reverse_proxy backend:4310 {
+        flush_interval -1
+    }
+}

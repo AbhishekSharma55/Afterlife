@@ -4,7 +4,9 @@
 
 AFTERLIFE is a persistent kingdom story for Twitch. Viewers join factions and vote on decisions. The world records their choices, develops between episodes, and brings earlier alliances, betrayals, and unfinished conflicts into future streams.
 
-**Status:** the backend and teammate's React frontend are merged. The server serves the studio, viewer page, OBS overlay, API, and SSE together, with a connected browser rehearsal and full application Docker image. A dedicated frontend/backend review recorded eight open findings; live-provider acceptance is pending. See the [integration review](docs/afterlife/frontend-integration-review.md).
+**Live app:** [Open the creator studio](https://afterlife.34-205-137-206.sslip.io/studio) · [View Westbridge](https://afterlife.34-205-137-206.sslip.io/world/0864f1ea-ae09-4669-a5ae-a0c14e06f20d)
+
+**Status:** deployed to AWS with HTTPS, persistent PostgreSQL, live updates, and daily private database backups. The eight audited bugs are fixed in merged PR #4. Two real Twitch accounts completed the local betrayal-to-memory pilot, and the deployed AI provider generated narration successfully. Public Twitch sign-in/chat and actual OBS composition still need a final user check. See [deployment operations](infra/aws/README.md) and [current progress](docs/afterlife/progress.md).
 
 **Team ownership**
 
@@ -21,6 +23,8 @@ The approximate technical-responsibility split is 40% frontend/presentation and 
 - [Frontend/backend integration contract](docs/afterlife/integration-contract.md)
 - [Frontend and backend bug list](docs/afterlife/bug-list.md)
 - [AI provider/model configuration](docs/afterlife/ai-providers.md)
+- [AWS deployment and maintenance](infra/aws/README.md)
+- [Demo script and screen directions](docs/afterlife/demo-script.md)
 
 The first milestone is a kingdom that survives a backend restart. The defining demonstration is a decision in episode one causing a remembered consequence in episode two.
 
