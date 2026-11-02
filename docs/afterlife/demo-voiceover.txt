@@ -1,19 +1,17 @@
-RECORDING NOTE — not spoken: The one-minute paragraph applies to the accelerated local pilot. AWS uses six-hour offline updates. For cloud-only footage, use the alternate paragraph in demo-script.md. The current saved world is resting after Episode 2; deployment did not reset it.
+Imagine you're watching a Twitch stream, and chat decides to betray an entire kingdom. Everyone's laughing, the stream ends... but what happens when you come back tomorrow? That's the idea behind AFTERLIFE. It's a world your viewers help shape, and it remembers what they did.
 
-Your viewers make one choice tonight. Next stream, the kingdom still remembers it. This is AFTERLIFE: a persistent story world for Twitch, where the community's decisions become the history of the next episode.
+Let me show you. We have two kingdoms, Red and Blue, who've agreed to a treaty. The streamer runs the episode from this studio, while viewers pick a side and vote right in Twitch chat. They can keep the peace, or break the treaty.
 
-The streamer controls the episode from this studio. Viewers join Red or Blue directly in Twitch chat, then vote on a dilemma. Here, the community must decide whether to honor the Westbridge treaty, break it, or hold position.
+I'm using two separate Twitch accounts here. As I send their votes, you can see the numbers changing on screen. And if someone changes their mind, their new vote replaces the old one. Here, both viewers have decided to break the treaty.
 
-These are two separate Twitch accounts. Watch the live tally as their messages arrive. When one viewer changes their vote, the total stays at two. Each account has one effective vote. The community has chosen to break the treaty.
+Now look at the map. The bridge has closed, trust has dropped, and the betrayal is saved in the world's history. We've given Blue something to remember.
 
-The bridge closes, trust falls, and the betrayal enters the Chronicle. This is a recorded world event. Its consequences will carry forward after this episode ends.
+I'll end the episode here. For this local demo, we've sped things up so the world updates after a minute. We'll skip the wait. While the world is resting, Blue starts preparing retaliation because of that betrayal.
 
-Now the streamer ends the episode. For this demonstration, we've accelerated offline updates to one minute. The backend keeps running while the kingdom rests. Blue begins preparing retaliation because of the broken treaty. We're cutting out the wait.
+When we start Episode Two, Blue still remembers. The recap brings us back to what happened, and now we have to decide how to respond: pay for the damage, fortify the bridge, or try peace talks. I can click this memory to see the original betrayal. Yesterday's choice has become today's problem.
 
-When the next episode starts, the recap brings that history back. Blue remembers the betrayal and demands a response. This memory link points to the exact event, and the world offers reparations, fortification, or peace talks. Viewers inherit the consequences of their earlier choice.
+AI helps tell that story through recaps and character reactions. The actual changes follow the game's rules, and the history is saved in a database. There's also a viewer page and an overlay the streamer can add to OBS.
 
-AI adds narration, leader reactions, and recaps using the saved facts and events. Validated game rules control the actual changes, and PostgreSQL preserves the world. The public viewer page and OBS overlay follow those changes through live updates.
+My teammate focused on the frontend, and I worked on the backend with Codex. We used Codex to build the world logic, connect Twitch chat, and test what survives between episodes. It also helped us find bugs and add tests for the fixes.
 
-We built AFTERLIFE with OpenAI Codex. Codex helped implement the persistent world engine, Twitch integration, and shared frontend contract. We also used it to investigate bugs, add regression tests, and verify the complete two-episode rehearsal.
-
-AFTERLIFE gives streamers an ongoing community story and viewers a reason to return. They helped shape this world. Next stream, they find out what it remembers.
+That's AFTERLIFE. You come back to see what happened to the world you helped create... and whether Blue has forgiven you yet. The stream ends. The world remembers.
